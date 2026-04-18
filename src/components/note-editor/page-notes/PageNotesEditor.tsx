@@ -149,29 +149,34 @@ function DrawingCanvas() {
   };
 
   return (
-    <svg
-      onPointerDown={isMovingCanvas ? undefined : handlePointerDown}
-      onPointerMove={isMovingCanvas ? undefined : handlePointerMove}
-      onPointerUp={isMovingCanvas ? undefined : handlePointerUp}
-      onTouchStart={handleTouchStart}
-      onTouchMove={handleTouchMove}
-      onTouchEnd={handleTouchEnd}
-      style={{
-        touchAction: "none",
-        position: "relative",
-        top: "0",
-        left: "0",
-        height: "400px",
-        width: "300px",
-        zIndex: 1,
-        backgroundColor: "#ffffff",
-        fill: pen.color,
-      }}
-    >
-      {allPathData.map((pd, index) => (
-        <path key={index} d={pd.path} fill={pd.color} style={{ zIndex: 100 }} />
+    <>
+      {state.states[state.index].map((_, index)=>(
+        <svg
+          onPointerDown={isMovingCanvas ? undefined : handlePointerDown}
+          onPointerMove={isMovingCanvas ? undefined : handlePointerMove}
+          onPointerUp={isMovingCanvas ? undefined : handlePointerUp}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+          style={{
+            touchAction: "none",
+            position: "relative",
+            top: "0",
+            left: "0",
+            height: "400px",
+            width: "300px",
+            zIndex: 1,
+            backgroundColor: "#ffffff",
+            fill: pen.color,
+          }}
+          key={index}
+        >
+          {allPathData.map((pd, index) => (
+            <path key={index} d={pd.path} fill={pd.color} style={{ zIndex: 100 }} />
+          ))}
+          {isDrawing && <path d={pathData} style={{ zIndex: 100 }} />}
+        </svg>
       ))}
-      {isDrawing && <path d={pathData} style={{ zIndex: 100 }} />}
-    </svg>
+    </>
   );
 }

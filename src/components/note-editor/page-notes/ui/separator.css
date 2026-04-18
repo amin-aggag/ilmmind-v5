@@ -1,0 +1,6 @@
+.separator {
+    height: 50px;
+    width: 0.5px;
+    margin-inline: 4px;
+    background-color: var(--input);
+}

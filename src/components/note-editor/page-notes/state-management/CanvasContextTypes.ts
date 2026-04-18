@@ -15,19 +15,22 @@ export type CanvasState = {
   states: SvgPathData[][];
   index: number;
   isDrawing: boolean;
-  
+
+  // Text state
+  isTextMode: boolean;
+
   // Canvas viewport
   position: {
     left: number;
     top: number;
   };
-  
+
   // Pen settings
   pen: {
     color: string;
     size: number;
   };
-  
+
   // Interaction state
   isMovingCanvas: boolean;
   touchStart: {
@@ -38,54 +41,63 @@ export type CanvasState = {
 
 export type CanvasAction =
   | {
-      type: 'POINTER_DOWN';
+      type: "POINTER_DOWN";
       payload: {
         points: Point[];
       };
     }
   | {
-      type: 'POINTER_MOVE';
+      type: "POINTER_MOVE";
       payload: {
         points: Point[];
       };
     }
   | {
-      type: 'POINTER_UP';
+      type: "POINTER_UP";
       payload: {
         pathData: string;
       };
     }
   | {
-      type: 'SET_PEN_COLOR';
+      type: "SET_PEN_COLOR";
       payload: string;
     }
   | {
-      type: 'SET_PEN_SIZE';
+      type: "SET_PEN_SIZE";
       payload: number;
     }
   | {
-      type: 'PAN_CANVAS';
+      type: "PAN_CANVAS";
       payload: {
         left: number;
         top: number;
       };
     }
   | {
-      type: 'SET_MOVING_CANVAS';
+      type: "SET_MOVING_CANVAS";
       payload: boolean;
     }
   | {
-      type: 'SET_TOUCH_START';
+      type: "SET_TOUCH_START";
       payload: {
         x: number;
         y: number;
       } | null;
     }
   | {
-      type: 'UNDO';
+      type: "UNDO";
     }
   | {
-      type: 'REDO';
+      type: "REDO";
+    }
+  | {
+      type: "SET_TEXT_MODE";
+      payload: {
+        isTextMode: boolean;
+      };
+    }
+  | {
+      type: "ADD_PAGE";
     };
 
 export type CanvasContextValue = {
