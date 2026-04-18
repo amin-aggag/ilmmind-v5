@@ -10,7 +10,7 @@ export function usePointerHandlers(
   }>
 ) {
   const handlePointerDown = (e: PointerEvent) => {
-    const target = e.currentTarget as SVGSVGElement;
+    const target = e.target as SVGSVGElement;
     target.setPointerCapture(e.pointerId);
 
     const points: [number, number, number][] = [
@@ -20,6 +20,8 @@ export function usePointerHandlers(
         e.pressure,
       ],
     ];
+
+    console.log("handlePointerDown: e.buttons = ", e.buttons);
 
     dispatch({
       type: 'POINTER_DOWN',
@@ -33,6 +35,7 @@ export function usePointerHandlers(
       e.pointerType === 'mouse' ||
       e.pointerType === 'touch'
     ) {
+      console.log("handlePointerMove: e.buttons = ", e.buttons);
       if (e.buttons !== 1) return;
 
       const newPoints: [number, number, number][] = [
@@ -45,7 +48,7 @@ export function usePointerHandlers(
       ];
 
       dispatch({
-        type: 'POINTER_MOVE',
+        type: "POINTER_MOVE",
         payload: { points: newPoints },
       });
     }
@@ -61,6 +64,9 @@ export function usePointerHandlers(
         type: 'POINTER_UP',
         payload: { pathData },
       });
+
+        console.log("handlePointerUp: e.buttons = ", e.buttons);
+
     }
   };
 
