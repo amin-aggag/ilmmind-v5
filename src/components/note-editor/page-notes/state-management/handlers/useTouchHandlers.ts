@@ -1,5 +1,5 @@
 // hooks/useTouchHandlers.ts
-import { CanvasState } from './CanvasContextTypes';
+import { CanvasState } from '../CanvasContextTypes';
 import React from 'react';
 
 export function useTouchHandlers(

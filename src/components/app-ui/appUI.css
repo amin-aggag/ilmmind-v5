@@ -1,0 +1,14 @@
+.sidebar {
+    width: 400px;
+    height: 100%;
+    background-color: aquamarine;
+    transition: all 1s ease-in-out;
+}
+
+.app-ui {
+    width: 100%;
+    height: 100vh;
+    background-color: bisque;
+    display: grid;
+    grid-template-columns: auto 1fr;
+}

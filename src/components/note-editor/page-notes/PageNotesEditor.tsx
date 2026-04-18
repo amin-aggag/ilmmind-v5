@@ -21,6 +21,7 @@ type PageNotesEditorProps = Omit<NoteEditorProps, "layout">;
 export default function SVGCanvas() {
   const canvasStateVars = useCanvasStateVars();
   const { position } = canvasStateVars.state;
+  const dispatch = canvasStateVars.dispatch;
   const DrawingCanvasRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -32,6 +33,14 @@ export default function SVGCanvas() {
       e.preventDefault();
       e.stopPropagation();
       // Handle wheel here if needed
+
+      dispatch({
+        type: "PAN_CANVAS",
+        payload: {
+          left: position.left - e.deltaX,
+          top: position.top - e.deltaY,
+        },
+      });
     };
 
     CanvasRefCurrent.addEventListener('wheel', handleWheelWrapper);
@@ -44,23 +53,27 @@ export default function SVGCanvas() {
     <CanvasContext.Provider value={canvasStateVars}>
       <div
         style={{
-          overflow: 'hidden',
-          overscrollBehavior: 'none',
-          scrollbarWidth: 'none',
+          overflow: "hidden",
+          overscrollBehavior: "none",
+          scrollbarWidth: "none",
+          gridTemplateRows: "auto 1fr",
+          height: "100%",
         }}
       >
-        <div ref={DrawingCanvasRef}>
+        <div>
+          <UI />
+        </div>
+        <div ref={DrawingCanvasRef} style={{ height: "100%" }}>
           <div
             style={{
-              position: 'relative',
+              position: "relative",
               transform: `translate(${position.left}px, ${position.top}px)`,
+              height: "100%",
+              width: "100%",
             }}
           >
             <DrawingCanvas />
           </div>
-        </div>
-        <div>
-          <UI />
         </div>
       </div>
     </CanvasContext.Provider>
@@ -144,14 +157,14 @@ function DrawingCanvas() {
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
       style={{
-        touchAction: 'none',
-        position: 'relative',
-        top: '0',
-        left: '0',
-        height: '1080px',
-        width: '1920px',
+        touchAction: "none",
+        position: "relative",
+        top: "0",
+        left: "0",
+        height: "400px",
+        width: "300px",
         zIndex: 1,
-        backgroundColor: '#ffffff',
+        backgroundColor: "#ffffff",
         fill: pen.color,
       }}
     >

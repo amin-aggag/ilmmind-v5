@@ -66,7 +66,7 @@ export default function UI() {
     <>
       <div
         style={{
-          position: 'absolute',
+          position: 'relative',
           top: '0',
           left: '0px',
           fontSize: '50px',
@@ -74,7 +74,7 @@ export default function UI() {
           display: 'flex',
           flexDirection: 'row',
           background: 'aliceblue',
-          width: '100%',
+          width: 'auto',
           minHeight: '100px',
           marginBlock: 'auto',
           alignItems: 'center',

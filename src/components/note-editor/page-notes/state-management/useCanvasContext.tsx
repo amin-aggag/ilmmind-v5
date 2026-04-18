@@ -1,8 +1,8 @@
 // hooks/useCanvasContext.tsx
 import { createContext, useContext } from 'react';
 import { useCanvasReducer } from './useCanvasReducer';
-import { usePointerHandlers } from './usePointerHandler';
-import { useTouchHandlers } from './useTouchHandlers';
+import { usePointerHandlers } from "./handlers/usePointerHandler";
+import { useTouchHandlers } from "./handlers/useTouchHandlers";
 import { CanvasContextValue } from './CanvasContextTypes';
 
 export const CanvasContext = createContext<CanvasContextValue | undefined>(

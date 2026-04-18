@@ -1,5 +1,5 @@
 // hooks/usePointerHandlers.ts
-import { CanvasState } from './CanvasContextTypes';
+import { CanvasState } from '../CanvasContextTypes';
 import React from 'react';
 
 export function usePointerHandlers(
@@ -15,8 +15,8 @@ export function usePointerHandlers(
 
     const points: [number, number, number][] = [
       [
-        e.pageX - state.position.left,
-        e.pageY - state.position.top,
+        e.pageX - (e.target as SVGSVGElement).getBoundingClientRect().left,
+        e.pageY - (e.target as SVGSVGElement).getBoundingClientRect().top,
         e.pressure,
       ],
     ];
@@ -41,8 +41,8 @@ export function usePointerHandlers(
       const newPoints: [number, number, number][] = [
         ...state.points,
         [
-          e.pageX - state.position.left,
-          e.pageY - state.position.top,
+          e.pageX - (e.target as SVGSVGElement).getBoundingClientRect().left,
+          e.pageY - (e.target as SVGSVGElement).getBoundingClientRect().top,
           e.pressure,
         ],
       ];
