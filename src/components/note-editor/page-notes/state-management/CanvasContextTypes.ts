@@ -1,5 +1,5 @@
 // types/CanvasContextTypes.ts
-import { PointerEventHandler, TouchEventHandler, WheelEventHandler } from "react";
+// import { PointerEventHandler, TouchEventHandler, WheelEventHandler } from "react";
 
 export type SvgPathData = {
   path: string;

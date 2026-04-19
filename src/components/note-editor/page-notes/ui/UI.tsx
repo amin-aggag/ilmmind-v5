@@ -12,6 +12,7 @@ import {
   TextIcon,
   UndoIcon,
 } from "lucide-react";
+import './UI.css'
 
 import { EditorUIButton } from "./EditorButton";
 import { Separator } from "./Separator";
@@ -127,7 +128,7 @@ export default function UI() {
           key={index}
         >
           <div
-            className={`rounded-xl h-6 w-6`}
+            className={`colour-icon`}
             style={{ backgroundColor: penColor }}
           ></div>
         </EditorUIButton>

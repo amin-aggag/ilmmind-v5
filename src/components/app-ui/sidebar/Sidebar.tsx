@@ -1,36 +1,54 @@
 import React, { useEffect } from "react";
+import "./Sidebar.css";
+
+const MIN_SIDEBAR_WIDTH_PX = 200;
+const MAX_SIDEBAR_WIDTH_PX = 400;
 
 export default function Sidebar() {
   const [isResizing, setIsResizing] = React.useState<boolean>(false);
   const [width, setWidth] = React.useState<number>(200);
 
-  const sidebarRef = React.useRef<HTMLDivElement>(null);
+  const sidebarDraggerRef = React.useRef<HTMLDivElement>(null);
 
   const adjustSidebarWidth = (e: MouseEvent) => {
-    setWidth(e.clientX);
+    if (
+      e.clientX >= MIN_SIDEBAR_WIDTH_PX &&
+      e.clientX <= MAX_SIDEBAR_WIDTH_PX
+    ) {
+      setWidth(e.clientX);
+    }
+  };
+
+  const setIsResizingOff = () => {
+    setIsResizing(false);
   };
 
   useEffect(() => {
     if (isResizing) {
-      sidebarRef.current?.addEventListener("mousemove", adjustSidebarWidth);
+      sidebarDraggerRef.current?.classList.add("is-dragging");
+      document.getElementById("root")!.style.cursor = "col-resize";
 
-      return () =>
-        sidebarRef.current?.removeEventListener(
-          "mousemove",
-          adjustSidebarWidth,
-        );
+      document.addEventListener("mousemove", adjustSidebarWidth);
+      document.addEventListener("mouseup", setIsResizingOff);
+
+      return () => {
+        document.removeEventListener("mousemove", adjustSidebarWidth);
+        document.removeEventListener("mouseup", setIsResizingOff);
+      };
+    } else {
+      sidebarDraggerRef.current?.classList.remove("is-dragging");
+      document.getElementById("root")!.style.cursor = "";
     }
-  }, [sidebarRef, isResizing]);
+  }, [isResizing]);
 
   return (
-    <div
-      className="sidebar"
-      ref={sidebarRef}
-      onMouseDown={() => setIsResizing(true)}
-      onMouseUp={() => setIsResizing(false)}
-      style={{width: `${width}px`}}
-    >
-      test
+    <div className="sidebar" style={{ width: `${width}px` }}>
+      <div className="sidebar-content">test</div>
+      <div
+        className="sidebar-width-dragger"
+        onMouseDown={() => setIsResizing(true)}
+        ref={sidebarDraggerRef}
+      ></div>
     </div>
   );
 }

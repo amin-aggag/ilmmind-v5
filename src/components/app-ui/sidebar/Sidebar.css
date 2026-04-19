@@ -1,0 +1,28 @@
+.sidebar {
+    height: 100%;
+    background-color: aquamarine;
+    /* transition: all 1s ease-in-out; */
+    overflow-x: visible;
+    display: flex;
+}
+
+.sidebar-content {
+    width: 100%;
+}
+
+.sidebar-width-dragger {
+    height: 100%;
+    width: 6px;
+    background-color: rgba(0,0,0, 0);
+    margin-inline: -3px;
+    transition: background-color 80ms ease-in;
+    cursor: col-resize;
+
+    &:hover {
+        background-color: rgba(0,0,0, 0.2);
+    }
+}
+
+.is-dragging {
+    background-color: rgba(0,0,0, 0.2);
+}

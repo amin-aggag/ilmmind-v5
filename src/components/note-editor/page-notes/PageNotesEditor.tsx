@@ -32,16 +32,20 @@ export default function SVGCanvas() {
     const handleWheelWrapper = (e: WheelEvent) => {
       e.preventDefault();
       e.stopPropagation();
-      // Handle wheel here if needed
 
-      dispatch({
-        type: "PAN_CANVAS",
-        payload: {
-          left: position.left - e.deltaX,
-          top: position.top - e.deltaY,
-        },
-      });
-    };
+      // Pan the canvas if there are pages on the screen that can be panned across.
+      if (
+        canvasStateVars.state.states[canvasStateVars.state.index].length > 0
+      ) {
+        dispatch({
+          type: "PAN_CANVAS",
+          payload: {
+            left: position.left - e.deltaX,
+            top: position.top - e.deltaY,
+          },
+        });
+      }
+    };;
 
     CanvasRefCurrent.addEventListener('wheel', handleWheelWrapper);
 
@@ -63,7 +67,10 @@ export default function SVGCanvas() {
         <div>
           <UI />
         </div>
-        <div ref={DrawingCanvasRef} style={{ height: "100%" }}>
+        <div
+          ref={DrawingCanvasRef}
+          style={{ height: "100%", overflow: "hidden" }}
+        >
           <div
             style={{
               position: "relative",
@@ -148,9 +155,11 @@ function DrawingCanvas() {
     touch.handleTouchEnd(e.nativeEvent);
   };
 
+  console.log(state.states);
+
   return (
     <>
-      {state.states[state.index].map((_, index)=>(
+      {/* {state.states[state.index].map((_, index)=>( */}
         <svg
           onPointerDown={isMovingCanvas ? undefined : handlePointerDown}
           onPointerMove={isMovingCanvas ? undefined : handlePointerMove}
@@ -169,14 +178,14 @@ function DrawingCanvas() {
             backgroundColor: "#ffffff",
             fill: pen.color,
           }}
-          key={index}
+          // key={index}
         >
           {allPathData.map((pd, index) => (
             <path key={index} d={pd.path} fill={pd.color} style={{ zIndex: 100 }} />
           ))}
           {isDrawing && <path d={pathData} style={{ zIndex: 100 }} />}
         </svg>
-      ))}
+      {/* ))} */}
     </>
   );
 }
