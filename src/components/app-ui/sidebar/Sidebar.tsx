@@ -28,12 +28,12 @@ export default function Sidebar() {
       sidebarDraggerRef.current?.classList.add("is-dragging");
       document.getElementById("root")!.style.cursor = "col-resize";
 
-      document.addEventListener("mousemove", adjustSidebarWidth);
-      document.addEventListener("mouseup", setIsResizingOff);
+      document.addEventListener("pointermove", adjustSidebarWidth);
+      document.addEventListener("pointerup", setIsResizingOff);
 
       return () => {
-        document.removeEventListener("mousemove", adjustSidebarWidth);
-        document.removeEventListener("mouseup", setIsResizingOff);
+        document.removeEventListener("pointermove", adjustSidebarWidth);
+        document.removeEventListener("pointerup", setIsResizingOff);
       };
     } else {
       sidebarDraggerRef.current?.classList.remove("is-dragging");
@@ -46,7 +46,7 @@ export default function Sidebar() {
       <div className="sidebar-content">test</div>
       <div
         className="sidebar-width-dragger"
-        onMouseDown={() => setIsResizing(true)}
+        onPointerDown={() => setIsResizing(true)}
         ref={sidebarDraggerRef}
       ></div>
     </div>

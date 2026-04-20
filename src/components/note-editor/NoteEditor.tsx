@@ -1,8 +1,8 @@
-import CanvasNotesEditor from "./canvas-notes/CanvasNotesEditor";
-import { Notebook } from "./NoteTypes";
+// import CanvasNotesEditor from "./canvas-notes/CanvasNotesEditor";
+import { Notebook } from "./page-notes/state-management/CanvasContextTypes";
 import SVGCanvas from "./page-notes/PageNotesEditor";
-import PageNotesEditor from "./page-notes/PageNotesEditor";
-import PagelessNotesEditor from "./pageless-notes/PagelessNotesEditor";
+// import PageNotesEditor from "./page-notes/PageNotesEditor";
+// import PagelessNotesEditor from "./pageless-notes/PagelessNotesEditor";
 
 export type NoteEditorProps = {
     // The global ID of the note from the backend that the NoteEditor is rendering

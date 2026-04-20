@@ -5,19 +5,22 @@ import {
   CanvasAction,
   SvgPathData,
   Point,
+  Page,
+  Notebook,
 } from "./CanvasContextTypes";
 
 const initialState: CanvasState = {
   points: [],
   allPathData: [],
   states: [[]],
-  index: 0,
+  historyIndex: 0,
   isDrawing: false,
   position: { left: 0, top: 0 },
   pen: { color: "black", size: 10 },
   isMovingCanvas: false,
   touchStart: null,
   isTextMode: false,
+  activePageIndex: 0,
 };
 
 function canvasReducer(state: CanvasState, action: CanvasAction): CanvasState {
@@ -27,30 +30,60 @@ function canvasReducer(state: CanvasState, action: CanvasAction): CanvasState {
         ...state,
         points: action.payload.points,
         isDrawing: true,
+        activePageIndex: action.payload.activePageIndex,
       };
 
     case "POINTER_MOVE":
       return {
         ...state,
         points: action.payload.points,
+        activePageIndex: action.payload.activePageIndex,
       };
 
     case "POINTER_UP": {
+      // Current state
+      // const current_state = state.states[state.historyIndex];
+
+      // The new stroke that was just drawn
       const newPathData: SvgPathData = {
         path: action.payload.pathData,
         color: state.pen.color,
       };
-      const updatedAllPathData = [...state.allPathData, newPathData];
-      const temporaryState = state.states.slice(0, state.index + 1);
+
+      // Copying the overall state array into another (temporary) array
+      const updatedState = state.states.slice();
+      // Putting together the updated page data (includes old + new)
+      const updatedPage: Page = [
+        ...updatedState[state.historyIndex][action.payload.activePageIndex],
+        newPathData,
+      ];
+      // Updating the notebook with the updated page data
+      const updatedNotebook: Notebook = updatedState[state.historyIndex];
+      updatedNotebook[action.payload.activePageIndex] = updatedPage;
 
       return {
         ...state,
-        allPathData: updatedAllPathData,
-        states: [...temporaryState, updatedAllPathData],
-        index: state.index + 1,
+        // allPathData: updatedPageData,
+        states: [...state.states, updatedNotebook],
+        historyIndex: state.historyIndex + 1,
         isDrawing: false,
         points: [],
       };
+
+      // if (!pathData) return; // No path to save
+
+      // const newPathData = {
+      //   path: pathData,
+      //   color: color,
+      //   text: undefined,
+      // };
+      // const tempPathData = [...allPathData];
+      // tempPathData[currPageNum] = [...tempPathData[currPageNum], newPathData];
+      // setAllPathData([...tempPathData]);
+      // let temporaryState = states.slice(0, index + 1);
+      // setStates([...temporaryState, [...tempPathData]]);
+      // setIsDrawing(false);
+      // setIndex(index + 1);
     }
 
     case "SET_PEN_COLOR":
@@ -84,22 +117,38 @@ function canvasReducer(state: CanvasState, action: CanvasAction): CanvasState {
       };
 
     case "UNDO": {
-      if (state.index > 0 && state.index <= state.states.length - 1) {
+      if (
+        state.historyIndex > 0 &&
+        state.historyIndex <= state.states.length - 1
+      ) {
+        // const current_state = state.states[state.states.length - 1];
+        // const current_notebook_state = current_state[current_state.length - 1];
+        // const last_page =
+        //   current_notebook_state[current_notebook_state.length - 1];
+
         return {
           ...state,
-          allPathData: state.states[state.index - 1],
-          index: state.index - 1,
+          // allPathData: last_page,
+          historyIndex: state.historyIndex - 1,
         };
       }
       return state;
     }
 
     case "REDO": {
-      if (state.index > -1 && state.index < state.states.length - 1) {
+      if (
+        state.historyIndex > -1 &&
+        state.historyIndex < state.states.length - 1
+      ) {
+        // const current_state = state.states[state.states.length - 1];
+        // const current_notebook_state = current_state[current_state.length - 1];
+        // const last_page =
+        //   current_notebook_state[current_notebook_state.length - 1];
+
         return {
           ...state,
-          allPathData: state.states[state.index + 1],
-          index: state.index + 1,
+          // allPathData: last_page,
+          historyIndex: state.historyIndex + 1,
         };
       }
       return state;
@@ -113,14 +162,13 @@ function canvasReducer(state: CanvasState, action: CanvasAction): CanvasState {
     }
 
     case "ADD_PAGE": {
-      const tempPathData: any = deepCopy(state.allPathData);
-      let temporaryState = state.states.slice(0, state.index + 1);
-      let current_index = state.index;
+      const updated_notebook = state.states[state.historyIndex].slice();
+      updated_notebook.push([]);
+
       return {
         ...state,
-        allPathData: [...tempPathData, []],
-        states: [...temporaryState, [...tempPathData, []]],
-        index: current_index + 1,
+        states: [...state.states, updated_notebook],
+        historyIndex: state.historyIndex + 1,
       };
     }
 

@@ -6,15 +6,21 @@ export type SvgPathData = {
   color: string;
 };
 
+export type Page = SvgPathData[];
+export type Notebook = Page[];
+
 export type Point = [number, number, number]; // [x, y, pressure]
 
 export type CanvasState = {
   // Drawing state
   points: Point[];
   allPathData: SvgPathData[];
-  states: SvgPathData[][];
-  index: number;
+  states: Notebook[];
+  historyIndex: number;
   isDrawing: boolean;
+
+  // Page state
+  activePageIndex: number;
 
   // Text state
   isTextMode: boolean;
@@ -44,18 +50,21 @@ export type CanvasAction =
       type: "POINTER_DOWN";
       payload: {
         points: Point[];
+        activePageIndex: number;
       };
     }
   | {
       type: "POINTER_MOVE";
       payload: {
         points: Point[];
+        activePageIndex: number;
       };
     }
   | {
       type: "POINTER_UP";
       payload: {
         pathData: string;
+        activePageIndex: number;
       };
     }
   | {
@@ -105,9 +114,13 @@ export type CanvasContextValue = {
   dispatch: React.Dispatch<CanvasAction>;
   handlers: {
     pointer: {
-      handlePointerDown: (e: PointerEvent) => void;
-      handlePointerMove: (e: PointerEvent) => void;
-      handlePointerUp: (e: PointerEvent, pathData: string) => void;
+      handlePointerDown: (e: PointerEvent, activePageIndex: number) => void;
+      handlePointerMove: (e: PointerEvent, activePageIndex: number) => void;
+      handlePointerUp: (
+        e: PointerEvent,
+        pathData: string,
+        activePageIndex: number,
+      ) => void;
     };
     touch: {
       handleTouchStart: (e: TouchEvent) => void;

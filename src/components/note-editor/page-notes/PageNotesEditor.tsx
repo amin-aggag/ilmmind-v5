@@ -1,4 +1,4 @@
-import type { NoteEditorProps } from "../NoteEditor"
+import type { NoteEditorProps } from "../NoteEditor";
 // import { useCanvasContext } from './state-management/useCanvasContext';
 
 // type PageNotesEditorProps = Omit<NoteEditorProps, "layout">;
@@ -12,15 +12,18 @@ import type { NoteEditorProps } from "../NoteEditor"
 // }
 
 // pages/SVGCanvas.tsx
-import { CanvasContext, useCanvasStateVars } from './state-management/useCanvasContext';
-import UI from './ui/UI';
-import { useEffect, useRef } from 'react';
+import {
+  CanvasContext,
+  useCanvasStateVars,
+} from "./state-management/useCanvasContext";
+import UI from "./ui/UI";
+import { useEffect, useRef } from "react";
 
 type PageNotesEditorProps = Omit<NoteEditorProps, "layout">;
 
-export default function SVGCanvas() {
+export default function PaginatedNotesEditor() {
   const canvasStateVars = useCanvasStateVars();
-  const { position } = canvasStateVars.state;
+  const { states, position, historyIndex } = canvasStateVars.state;
   const dispatch = canvasStateVars.dispatch;
   const DrawingCanvasRef = useRef<HTMLDivElement>(null);
 
@@ -35,7 +38,8 @@ export default function SVGCanvas() {
 
       // Pan the canvas if there are pages on the screen that can be panned across.
       if (
-        canvasStateVars.state.states[canvasStateVars.state.index].length > 0
+        canvasStateVars.state.states[canvasStateVars.state.historyIndex]
+          .length > 0
       ) {
         dispatch({
           type: "PAN_CANVAS",
@@ -45,13 +49,15 @@ export default function SVGCanvas() {
           },
         });
       }
-    };;
+    };
 
-    CanvasRefCurrent.addEventListener('wheel', handleWheelWrapper);
+    CanvasRefCurrent.addEventListener("wheel", handleWheelWrapper);
 
     return () =>
-      CanvasRefCurrent.removeEventListener('wheel', handleWheelWrapper);
+      CanvasRefCurrent.removeEventListener("wheel", handleWheelWrapper);
   });
+
+  console.log(states[historyIndex]);
 
   return (
     <CanvasContext.Provider value={canvasStateVars}>
@@ -79,7 +85,9 @@ export default function SVGCanvas() {
               width: "100%",
             }}
           >
-            <DrawingCanvas />
+            {states[historyIndex].map((_, pageIndex) => (
+              <DrawingCanvas pageIndex={pageIndex} />
+            ))}
           </div>
         </div>
       </div>
@@ -88,11 +96,11 @@ export default function SVGCanvas() {
 }
 
 // components/canvas/DrawingCanvas.tsx
-import { useCanvasContext } from './state-management/useCanvasContext';
-import getStroke from 'perfect-freehand';
+import { useCanvasContext } from "./state-management/useCanvasContext";
+import getStroke from "perfect-freehand";
 
 const getSvgPathFromStroke = (stroke: number[][]): string => {
-  if (!stroke.length) return '';
+  if (!stroke.length) return "";
 
   const d = stroke.reduce<(string | number)[]>(
     (acc, [x0, y0], i, arr) => {
@@ -100,17 +108,19 @@ const getSvgPathFromStroke = (stroke: number[][]): string => {
       acc.push(x0, y0, (x0 + x1) / 2, (y0 + y1) / 2);
       return acc;
     },
-    ['M', ...stroke[0], 'Q']
+    ["M", ...stroke[0], "Q"],
   );
 
-  d.push('Z');
-  return d.join(' ');
+  d.push("Z");
+  return d.join(" ");
 };
 
-function DrawingCanvas() {
+function DrawingCanvas({ pageIndex }: { pageIndex: number }) {
   const { state, handlers } = useCanvasContext();
   const { pointer, touch } = handlers;
-  const { allPathData, isDrawing, pen, isMovingCanvas, points } = state;
+  const { isDrawing, pen, isMovingCanvas, points, historyIndex } = state;
+
+  const pageData = state.states[historyIndex][pageIndex];
 
   const options = {
     size: pen.size,
@@ -132,15 +142,15 @@ function DrawingCanvas() {
   const pathData = getSvgPathFromStroke(stroke);
 
   const handlePointerDown = (e: React.PointerEvent<SVGSVGElement>) => {
-    pointer.handlePointerDown(e.nativeEvent);
+    pointer.handlePointerDown(e.nativeEvent, pageIndex);
   };
 
   const handlePointerMove = (e: React.PointerEvent<SVGSVGElement>) => {
-    pointer.handlePointerMove(e.nativeEvent);
+    pointer.handlePointerMove(e.nativeEvent, pageIndex);
   };
 
   const handlePointerUp = (e: React.PointerEvent<SVGSVGElement>) => {
-    pointer.handlePointerUp(e.nativeEvent, pathData);
+    pointer.handlePointerUp(e.nativeEvent, pathData, pageIndex);
   };
 
   const handleTouchStart = (e: React.TouchEvent<SVGSVGElement>) => {
@@ -155,36 +165,43 @@ function DrawingCanvas() {
     touch.handleTouchEnd(e.nativeEvent);
   };
 
-  console.log(state.states);
+  // console.log(state.states);
 
   return (
     <>
       {/* {state.states[state.index].map((_, index)=>( */}
-        <svg
-          onPointerDown={isMovingCanvas ? undefined : handlePointerDown}
-          onPointerMove={isMovingCanvas ? undefined : handlePointerMove}
-          onPointerUp={isMovingCanvas ? undefined : handlePointerUp}
-          onTouchStart={handleTouchStart}
-          onTouchMove={handleTouchMove}
-          onTouchEnd={handleTouchEnd}
-          style={{
-            touchAction: "none",
-            position: "relative",
-            top: "0",
-            left: "0",
-            height: "400px",
-            width: "300px",
-            zIndex: 1,
-            backgroundColor: "#ffffff",
-            fill: pen.color,
-          }}
-          // key={index}
-        >
-          {allPathData.map((pd, index) => (
-            <path key={index} d={pd.path} fill={pd.color} style={{ zIndex: 100 }} />
-          ))}
-          {isDrawing && <path d={pathData} style={{ zIndex: 100 }} />}
-        </svg>
+      <svg
+        onPointerDown={isMovingCanvas ? undefined : handlePointerDown}
+        onPointerMove={isMovingCanvas ? undefined : handlePointerMove}
+        onPointerUp={isMovingCanvas ? undefined : handlePointerUp}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+        style={{
+          touchAction: "none",
+          position: "relative",
+          top: "0",
+          left: "0",
+          height: "400px",
+          width: "300px",
+          zIndex: 1,
+          backgroundColor: "#ffffff",
+          fill: pen.color,
+        }}
+        // key={index}
+      >
+        {pageData.map((pd, index) => (
+          <path
+            key={index}
+            d={pd.path}
+            fill={pd.color}
+            style={{ zIndex: 100 }}
+          />
+        ))}
+        {pageIndex === state.activePageIndex && isDrawing && (
+          <path d={pathData} style={{ zIndex: 100 }} />
+        )}
+      </svg>
       {/* ))} */}
     </>
   );

@@ -9,7 +9,7 @@ export function usePointerHandlers(
     payload: any;
   }>
 ) {
-  const handlePointerDown = (e: PointerEvent) => {
+  const handlePointerDown = (e: PointerEvent, activePageIndex: number) => {
     const target = e.target as SVGSVGElement;
     target.setPointerCapture(e.pointerId);
 
@@ -24,16 +24,16 @@ export function usePointerHandlers(
     console.log("handlePointerDown: e.buttons = ", e.buttons);
 
     dispatch({
-      type: 'POINTER_DOWN',
-      payload: { points },
+      type: "POINTER_DOWN",
+      payload: { points, activePageIndex },
     });
   };
 
-  const handlePointerMove = (e: PointerEvent) => {
+  const handlePointerMove = (e: PointerEvent, activePageIndex: number) => {
     if (
-      e.pointerType === 'pen' ||
-      e.pointerType === 'mouse' ||
-      e.pointerType === 'touch'
+      e.pointerType === "pen" ||
+      e.pointerType === "mouse" ||
+      e.pointerType === "touch"
     ) {
       console.log("handlePointerMove: e.buttons = ", e.buttons);
       if (e.buttons !== 1) return;
@@ -49,24 +49,27 @@ export function usePointerHandlers(
 
       dispatch({
         type: "POINTER_MOVE",
-        payload: { points: newPoints },
+        payload: { points: newPoints, activePageIndex },
       });
     }
   };
 
-  const handlePointerUp = (e: PointerEvent, pathData: string) => {
+  const handlePointerUp = (
+    e: PointerEvent,
+    pathData: string,
+    activePageIndex: number,
+  ) => {
     if (
-      e.pointerType === 'pen' ||
-      e.pointerType === 'mouse' ||
-      e.pointerType === 'touch'
+      e.pointerType === "pen" ||
+      e.pointerType === "mouse" ||
+      e.pointerType === "touch"
     ) {
       dispatch({
-        type: 'POINTER_UP',
-        payload: { pathData },
+        type: "POINTER_UP",
+        payload: { pathData, activePageIndex },
       });
 
-        console.log("handlePointerUp: e.buttons = ", e.buttons);
-
+      console.log("handlePointerUp: e.buttons = ", e.buttons);
     }
   };
 
