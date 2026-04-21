@@ -29,7 +29,6 @@ export type NoteEditorProps = {
 export default function NoteEditor() {
     return (
         <>
-        
             <SVGCanvas/>
         </>
     )
