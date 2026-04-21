@@ -1,0 +1,14 @@
+.svg-canvas {
+
+}
+
+.svg-canvases-wrapper {
+    display: grid;
+    grid-template-columns: auto;
+    gap: 5px;
+}
+
+.page-number {
+    margin: 0;
+    padding: 0;
+}

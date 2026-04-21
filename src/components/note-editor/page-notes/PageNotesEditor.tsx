@@ -10,6 +10,7 @@ import type { NoteEditorProps } from "../NoteEditor";
 //         </>
 //     )
 // }
+import './PaginatedNoteEditor.css'
 
 // pages/SVGCanvas.tsx
 import {
@@ -37,6 +38,8 @@ export default function PaginatedNotesEditor() {
       e.stopPropagation();
 
       // Pan the canvas if there are pages on the screen that can be panned across.
+      // This condition prevents the user from accidently panning and then when making a page,
+      // the pan is far enough that the page is off screen and difficult to pan back to view again.
       if (
         canvasStateVars.state.states[canvasStateVars.state.historyIndex]
           .length > 0
@@ -81,12 +84,16 @@ export default function PaginatedNotesEditor() {
             style={{
               position: "relative",
               transform: `translate(${position.left}px, ${position.top}px)`,
-              height: "100%",
-              width: "100%",
+              height: "min-content",
+              width: "min-content",
             }}
+            className="svg-canvases-wrapper"
           >
             {states[historyIndex].map((_, pageIndex) => (
-              <DrawingCanvas pageIndex={pageIndex} />
+              <>
+                <SVGCanvas pageIndex={pageIndex} />
+                <p className="page-number">{pageIndex}</p>
+              </>
             ))}
           </div>
         </div>
@@ -115,7 +122,7 @@ const getSvgPathFromStroke = (stroke: number[][]): string => {
   return d.join(" ");
 };
 
-function DrawingCanvas({ pageIndex }: { pageIndex: number }) {
+function SVGCanvas({ pageIndex }: { pageIndex: number }) {
   const { state, handlers } = useCanvasContext();
   const { pointer, touch } = handlers;
   const { isDrawing, pen, isMovingCanvas, points, historyIndex } = state;
@@ -188,6 +195,7 @@ function DrawingCanvas({ pageIndex }: { pageIndex: number }) {
           backgroundColor: "#ffffff",
           fill: pen.color,
         }}
+        className="svg-canvas"
         // key={index}
       >
         {pageData.map((pd, index) => (

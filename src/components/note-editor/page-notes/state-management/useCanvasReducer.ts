@@ -58,7 +58,7 @@ function canvasReducer(state: CanvasState, action: CanvasAction): CanvasState {
         newPathData,
       ];
       // Updating the notebook with the updated page data
-      const updatedNotebook: Notebook = updatedState[state.historyIndex];
+      const updatedNotebook: Notebook = deepCopy(updatedState[state.historyIndex]);
       updatedNotebook[action.payload.activePageIndex] = updatedPage;
 
       return {

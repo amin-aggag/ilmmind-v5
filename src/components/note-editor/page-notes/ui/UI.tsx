@@ -33,7 +33,7 @@ const penSizeArray = [1, 2, 4, 6, 8, 10, 20, 30] as const;
 export default function UI() {
   const { state, dispatch } = useCanvasContext();
 
-  const { states, index, pen, isTextMode } = state;
+  const { states, historyIndex, pen, isTextMode } = state;
   const { color, size } = pen;
 
   const inputRef = useRef<HTMLInputElement>(null);
@@ -76,9 +76,9 @@ export default function UI() {
     });
   };
 
-  const isUndoDisabled = states.length === 1 || index <= 0;
+  const isUndoDisabled = states.length === 1 || historyIndex <= 0;
   const isRedoDisabled =
-    (states.length === 1 && index <= 0) || index === states.length - 1;
+    (states.length === 1 && historyIndex <= 0) || historyIndex === states.length - 1;
 
   return (
     <div className="paginated-notes-toolbar">
@@ -149,124 +149,5 @@ export default function UI() {
 
       <Separator />
     </div>
-  );
-
-  return (
-    <>
-      <div
-        style={{
-          position: 'relative',
-          top: '0',
-          left: '0px',
-          fontSize: '50px',
-          zIndex: 1,
-          display: 'flex',
-          flexDirection: 'row',
-          background: 'aliceblue',
-          width: 'auto',
-          minHeight: '100px',
-          marginBlock: 'auto',
-          alignItems: 'center',
-          padding: '17px',
-          borderBottomRightRadius: '10px',
-          borderBottomLeftRadius: '10px',
-          borderStyle: 'hidden',
-          boxShadow: '1px 1px 4px 1px lightgray',
-          flexWrap: 'wrap',
-          justifyContent: 'space-around',
-        }}
-      >
-        {/* Undo/Redo Buttons */}
-        <div>
-          <button
-            style={{
-              ...buttonStyle,
-              marginRight: '15px',
-            }}
-            onClick={handleUndo}
-            disabled={isUndoDisabled}
-          >
-            Undo
-          </button>
-          <button
-            style={buttonStyle}
-            onClick={handleRedo}
-            disabled={isRedoDisabled}
-          >
-            Redo
-          </button>
-        </div>
-
-        {/* Pen Size Selector */}
-        <div
-          style={{
-            zIndex: 1,
-            display: 'flex',
-            flexDirection: 'column',
-            background: 'aliceblue',
-            height: '75px',
-            marginTop: '5px',
-          }}
-        >
-          <p style={{ marginBottom: '5px', fontSize: '20px' }}>Pen size: {size}</p>
-          <div style={{ display: 'flex' }}>
-            {penSizeArray.map((penSize) => (
-              <button
-                style={{
-                  height: '40px',
-                  width: '40px',
-                  background: 'aliceblue',
-                  cursor: 'pointer',
-                  fontSize: '30px',
-                  borderRadius: '10px',
-                  borderColor: 'lightgray',
-                  borderStyle: 'hidden',
-                  boxShadow: '1px 1px 4px 1px lightgray',
-                  marginRight: '10px',
-                }}
-                key={penSize}
-                onClick={() => handlePenSizeChange(penSize)}
-              >
-                {penSize}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Color Selector */}
-        <div
-          style={{
-            zIndex: 1,
-            display: 'flex',
-            flexDirection: 'column',
-            background: 'aliceblue',
-            height: '75px',
-          }}
-        >
-          <p style={{ fontSize: '20px', marginBottom: '5px' }}>
-            Colour: {String(color).charAt(0).toUpperCase() + String(color).slice(1)}
-          </p>
-          <div style={{ display: 'flex' }}>
-            {colorArray.map((colorOption) => (
-              <button
-                style={{
-                  height: '40px',
-                  width: '40px',
-                  background: colorOption,
-                  cursor: 'pointer',
-                  borderRadius: '10px',
-                  borderColor: 'lightgray',
-                  borderStyle: 'hidden',
-                  boxShadow: '1px 1px 4px 1px lightgray',
-                  marginRight: '10px',
-                }}
-                key={colorOption}
-                onClick={() => handleColorChange(colorOption)}
-              />
-            ))}
-          </div>
-        </div>
-      </div>
-    </>
   );
 }
