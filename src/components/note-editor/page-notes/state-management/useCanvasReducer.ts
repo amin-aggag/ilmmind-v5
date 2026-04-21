@@ -4,7 +4,6 @@ import {
   CanvasState,
   CanvasAction,
   SvgPathData,
-  Point,
   Page,
   Notebook,
 } from "./CanvasContextTypes";
@@ -41,9 +40,6 @@ function canvasReducer(state: CanvasState, action: CanvasAction): CanvasState {
       };
 
     case "POINTER_UP": {
-      // Current state
-      // const current_state = state.states[state.historyIndex];
-
       // The new stroke that was just drawn
       const newPathData: SvgPathData = {
         path: action.payload.pathData,
@@ -63,27 +59,11 @@ function canvasReducer(state: CanvasState, action: CanvasAction): CanvasState {
 
       return {
         ...state,
-        // allPathData: updatedPageData,
         states: [...state.states, updatedNotebook],
         historyIndex: state.historyIndex + 1,
         isDrawing: false,
         points: [],
       };
-
-      // if (!pathData) return; // No path to save
-
-      // const newPathData = {
-      //   path: pathData,
-      //   color: color,
-      //   text: undefined,
-      // };
-      // const tempPathData = [...allPathData];
-      // tempPathData[currPageNum] = [...tempPathData[currPageNum], newPathData];
-      // setAllPathData([...tempPathData]);
-      // let temporaryState = states.slice(0, index + 1);
-      // setStates([...temporaryState, [...tempPathData]]);
-      // setIsDrawing(false);
-      // setIndex(index + 1);
     }
 
     case "SET_PEN_COLOR":

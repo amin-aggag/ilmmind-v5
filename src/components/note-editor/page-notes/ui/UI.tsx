@@ -1,14 +1,9 @@
-// components/ui/UI.tsx
 import { useRef } from 'react';
 import { useCanvasContext } from '../state-management/useCanvasContext';
 import {
   FilePlusIcon,
-  HouseIcon,
-  MinusIcon,
   PenIcon,
-  PlusIcon,
   RedoIcon,
-  StickyNoteIcon,
   TextIcon,
   UndoIcon,
 } from "lucide-react";
@@ -50,13 +45,6 @@ export default function UI() {
     dispatch({
       type: 'SET_PEN_SIZE',
       payload: newSize,
-    });
-  };
-
-  const handleColorChange = (newColor: string) => {
-    dispatch({
-      type: 'SET_PEN_COLOR',
-      payload: newColor,
     });
   };
 

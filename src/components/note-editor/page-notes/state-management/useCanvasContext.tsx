@@ -1,4 +1,3 @@
-// hooks/useCanvasContext.tsx
 import { createContext, useContext } from 'react';
 import { useCanvasReducer } from './useCanvasReducer';
 import { usePointerHandlers } from "./handlers/usePointerHandler";
