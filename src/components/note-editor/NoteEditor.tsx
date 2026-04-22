@@ -1,6 +1,6 @@
 // import CanvasNotesEditor from "./canvas-notes/CanvasNotesEditor";
-import { Notebook } from "./page-notes/state-management/CanvasContextTypes";
-import SVGCanvas from "./page-notes/PageNotesEditor";
+import { Notebook } from "./paginated-notes/state-management/CanvasContextTypes";
+import SVGCanvas from "./paginated-notes/PageNotesEditor";
 // import PageNotesEditor from "./page-notes/PageNotesEditor";
 // import PagelessNotesEditor from "./pageless-notes/PagelessNotesEditor";
 

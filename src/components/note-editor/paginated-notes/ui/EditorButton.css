@@ -1,0 +1,35 @@
+.editor-button {
+    --border-size: 2px;
+
+    background: white;
+    border-radius: var(--radius);
+    display: flex;
+    justify-content: center;
+    margin-block: auto;
+    height: var(--square-button-size);
+    width: var(--square-button-size);
+
+    /* Border is only applied to keep the button sizes exactly the same. */
+    border-width: var(--border-size);
+    border-color: white;
+    border-style: solid;
+
+    > * {
+        display: flex;
+        justify-content: center;
+        margin-block: auto;
+    }
+
+    &.selected {
+        /* box-shadow: 0 0 2px 0.5px rgba(0, 0, 0, 0.2); */
+        border-color: var(--input);
+    }
+
+    &.opacity-50 {
+        opacity: 50%;
+    }
+}
+
+.add-page {
+    margin-block: auto;
+}

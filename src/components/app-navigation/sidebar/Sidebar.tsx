@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import "./Sidebar.css";
 
-const MIN_SIDEBAR_WIDTH_PX = 200;
+const MIN_SIDEBAR_WIDTH_PX = 180;
 const MAX_SIDEBAR_WIDTH_PX = 400;
 
 export default function Sidebar() {

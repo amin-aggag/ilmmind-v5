@@ -1,0 +1,24 @@
+.pages-window {
+    display: flex;
+    justify-content: center;
+}
+
+.svg-canvases-wrapper {
+    display: grid;
+    grid-template-columns: auto;
+    gap: 5px;
+}
+
+.svg-canvas {
+    box-shadow: 0 0 10px 0.5px rgba(0, 0, 0, 0.05);
+}
+
+/* For use when viewing two pages next to each other.*/
+.double-page {
+    grid-template-columns: auto auto;
+}
+
+.page-number {
+    margin: 0;
+    padding: 0;
+}

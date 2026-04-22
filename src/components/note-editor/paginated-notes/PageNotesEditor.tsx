@@ -10,7 +10,7 @@ import type { NoteEditorProps } from "../NoteEditor";
 //         </>
 //     )
 // }
-import './PaginatedNoteEditor.css'
+import "./PaginatedNoteEditor.css";
 
 // pages/SVGCanvas.tsx
 import {
@@ -79,6 +79,7 @@ export default function PaginatedNotesEditor() {
         <div
           ref={DrawingCanvasRef}
           style={{ height: "100%", overflow: "hidden" }}
+          className="pages-window"
         >
           <div
             style={{
@@ -91,8 +92,7 @@ export default function PaginatedNotesEditor() {
           >
             {states[historyIndex].map((_, pageIndex) => (
               <>
-                <SVGCanvas pageIndex={pageIndex} />
-                <p className="page-number">{pageIndex}</p>
+                <SVGCanvas pageIndex={pageIndex} key={pageIndex} />
               </>
             ))}
           </div>
@@ -105,6 +105,9 @@ export default function PaginatedNotesEditor() {
 // components/canvas/DrawingCanvas.tsx
 import { useCanvasContext } from "./state-management/useCanvasContext";
 import getStroke from "perfect-freehand";
+import { Textbox } from "./state-management/CanvasContextTypes";
+import { BlockNoteView } from "@blocknote/mantine";
+import { TextboxComponent } from "./textbox/Textbox";
 
 const getSvgPathFromStroke = (stroke: number[][]): string => {
   if (!stroke.length) return "";
@@ -123,9 +126,9 @@ const getSvgPathFromStroke = (stroke: number[][]): string => {
 };
 
 function SVGCanvas({ pageIndex }: { pageIndex: number }) {
-  const { state, handlers } = useCanvasContext();
+  const { state, handlers, dispatch } = useCanvasContext();
   const { pointer, touch } = handlers;
-  const { isDrawing, pen, isMovingCanvas, points, historyIndex } = state;
+  const { isDrawing, pen, isMovingCanvas, points, historyIndex, isTextMode } = state;
 
   const pageData = state.states[historyIndex][pageIndex];
 
@@ -172,18 +175,40 @@ function SVGCanvas({ pageIndex }: { pageIndex: number }) {
     touch.handleTouchEnd(e.nativeEvent);
   };
 
+  const handleAddTextBox = (pageIndex: number, args: Omit<Textbox, "textData">) => {
+    dispatch({
+      type: "ADD_TEXTBOX",
+      payload: {
+        pageIndex,
+        ...args
+      }
+    })
+  }
+
   // console.log(state.states);
 
   return (
-    <>
+    <div>
       {/* {state.states[state.index].map((_, index)=>( */}
       <svg
-        onPointerDown={isMovingCanvas ? undefined : handlePointerDown}
-        onPointerMove={isMovingCanvas ? undefined : handlePointerMove}
-        onPointerUp={isMovingCanvas ? undefined : handlePointerUp}
+        onPointerDown={isMovingCanvas || isTextMode ? undefined : handlePointerDown}
+        onPointerMove={isMovingCanvas || isTextMode ? undefined : handlePointerMove}
+        onPointerUp={isMovingCanvas || isTextMode ? undefined : handlePointerUp}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
+        onClick={isTextMode ? (e) => {
+          handleAddTextBox(pageIndex, {
+            position: {
+              top: e.clientY,
+              left: e.clientX
+            },
+            size: {
+              height: 200,
+              width: 200
+            }
+          })
+        }: () => {}}
         style={{
           touchAction: "none",
           position: "relative",
@@ -198,7 +223,7 @@ function SVGCanvas({ pageIndex }: { pageIndex: number }) {
         className="svg-canvas"
         // key={index}
       >
-        {pageData.map((pd, index) => (
+        {pageData.svgData.map((pd, index) => (
           <path
             key={index}
             d={pd.path}
@@ -206,11 +231,15 @@ function SVGCanvas({ pageIndex }: { pageIndex: number }) {
             style={{ zIndex: 100 }}
           />
         ))}
+        {pageData.textBoxes.map((textbox, index) => (
+          <TextboxComponent textData={textbox.textData} key={index} />
+        ))}
         {pageIndex === state.activePageIndex && isDrawing && (
           <path d={pathData} style={{ zIndex: 100 }} />
         )}
       </svg>
+      <p className="page-number">{pageIndex + 1}</p>
       {/* ))} */}
-    </>
+    </div>
   );
 }

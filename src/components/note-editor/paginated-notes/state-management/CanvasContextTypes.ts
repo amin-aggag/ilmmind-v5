@@ -1,9 +1,29 @@
+import { PartialBlock } from "@blocknote/core";
+
 export type SvgPathData = {
   path: string;
   color: string;
 };
 
-export type Page = SvgPathData[];
+export type Textbox = {
+  textData: PartialBlock[] | undefined;
+  position: {
+    // These position coordinates are relative to the top left of the page
+    // the textbox is located on.
+    top: number;
+    left: number;
+  }
+  size: {
+    height: number;
+    width: number;
+  }
+};
+
+export type Page = {
+  svgData: SvgPathData[];
+  textBoxes: Textbox[];
+};
+
 export type Notebook = Page[];
 
 export type Point = [number, number, number]; // [x, y, pressure]
@@ -104,6 +124,12 @@ export type CanvasAction =
     }
   | {
       type: "ADD_PAGE";
+    }
+  | {
+      type: "ADD_TEXTBOX";
+      payload: {
+        pageIndex: number;
+      } & Omit<Textbox, "textData">;
     };
 
 export type CanvasContextValue = {

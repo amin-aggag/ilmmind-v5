@@ -3,7 +3,7 @@ import "./EditorButton.css"
 
 interface EditorUIButtonProps {
   children?: ReactNode,
-  onClick?: () => void,
+  onClick?: (e?: any) => void,
   selected?: boolean,
   isDisabled?: boolean
 }
@@ -14,11 +14,15 @@ export const EditorUIButton = ({
   selected,
   isDisabled = false
 }: EditorUIButtonProps) => {
+    const buttonClassName = `editor-button ${selected && "selected"} ${isDisabled && "opacity-50"} ${!isDisabled && "cursor-pointer"}`;
+
     return (
-        <button className={`editor-button ${selected && "drop-shadow"} ${isDisabled && "opacity-50"} ${!isDisabled && "cursor-pointer"}`}
+      <button
+        className={buttonClassName}
         disabled={isDisabled}
-        onClick={onClick}>
-            {children}
-        </button>
-    )
+        onClick={onClick}
+      >
+        {children}
+      </button>
+    );
 }

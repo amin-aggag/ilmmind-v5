@@ -2,6 +2,7 @@ import { useRef } from 'react';
 import { useCanvasContext } from '../state-management/useCanvasContext';
 import {
   FilePlusIcon,
+  ListPlusIcon,
   PenIcon,
   RedoIcon,
   TextIcon,
@@ -11,6 +12,8 @@ import './UI.css'
 
 import { EditorUIButton } from "./EditorButton";
 import { Separator } from "./Separator";
+import DropdownMenuDemo from './dropdown-menu/dropdownMenu';
+import { Textbox } from '../state-management/CanvasContextTypes';
 
 const colorArray = [
   'black',
@@ -96,12 +99,12 @@ export default function UI() {
         <PenIcon />
       </EditorUIButton>
       <EditorUIButton
-        onClick={() => {
-          handleSetTextMode(true);
+        onClick={(e: PointerEvent) => {
+          handleSetTextMode(!isTextMode);
         }}
-        selected={isTextMode == true}
+        selected={isTextMode}
       >
-        <TextIcon />
+        <ListPlusIcon />
       </EditorUIButton>
       <Separator />
 
@@ -136,6 +139,8 @@ export default function UI() {
       </EditorUIButton>
 
       <Separator />
+
+      <DropdownMenuDemo/>
     </div>
   );
 }

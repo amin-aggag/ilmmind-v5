@@ -2,6 +2,9 @@
     height: 100px;
     display: flex;
     justify-content: center;
+    background-color: var(--background);
+    gap: 5px;
+    flex-wrap: wrap;
 }
 
 .colour-icon {
