@@ -103,7 +103,6 @@ export default function PaginatedNotesEditor() {
 // components/canvas/DrawingCanvas.tsx
 import { useCanvasContext } from "./state-management/useCanvasContext";
 import getStroke from "perfect-freehand";
-import { Textbox } from "./state-management/CanvasContextTypes";
 import { TextboxComponent } from "./textbox/Textbox";
 
 const getSvgPathFromStroke = (stroke: number[][]): string => {
