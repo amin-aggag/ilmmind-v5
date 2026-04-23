@@ -20,7 +20,7 @@ export function usePointerHandlers(
       ],
     ];
 
-    console.log("handlePointerDown: e.buttons = ", e.buttons);
+    // console.log("handlePointerDown: e.buttons = ", e.buttons);
 
     dispatch({
       type: "POINTER_DOWN",
@@ -34,7 +34,7 @@ export function usePointerHandlers(
       e.pointerType === "mouse" ||
       e.pointerType === "touch"
     ) {
-      console.log("handlePointerMove: e.buttons = ", e.buttons);
+      // console.log("handlePointerMove: e.buttons = ", e.buttons);
       if (e.buttons !== 1) return;
 
       const newPoints: [number, number, number][] = [
@@ -68,7 +68,7 @@ export function usePointerHandlers(
         payload: { pathData, activePageIndex },
       });
 
-      console.log("handlePointerUp: e.buttons = ", e.buttons);
+      // console.log("handlePointerUp: e.buttons = ", e.buttons);
     }
   };
 

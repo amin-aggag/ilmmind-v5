@@ -48,6 +48,7 @@ function canvasReducer(state: CanvasState, action: CanvasAction): CanvasState {
 
       // Copying the overall state array into another (temporary) array
       const updatedState = state.states.slice();
+
       const currentPage =
         updatedState[state.historyIndex][action.payload.activePageIndex];
       // Updating the page with the new stroke
@@ -148,10 +149,17 @@ function canvasReducer(state: CanvasState, action: CanvasAction): CanvasState {
     }
 
     case "ADD_TEXTBOX": {
+      // Getting the position info of this page
+      const pageClicked = document.querySelector(
+        `.svg-canvas[data-page-index="${action.payload.pageIndex}"]`,
+      ) as Element;
+      const pageClickedInfo = pageClicked.getBoundingClientRect();
+
       // Copying the overall state array into another (temporary) array
       const updatedState = state.states.slice();
       const currentPage =
         updatedState[state.historyIndex][action.payload.pageIndex];
+
       // Updating the current page with the new textbox
       const updatedPage: Page = {
         svgData: [...currentPage.svgData],
@@ -159,11 +167,12 @@ function canvasReducer(state: CanvasState, action: CanvasAction): CanvasState {
           ...currentPage.textBoxes,
           {
             textData: undefined,
-            position: action.payload.position,
+            position: toPageRelativePosition(action.payload.position, pageClickedInfo),
             size: action.payload.size
           },
         ],
       };
+
       // Updating the notebook with the updated page data
       const updatedNotebook: Notebook = deepCopy(
         updatedState[state.historyIndex],
@@ -175,6 +184,33 @@ function canvasReducer(state: CanvasState, action: CanvasAction): CanvasState {
         states: [...state.states, updatedNotebook],
         historyIndex: state.historyIndex + 1,
         isTextMode: false
+      };
+    }
+
+    case "UPDATE_TEXTBOX": {
+      // Copying the overall state array into another (temporary) array
+      const updatedState = state.states.slice();
+      const updatedPage =
+        updatedState[state.historyIndex][action.payload.pageIndex];
+
+      const currentTextboxState = deepCopy(updatedPage.textBoxes[action.payload.textboxIndex]);
+
+      // Updating the current page with the updated textbox data
+      updatedPage.textBoxes[action.payload.textboxIndex] = {
+        ...currentTextboxState,
+        textData: action.payload.newTextBoxData
+      }
+
+      // Updating the notebook with the updated page data
+      const updatedNotebook: Notebook = deepCopy(
+        updatedState[state.historyIndex],
+      );
+      updatedNotebook[action.payload.pageIndex] = updatedPage;
+
+      return {
+        ...state,
+        states: [...state.states, updatedNotebook],
+        historyIndex: state.historyIndex + 1,
       };
     }
 
@@ -204,3 +240,15 @@ function deepCopy<T>(obj: T): T {
   }
   return copy;
 }
+
+const toPageRelativePosition = (
+  position: {
+    top: number;
+    left: number;
+  },
+  pageRect: DOMRect,
+) => ({
+  ...position,
+  top: position.top - pageRect.top,
+  left: position.left - pageRect.left,
+});

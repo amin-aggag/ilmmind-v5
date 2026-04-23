@@ -16,6 +16,7 @@ body {
   &.mobile {
     --square-button-size: 50px;
   }
+
 }
 
 .editor-window {

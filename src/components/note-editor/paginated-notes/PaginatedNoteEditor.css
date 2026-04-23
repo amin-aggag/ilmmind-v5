@@ -9,8 +9,16 @@
     gap: 5px;
 }
 
+.textbox-wrapper {
+    position: relative;
+}
+
 .svg-canvas {
     box-shadow: 0 0 10px 0.5px rgba(0, 0, 0, 0.05);
+}
+
+.svg-canvas[data-page-index="1"] {
+background-color: red;
 }
 
 /* For use when viewing two pages next to each other.*/

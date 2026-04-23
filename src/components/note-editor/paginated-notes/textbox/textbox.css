@@ -1,0 +1,11 @@
+.textbox-wrapper {
+    position: absolute;
+    z-index: 2;
+    height: min-content;
+
+    border-width: 2px;
+    border-color: var(--border);
+    border-style: solid;
+    border-radius: 5px;
+    max-width: 400px;
+}

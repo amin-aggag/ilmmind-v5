@@ -130,6 +130,14 @@ export type CanvasAction =
       payload: {
         pageIndex: number;
       } & Omit<Textbox, "textData">;
+    }
+  | {
+      type: "UPDATE_TEXTBOX";
+      payload: {
+        pageIndex: number
+        textboxIndex: number;
+        newTextBoxData: PartialBlock[] | undefined;
+      };
     };
 
 export type CanvasContextValue = {
