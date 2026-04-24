@@ -210,9 +210,15 @@ function SVGCanvas({ pageIndex }: { pageIndex: number }) {
             : handlePointerDown
         }
         onPointerMove={
-          isMovingCanvas || isTextMode ? undefined : handlePointerMove
+          isMovingCanvas || isTextMode || isDraggingTextbox
+            ? undefined
+            : handlePointerMove
         }
-        onPointerUp={isMovingCanvas || isTextMode ? undefined : handlePointerUp}
+        onPointerUp={
+          isMovingCanvas || isTextMode || isDraggingTextbox
+            ? undefined
+            : handlePointerUp
+        }
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}

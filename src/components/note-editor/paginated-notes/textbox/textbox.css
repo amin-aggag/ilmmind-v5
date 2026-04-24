@@ -28,4 +28,5 @@
     height: min-content;
     width: 15px;
     padding: 2px;
+    user-select: none;
 }

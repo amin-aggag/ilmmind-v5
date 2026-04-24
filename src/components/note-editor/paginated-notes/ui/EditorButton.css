@@ -8,6 +8,7 @@
     margin-block: auto;
     height: var(--square-button-size);
     width: var(--square-button-size);
+    user-select: none;
 
     /* Border is only applied to keep the button sizes exactly the same. */
     border-width: var(--border-size);

@@ -48,17 +48,19 @@ export const TextboxComponent = ({
   };
 
   const handleDragTextboxMouseMove: DragEventHandler<HTMLDivElement> = (e) => {
-    dispatch({
-      type: "DRAG_TEXTBOX_MOUSE_MOVE",
-      payload: {
-        pageIndex,
-        textboxIndex,
-        delta: {
-          x: e.movementX,
-          y: e.movementY,
+    if (e.buttons === 1) {
+      dispatch({
+        type: "DRAG_TEXTBOX_MOUSE_MOVE",
+        payload: {
+          pageIndex,
+          textboxIndex,
+          delta: {
+            x: e.movementX,
+            y: e.movementY,
+          },
         },
-      },
-    });
+      });
+    }
   };
 
   const handleDragTextboxMouseUp = () => {
