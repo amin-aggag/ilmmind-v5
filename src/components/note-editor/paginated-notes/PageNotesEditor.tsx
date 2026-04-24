@@ -1,4 +1,4 @@
-import type { NoteEditorProps } from "../NoteEditor";
+// import type { NoteEditorProps } from "../NoteEditor";
 // import { useCanvasContext } from './state-management/useCanvasContext';
 
 // type PageNotesEditorProps = Omit<NoteEditorProps, "layout">;
@@ -20,7 +20,7 @@ import {
 import UI from "./ui/UI";
 import { MouseEventHandler, useEffect, useRef } from "react";
 
-type PageNotesEditorProps = Omit<NoteEditorProps, "layout">;
+// type PageNotesEditorProps = Omit<NoteEditorProps, "layout">;
 
 export default function PaginatedNotesEditor() {
   const canvasStateVars = useCanvasStateVars();
