@@ -41,6 +41,7 @@ export type CanvasState = {
 
   // Text state
   isTextMode: boolean;
+  isDraggingTextbox: boolean;
 
   // Canvas viewport
   position: {
@@ -134,11 +135,27 @@ export type CanvasAction =
   | {
       type: "UPDATE_TEXTBOX";
       payload: {
-        pageIndex: number
+        pageIndex: number;
         textboxIndex: number;
         newTextBoxData: PartialBlock[] | undefined;
       };
-    };
+    }
+  | {
+      type: "DRAG_TEXTBOX_MOUSE_DOWN";
+    }
+  | {
+      type: "DRAG_TEXTBOX_MOUSE_MOVE";
+      payload: {
+        pageIndex: number;
+        textboxIndex: number;
+        delta: {
+          x: number;
+          y: number;
+        };
+      };
+    } | {
+      type: "DRAG_TEXTBOX_MOUSE_UP"
+    }
 
 export type CanvasContextValue = {
   state: CanvasState;

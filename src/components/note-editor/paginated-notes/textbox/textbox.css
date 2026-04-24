@@ -2,10 +2,30 @@
     position: absolute;
     z-index: 2;
     height: min-content;
+    width: max-content;
+    min-width: 200px;
+    max-width: 400px;
 
     border-width: 2px;
     border-color: var(--border);
     border-style: solid;
     border-radius: 10px;
-    max-width: 400px;
+
+    overflow-x: visible;
+    display: flex;
+}
+
+.textbox-content {
+    width: 100%;
+}
+
+.textbox-menu-handlebar {
+    background-color: var(--border);
+    margin-right: -20px;
+    margin-top: 13px;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    height: min-content;
+    width: 15px;
+    padding: 2px;
 }

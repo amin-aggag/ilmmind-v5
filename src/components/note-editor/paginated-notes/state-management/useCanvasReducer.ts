@@ -19,6 +19,7 @@ const initialState: CanvasState = {
   isMovingCanvas: false,
   touchStart: null,
   isTextMode: false,
+  isDraggingTextbox: false,
   activePageIndex: 0,
 };
 
@@ -216,6 +217,55 @@ function canvasReducer(state: CanvasState, action: CanvasAction): CanvasState {
         states: [...state.states, updatedNotebook],
         historyIndex: state.historyIndex + 1,
       };
+    }
+
+    case "DRAG_TEXTBOX_MOUSE_DOWN": {
+      return {
+        ...state,
+        isDraggingTextbox: true
+      }
+    }
+
+    case "DRAG_TEXTBOX_MOUSE_MOVE": {
+      // Getting the position info of this page
+      const pageClicked = document.querySelector(
+        `.svg-canvas[data-page-index="${action.payload.pageIndex}"]`,
+      ) as Element;
+      const pageClickedInfo = pageClicked.getBoundingClientRect();
+
+      // Copying the overall state array into another (temporary) array
+      const updatedState = state.states.slice();
+      const updatedPage = deepCopy(
+        updatedState[state.historyIndex][action.payload.pageIndex]);
+        const currentTextboxState = updatedPage.textBoxes[action.payload.textboxIndex];
+
+      // Updating the current page with the updated textbox data
+      updatedPage.textBoxes[action.payload.textboxIndex] = {
+        ...currentTextboxState,
+        position: {
+          top: currentTextboxState.position.top + action.payload.delta.y,
+          left: currentTextboxState.position.left + action.payload.delta.x
+        }
+      };
+
+      // Updating the notebook with the updated page data
+      const updatedNotebook: Notebook = deepCopy(
+        updatedState[state.historyIndex],
+      );
+      updatedNotebook[action.payload.pageIndex] = updatedPage;
+
+      return {
+        ...state,
+        states: [...state.states, updatedNotebook],
+        historyIndex: state.historyIndex + 1,
+      };
+    }
+
+    case "DRAG_TEXTBOX_MOUSE_UP": {
+      return {
+        ...state,
+        isDraggingTextbox: false
+      }
     }
 
     default:

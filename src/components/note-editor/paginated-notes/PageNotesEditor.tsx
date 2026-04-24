@@ -127,7 +127,15 @@ export const A4_PAGE_72PPI_H = 842;
 function SVGCanvas({ pageIndex }: { pageIndex: number }) {
   const { state, handlers, dispatch } = useCanvasContext();
   const { pointer, touch } = handlers;
-  const { isDrawing, pen, isMovingCanvas, points, historyIndex, isTextMode } = state;
+  const {
+    isDrawing,
+    pen,
+    isMovingCanvas,
+    points,
+    historyIndex,
+    isTextMode,
+    isDraggingTextbox,
+  } = state;
 
   console.log("SVGCanvas: state: ", state);
 
@@ -197,7 +205,9 @@ function SVGCanvas({ pageIndex }: { pageIndex: number }) {
     <div>
       <svg
         onPointerDown={
-          isMovingCanvas || isTextMode ? undefined : handlePointerDown
+          isMovingCanvas || isTextMode || isDraggingTextbox
+            ? undefined
+            : handlePointerDown
         }
         onPointerMove={
           isMovingCanvas || isTextMode ? undefined : handlePointerMove
