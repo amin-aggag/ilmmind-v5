@@ -191,7 +191,10 @@ function canvasReducer(state: CanvasState, action: CanvasAction): CanvasState {
       // Copying the overall state array into another (temporary) array
       const updatedState = state.states.slice();
 
-      // Getting the current page and textbox states
+      // Getting the current page and textbox states. Deep copy is needed here so that
+      // changes to the textbox in future history frames do not impact the previous
+      // history frames due to JavaScript referencing the same memory for two history frames
+      // of the same textbox.
       const updatedPage = deepCopy(
         updatedState[state.historyIndex][action.payload.pageIndex]);
       const currentTextboxState = updatedPage.textBoxes[action.payload.textboxIndex];
@@ -199,7 +202,7 @@ function canvasReducer(state: CanvasState, action: CanvasAction): CanvasState {
       // Updating the current page with the updated textbox data
       updatedPage.textBoxes[action.payload.textboxIndex] = {
         ...currentTextboxState,
-        textData: deepCopy(action.payload.newTextBoxData),
+        textData: action.payload.newTextBoxData,
       };
 
       // Updating the notebook with the updated page data
