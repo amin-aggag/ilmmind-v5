@@ -51,10 +51,9 @@ export const TextboxComponent = ({
       className="textbox-wrapper"
       style={{
         top:
-          textboxData.position.top -
-          position.top +
-          pageIndex * (A4_PAGE_72PPI_H + 35),
-        left: textboxData.position.left - position.left,
+          `${textboxData.position.top +
+          pageIndex * (A4_PAGE_72PPI_H + 35)}px`,
+        left: `${textboxData.position.left}px`,
       }}
     >
       <BlockNoteView
