@@ -219,13 +219,6 @@ function canvasReducer(state: CanvasState, action: CanvasAction): CanvasState {
       };
     }
 
-    case "DRAG_TEXTBOX_MOUSE_DOWN": {
-      return {
-        ...state,
-        isDraggingTextbox: true
-      }
-    }
-
     case "DRAG_TEXTBOX_MOUSE_MOVE": {
       // Getting the position info of this page
       const pageClicked = document.querySelector(
@@ -259,13 +252,6 @@ function canvasReducer(state: CanvasState, action: CanvasAction): CanvasState {
         states: [...state.states, updatedNotebook],
         historyIndex: state.historyIndex + 1,
       };
-    }
-
-    case "DRAG_TEXTBOX_MOUSE_UP": {
-      return {
-        ...state,
-        isDraggingTextbox: false
-      }
     }
 
     default:

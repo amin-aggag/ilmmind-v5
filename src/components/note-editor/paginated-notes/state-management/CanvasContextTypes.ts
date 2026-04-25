@@ -141,9 +141,6 @@ export type CanvasAction =
       };
     }
   | {
-      type: "DRAG_TEXTBOX_MOUSE_DOWN";
-    }
-  | {
       type: "DRAG_TEXTBOX_MOUSE_MOVE";
       payload: {
         pageIndex: number;
@@ -153,9 +150,7 @@ export type CanvasAction =
           y: number;
         };
       };
-    } | {
-      type: "DRAG_TEXTBOX_MOUSE_UP"
-    }
+    };
 
 export type CanvasContextValue = {
   state: CanvasState;

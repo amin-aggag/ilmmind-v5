@@ -34,7 +34,7 @@ export const TextboxComponent = ({
     states.length - 1 - historyIndex,
   ]);
 
-  const handleOnChange = () => {
+  const handleOnChange = React.useCallback(() => {
     dispatch({
       type: "UPDATE_TEXTBOX",
       payload: {
@@ -43,16 +43,13 @@ export const TextboxComponent = ({
         newTextBoxData: editor.document,
       },
     });
-  };
+  }, []);
 
-  const handleDragTextboxMouseDown = () => {
+  const handleDragTextboxMouseDown = React.useCallback(() => {
     setIsDraggingTextbox(true);
-    dispatch({
-      type: "DRAG_TEXTBOX_MOUSE_DOWN",
-    });
-  };
+  }, []);
 
-  const handleDragTextboxMouseMove = (e: PointerEvent) => {
+  const handleDragTextboxMouseMove = React.useCallback((e: PointerEvent) => {
     if (e.buttons === 1) {
       dispatch({
         type: "DRAG_TEXTBOX_MOUSE_MOVE",
@@ -66,20 +63,18 @@ export const TextboxComponent = ({
         },
       });
     }
-  };
+  }, []);
 
-  const handleDragTextboxMouseUp = () => {
+  const handleDragTextboxMouseUp = React.useCallback(() => {
     setIsDraggingTextbox(false);
-    dispatch({
-      type: "DRAG_TEXTBOX_MOUSE_UP",
-    });
-  };
+  }, []);
 
+  // --- Dragging functionality code ---
   React.useEffect(() => {
     if (isDraggingTextbox) {
-      textboxMenuHandlebar.current?.classList.add("is-dragging");
       document.getElementById("root")!.style.cursor = "move";
 
+      document.addEventListener("pointerdown", handleDragTextboxMouseDown);
       document.addEventListener("pointermove", handleDragTextboxMouseMove);
       document.addEventListener("pointerup", handleDragTextboxMouseUp);
 
@@ -91,20 +86,21 @@ export const TextboxComponent = ({
         document.removeEventListener("pointerup", handleDragTextboxMouseUp);
       };
     } else {
-      textboxMenuHandlebar.current?.classList.remove("is-dragging");
       document.getElementById("root")!.style.cursor = "";
     }
   }, [isDraggingTextbox]);
 
+  const textboxWrapperDynamicStyle = React.useMemo(() => ({
+    top: `${
+      textboxData.position.top + pageIndex * (A4_PAGE_72PPI_H + 35)
+    }px`,
+    left: `${textboxData.position.left}px`,
+  }), [textboxData.position, pageIndex]);
+
   return (
     <div
       className="textbox-wrapper"
-      style={{
-        top: `${
-          textboxData.position.top + pageIndex * (A4_PAGE_72PPI_H + 35)
-        }px`,
-        left: `${textboxData.position.left}px`,
-      }}
+      style={textboxWrapperDynamicStyle}
     >
       <BlockNoteView
         editor={editor}
@@ -113,8 +109,7 @@ export const TextboxComponent = ({
         className="textbox-content"
       />
       <div
-        className="textbox-menu-handlebar"
-        onPointerDown={() => setIsDraggingTextbox(true)}
+        className={`textbox-menu-handlebar ${isDraggingTextbox ? "is-dragging" : ""}`}
         ref={textboxMenuHandlebar}
       >
         <DragHandleDots2Icon />
