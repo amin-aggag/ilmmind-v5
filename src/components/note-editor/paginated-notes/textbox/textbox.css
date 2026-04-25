@@ -30,6 +30,7 @@
     padding: 2px;
     user-select: none;
     -webkit-user-drag: none;
+    touch-action: none;
 
 
     &.is-dragging, &:hover {
