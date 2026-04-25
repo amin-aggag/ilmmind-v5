@@ -7,7 +7,7 @@ import "./textbox.css";
 import { useCanvasContext } from "../state-management/useCanvasContext";
 import { A4_PAGE_72PPI_H } from "../PageNotesEditor";
 import { DragHandleDots2Icon } from "@radix-ui/react-icons";
-import { DragEventHandler } from "react";
+import React, { PointerEventHandler } from "react";
 
 export const TextboxComponent = ({
   pageIndex,
@@ -22,6 +22,10 @@ export const TextboxComponent = ({
   const canvasStateVars = useCanvasContext();
   const { historyIndex, states } = canvasStateVars.state;
   const { dispatch } = canvasStateVars;
+
+  const [isDraggingTextbox, setIsDraggingTextbox] =
+    React.useState<boolean>(false);
+  const textboxMenuHandlebar = React.useRef<HTMLDivElement>(null);
 
   const editor = useCreateBlockNote({ initialContent: textboxData.textData }, [
     // This calculation only changes when undoing and redoing (i.e. the users moves
@@ -42,12 +46,13 @@ export const TextboxComponent = ({
   };
 
   const handleDragTextboxMouseDown = () => {
+    setIsDraggingTextbox(true);
     dispatch({
       type: "DRAG_TEXTBOX_MOUSE_DOWN",
     });
   };
 
-  const handleDragTextboxMouseMove: DragEventHandler<HTMLDivElement> = (e) => {
+  const handleDragTextboxMouseMove = (e: PointerEvent) => {
     if (e.buttons === 1) {
       dispatch({
         type: "DRAG_TEXTBOX_MOUSE_MOVE",
@@ -64,10 +69,32 @@ export const TextboxComponent = ({
   };
 
   const handleDragTextboxMouseUp = () => {
+    setIsDraggingTextbox(false);
     dispatch({
       type: "DRAG_TEXTBOX_MOUSE_UP",
     });
   };
+
+  React.useEffect(() => {
+    if (isDraggingTextbox) {
+      textboxMenuHandlebar.current?.classList.add("is-dragging");
+      document.getElementById("root")!.style.cursor = "move";
+
+      document.addEventListener("pointermove", handleDragTextboxMouseMove);
+      document.addEventListener("pointerup", handleDragTextboxMouseUp);
+
+      return () => {
+        document.removeEventListener(
+          "pointermove",
+          handleDragTextboxMouseMove as (event: PointerEvent) => void,
+        );
+        document.removeEventListener("pointerup", handleDragTextboxMouseUp);
+      };
+    } else {
+      textboxMenuHandlebar.current?.classList.remove("is-dragging");
+      document.getElementById("root")!.style.cursor = "";
+    }
+  }, [isDraggingTextbox]);
 
   return (
     <div
@@ -87,9 +114,8 @@ export const TextboxComponent = ({
       />
       <div
         className="textbox-menu-handlebar"
-        onMouseDown={handleDragTextboxMouseDown}
-        onMouseMove={handleDragTextboxMouseMove}
-        onMouseUp={handleDragTextboxMouseUp}
+        onPointerDown={() => setIsDraggingTextbox(true)}
+        ref={textboxMenuHandlebar}
       >
         <DragHandleDots2Icon />
       </div>

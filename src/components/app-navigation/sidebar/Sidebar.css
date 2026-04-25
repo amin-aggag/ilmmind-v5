@@ -22,8 +22,7 @@
         background-color: rgba(0,0,0, 0.2);
     }
     
-}
-
-.is-dragging {
-    background-color: rgba(0,0,0, 0.2);
+    &.is-dragging {
+        background-color: rgba(0,0,0, 0.2);
+    }
 }
