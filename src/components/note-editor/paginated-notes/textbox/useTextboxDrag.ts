@@ -23,7 +23,7 @@ export const useTextboxDrag = ({
       e.currentTarget.setPointerCapture(e.pointerId);
       setIsDragging(true);
     },
-    [dispatch],
+    [],
   );
 
   const handlePointerMove = React.useCallback(
@@ -76,9 +76,6 @@ export const useTextboxDrag = ({
     if (!root) return;
 
     root.style.cursor = isDragging ? "move" : "";
-    return () => {
-      root.style.cursor = "";
-    };
   }, [isDragging]);
 
   return {

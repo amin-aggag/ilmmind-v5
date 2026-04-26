@@ -60,6 +60,7 @@ export const TextboxComponent = ({
     <div
       className="textbox-wrapper"
       style={textboxWrapperDynamicStyle}
+      data-textbox-index={`${textboxIndex}`}
     >
       <BlockNoteView
         editor={editor}
@@ -68,11 +69,12 @@ export const TextboxComponent = ({
         className="textbox-content"
       />
       <div
-        className={`textbox-menu-handlebar ${isDragging ? "is-dragging" : ""}`}
+        className={`textbox-drag-handlebar ${isDragging ? "is-dragging" : ""}`}
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
         onPointerCancel={handlePointerCancel}
+        data-textbox-index={`${textboxIndex}`}
       >
         <DragHandleDots2Icon />
       </div>

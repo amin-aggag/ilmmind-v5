@@ -10,9 +10,10 @@
     "tauri": "tauri"
   },
   "dependencies": {
-    "@blocknote/core": "^0.48.1",
-    "@blocknote/mantine": "^0.48.1",
-    "@blocknote/react": "^0.48.1",
+    "@blocknote/core": "^0.49.0",
+    "@blocknote/mantine": "^0.49.0",
+    "@blocknote/react": "^0.49.0",
+    "@eslint/js": "^9.39.4",
     "@mantine/core": "^9.0.2",
     "@mantine/hooks": "^9.0.2",
     "@mantine/utils": "^6.0.22",
@@ -20,17 +21,22 @@
     "@radix-ui/react-icons": "^1.3.2",
     "@tauri-apps/api": "^2",
     "@tauri-apps/plugin-opener": "^2",
+    "globals": "^17.5.0",
+    "jiti": "^2.6.1",
     "lucide-react": "^1.8.0",
     "perfect-freehand": "^1.2.3",
     "radix-ui": "^1.4.3",
     "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "react-dom": "^19.1.0",
+    "typescript-eslint": "^8.59.0"
   },
   "devDependencies": {
     "@tauri-apps/cli": "^2",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
     "@vitejs/plugin-react": "^4.6.0",
+    "eslint": "^9.39.4",
+    "eslint-plugin-react": "^7.37.5",
     "typescript": "~5.8.3",
     "vite": "^7.0.4"
   }

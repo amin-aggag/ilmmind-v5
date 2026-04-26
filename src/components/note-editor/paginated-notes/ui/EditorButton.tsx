@@ -1,9 +1,9 @@
-import { ReactNode } from "react"
+import { MouseEventHandler, ReactNode } from "react"
 import "./EditorButton.css"
 
 interface EditorUIButtonProps {
   children?: ReactNode,
-  onClick?: (e?: any) => void,
+  onClick?: MouseEventHandler<HTMLButtonElement>,
   selected?: boolean,
   isDisabled?: boolean
 }

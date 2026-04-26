@@ -88,7 +88,7 @@ export default function PaginatedNotesEditor() {
               height: "min-content",
               width: "min-content",
             }}
-            className="svg-canvases-wrapper"
+            id="svg-canvases-wrapper"
           >
             {states[historyIndex].map((_, pageIndex) => (
               <SVGCanvas pageIndex={pageIndex} key={pageIndex} />
@@ -137,7 +137,7 @@ function SVGCanvas({ pageIndex }: { pageIndex: number }) {
     isDraggingTextbox,
   } = state;
 
-  console.log("SVGCanvas: state: ", state);
+  // console.log("SVGCanvas: state: ", state);
 
   const pageData = state.states[historyIndex][pageIndex];
 
