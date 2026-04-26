@@ -31,7 +31,7 @@ export const useTextboxDrag = ({
       if (!isDragging) return;
 
       dispatch({
-        type: "DRAG_TEXTBOX_MOUSE_MOVE",
+        type: "DRAG_TEXTBOX_POINTER_MOVE",
         payload: {
           pageIndex,
           textboxIndex,

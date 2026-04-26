@@ -1,12 +1,19 @@
-// hooks/useCanvasReducer.ts
 import { useReducer } from "react";
+import { CanvasState, CanvasAction } from "./CanvasContextTypes";
 import {
-  CanvasState,
-  CanvasAction,
-  SvgPathData,
-  Page,
-  Notebook,
-} from "./CanvasContextTypes";
+  reducerHandlePointerDown,
+  reducerHandlePointerMove,
+  reducerHandlerPointerUp,
+} from "./reducer/pointer";
+import {
+  reducerHandleSetTouchStart,
+  reducerHandleSetMovingCanvas,
+} from "./reducer/viewport";
+import { reducerHandleRedo, reducerHandleUndo } from "./reducer/history";
+import { reducerHandleAddPage } from "./reducer/pages";
+import { reducerHandleAddTextbox } from "./reducer/textboxes/reducerHandleAddTextbox";
+import { reducerHandleUpdateTextbox } from "./reducer/textboxes/reducerHandleUpdateTextbox";
+import { reducerHandlerDragTextboxPointerMove } from "./reducer/textboxes/reducerHandlerDragTextboxMouseMove";
 
 const initialState: CanvasState = {
   points: [],
@@ -26,51 +33,13 @@ const initialState: CanvasState = {
 function canvasReducer(state: CanvasState, action: CanvasAction): CanvasState {
   switch (action.type) {
     case "POINTER_DOWN":
-      return {
-        ...state,
-        points: action.payload.points,
-        isDrawing: true,
-        activePageIndex: action.payload.activePageIndex,
-      };
+      return reducerHandlePointerDown(state, action);
 
     case "POINTER_MOVE":
-      return {
-        ...state,
-        points: action.payload.points,
-        activePageIndex: action.payload.activePageIndex,
-      };
+      return reducerHandlePointerMove(state, action);
 
-    case "POINTER_UP": {
-      // The new stroke that was just drawn
-      const newPathData: SvgPathData = {
-        path: action.payload.pathData,
-        color: state.pen.color,
-      };
-
-      // Copying the overall state array into another (temporary) array
-      const updatedState = state.states.slice();
-
-      const currentPage =
-        updatedState[state.historyIndex][action.payload.activePageIndex];
-      // Updating the page with the new stroke
-      const updatedPage: Page = {
-        svgData: [...currentPage.svgData, newPathData],
-        textBoxes: [...currentPage.textBoxes],
-      };
-      // Updating the notebook with the updated page data
-      const updatedNotebook: Notebook = deepCopy(
-        updatedState[state.historyIndex],
-      );
-      updatedNotebook[action.payload.activePageIndex] = updatedPage;
-
-      return {
-        ...state,
-        states: [...state.states, updatedNotebook],
-        historyIndex: state.historyIndex + 1,
-        isDrawing: false,
-        points: [],
-      };
-    }
+    case "POINTER_UP":
+      return reducerHandlerPointerUp(state, action);
 
     case "SET_PEN_COLOR":
       return {
@@ -91,42 +60,16 @@ function canvasReducer(state: CanvasState, action: CanvasAction): CanvasState {
       };
 
     case "SET_MOVING_CANVAS":
-      return {
-        ...state,
-        isMovingCanvas: action.payload,
-      };
+      return reducerHandleSetMovingCanvas(state, action);
 
     case "SET_TOUCH_START":
-      return {
-        ...state,
-        touchStart: action.payload,
-      };
+      return reducerHandleSetTouchStart(state, action);
 
-    case "UNDO": {
-      if (
-        state.historyIndex > 0 &&
-        state.historyIndex <= state.states.length - 1
-      ) {
-        return {
-          ...state,
-          historyIndex: state.historyIndex - 1,
-        };
-      }
-      return state;
-    }
+    case "UNDO":
+      return reducerHandleUndo(state);
 
-    case "REDO": {
-      if (
-        state.historyIndex > -1 &&
-        state.historyIndex < state.states.length - 1
-      ) {
-        return {
-          ...state,
-          historyIndex: state.historyIndex + 1,
-        };
-      }
-      return state;
-    }
+    case "REDO":
+      return reducerHandleRedo(state);
 
     case "SET_TEXT_MODE": {
       return {
@@ -135,171 +78,17 @@ function canvasReducer(state: CanvasState, action: CanvasAction): CanvasState {
       };
     }
 
-    case "ADD_PAGE": {
-      const updated_notebook = state.states[state.historyIndex].slice();
-      updated_notebook.push({
-        svgData: [],
-        textBoxes: [],
-      });
+    case "ADD_PAGE":
+      return reducerHandleAddPage(state);
 
-      return {
-        ...state,
-        states: [...state.states, updated_notebook],
-        historyIndex: state.historyIndex + 1,
-      };
-    }
+    case "ADD_TEXTBOX":
+      return reducerHandleAddTextbox(state, action);
 
-    case "ADD_TEXTBOX": {
-      // Getting the position info of this page
-      const pageClicked = document.querySelector(
-        `.svg-canvas[data-page-index="${action.payload.pageIndex}"]`,
-      ) as Element;
-      const pageClickedInfo = pageClicked.getBoundingClientRect();
+    case "UPDATE_TEXTBOX":
+      return reducerHandleUpdateTextbox(state, action);
 
-      // Copying the overall state array into another (temporary) array
-      const updatedState = state.states.slice();
-      const currentPage =
-        updatedState[state.historyIndex][action.payload.pageIndex];
-
-      // Updating the current page with the new textbox
-      const updatedPage: Page = {
-        svgData: [...currentPage.svgData],
-        textBoxes: [
-          ...currentPage.textBoxes,
-          {
-            textData: undefined,
-            position: toPageRelativePosition(
-              action.payload.position,
-              pageClickedInfo,
-            ),
-            size: action.payload.size,
-          },
-        ],
-      };
-
-      // Updating the notebook with the updated page data
-      const updatedNotebook: Notebook = deepCopy(
-        updatedState[state.historyIndex],
-      );
-      updatedNotebook[action.payload.pageIndex] = updatedPage;
-
-      return {
-        ...state,
-        states: [...state.states, updatedNotebook],
-        historyIndex: state.historyIndex + 1,
-        isTextMode: false,
-      };
-    }
-
-    case "UPDATE_TEXTBOX": {
-      // Copying the overall state array into another (temporary) array
-      const updatedState = state.states.slice();
-
-      // Getting the current page and textbox states. Deep copy is needed here so that
-      // changes to the textbox in future history frames do not impact the previous
-      // history frames due to JavaScript referencing the same memory for two history frames
-      // of the same textbox.
-      const updatedPage = deepCopy(
-        updatedState[state.historyIndex][action.payload.pageIndex],
-      );
-      const currentTextboxState =
-        updatedPage.textBoxes[action.payload.textboxIndex];
-
-      // Updating the current page with the updated textbox data
-      updatedPage.textBoxes[action.payload.textboxIndex] = {
-        ...currentTextboxState,
-        textData: action.payload.newTextBoxData,
-      };
-
-      // --- Updating the notebook with the updated page data ---
-      const updatedNotebook: Notebook = deepCopy(
-        updatedState[state.historyIndex],
-      );
-      updatedNotebook[action.payload.pageIndex] = updatedPage;
-
-      return {
-        ...state,
-        states: [...state.states, updatedNotebook],
-        historyIndex: state.historyIndex + 1,
-      };
-    }
-
-    case "DRAG_TEXTBOX_MOUSE_MOVE": {
-      // --- Getting the position info of this page ---
-      const pageClicked = document.querySelector(
-        `.svg-canvas[data-page-index="${action.payload.pageIndex}"]`,
-      ) as Element;
-      const pageClickedInfo = pageClicked.getBoundingClientRect();
-
-      // --- Getting the position info of the textbox ---
-      const textboxBeingDragged = document.querySelector(
-        `.textbox-wrapper[data-textbox-index="${action.payload.textboxIndex}"]`,
-      ) as Element;
-      const textboxBeingDraggedInfo =
-        textboxBeingDragged.getBoundingClientRect();
-      // const textboxBorderWidth = Number(
-      //   getComputedStyle(textboxBeingDragged)
-      //     .getPropertyValue("--textbox-border-width")
-      //     .slice(0, -2),
-      // );
-
-      // // --- Getting the position info of the textbox drag handle ---
-      // const textboxDragHandlebarWidth = Number(
-      //   getComputedStyle(textboxBeingDragged)
-      //     .getPropertyValue("--textbox-drag-handlebar-width")
-      //     .slice(0, -2),
-      // );
-
-      // --- Getting top position of svg-canvases-wrapper ---
-      const svgCanvasesWrapper = document.getElementById("svg-canvases-wrapper") as Element;
-      const svgCanvasesWrapperInfo = svgCanvasesWrapper.getBoundingClientRect();
-
-      // Copying the overall state array into another (temporary) array
-      const updatedState = state.states.slice();
-      const updatedPage = deepCopy(
-        updatedState[state.historyIndex][action.payload.pageIndex],
-      );
-      const currentTextboxState =
-        updatedPage.textBoxes[action.payload.textboxIndex];
-
-      // --- Calculating new textbox position ---
-
-      let topPosition = currentTextboxState.position.top + action.payload.delta.y;
-      let leftPosition = currentTextboxState.position.left + action.payload.delta.x;
-
-      if (topPosition <= (svgCanvasesWrapperInfo.top - pageClickedInfo.top) 
-      || textboxBeingDraggedInfo.bottom <= (svgCanvasesWrapperInfo.bottom - pageClickedInfo.bottom) 
-      ) {
-        topPosition -= action.payload.delta.y;
-      }
-
-      if (leftPosition <= (svgCanvasesWrapperInfo.left - pageClickedInfo.left) 
-      || textboxBeingDraggedInfo.right < (svgCanvasesWrapperInfo.right - pageClickedInfo.right) 
-      ) {
-        leftPosition -= action.payload.delta.x;
-      }
-
-      // Updating the current page with the updated textbox data
-      updatedPage.textBoxes[action.payload.textboxIndex] = {
-        ...currentTextboxState,
-        position: {
-          top: topPosition,
-          left: leftPosition,
-        },
-      };
-
-      // Updating the notebook with the updated page data
-      const updatedNotebook: Notebook = deepCopy(
-        updatedState[state.historyIndex],
-      );
-      updatedNotebook[action.payload.pageIndex] = updatedPage;
-
-      return {
-        ...state,
-        states: [...state.states, updatedNotebook],
-        historyIndex: state.historyIndex + 1,
-      };
-    }
+    case "DRAG_TEXTBOX_POINTER_MOVE":
+      return reducerHandlerDragTextboxPointerMove(state, action);
 
     default:
       return state;
@@ -309,33 +98,3 @@ function canvasReducer(state: CanvasState, action: CanvasAction): CanvasState {
 export function useCanvasReducer() {
   return useReducer(canvasReducer, initialState);
 }
-
-function deepCopy<T>(obj: T): T {
-  if (obj === null || typeof obj !== "object") {
-    return obj;
-  }
-  if (obj instanceof Date) {
-    return new Date(obj.getTime()) as T;
-  }
-  if (Array.isArray(obj)) {
-    return obj.map((item) => deepCopy(item)) as T;
-  }
-  const copy = {} as T;
-  const record = obj as Record<string, unknown>;
-  for (const key of Object.keys(record)) {
-    (copy as Record<string, unknown>)[key] = deepCopy(record[key]);
-  }
-  return copy;
-}
-
-const toPageRelativePosition = (
-  position: {
-    top: number;
-    left: number;
-  },
-  pageRect: DOMRect,
-) => ({
-  ...position,
-  top: position.top - pageRect.top,
-  left: position.left - pageRect.left,
-});

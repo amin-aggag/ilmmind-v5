@@ -12,11 +12,11 @@ export type Textbox = {
     // the textbox is located on.
     top: number;
     left: number;
-  }
+  };
   size: {
     height: number;
     width: number;
-  }
+  };
 };
 
 export type Page = {
@@ -141,7 +141,7 @@ export type CanvasAction =
       };
     }
   | {
-      type: "DRAG_TEXTBOX_MOUSE_MOVE";
+      type: "DRAG_TEXTBOX_POINTER_MOVE";
       payload: {
         pageIndex: number;
         textboxIndex: number;
@@ -151,6 +151,11 @@ export type CanvasAction =
         };
       };
     };
+
+export type ActionOf<TType extends CanvasAction["type"]> = Extract<
+  CanvasAction,
+  { type: TType }
+>;
 
 export type CanvasContextValue = {
   state: CanvasState;
