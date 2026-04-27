@@ -19,9 +19,10 @@ export const TextboxComponent = ({
   textboxIndex: number;
   textboxData: Textbox;
 }) => {
-
   const canvasStateVars = useCanvasContext();
   const { historyIndex, states } = canvasStateVars.state;
+  const textboxInteractionPosition = canvasStateVars.state
+    .textboxInteractionPosition as Textbox["position"];
   const { dispatch } = canvasStateVars;
   const {
     isDragging,
@@ -49,12 +50,18 @@ export const TextboxComponent = ({
     });
   }, [dispatch, editor.document, pageIndex, textboxIndex]);
 
-  const textboxWrapperDynamicStyle = React.useMemo(() => ({
-    top: `${
-      textboxData.position.top + pageIndex * (A4_PAGE_72PPI_H + 35)
-    }px`,
-    left: `${textboxData.position.left}px`,
-  }), [textboxData.position, pageIndex]);
+  const textboxWrapperDynamicStyle = React.useMemo(
+    () => ({
+      top: `${
+        (isDragging
+          ? textboxInteractionPosition.top
+          : textboxData.position.top) +
+        pageIndex * (A4_PAGE_72PPI_H + 35)
+      }px`,
+      left: `${isDragging ? textboxInteractionPosition.left : textboxData.position.left}px`,
+    }),
+    [textboxData.position, pageIndex, isDragging, textboxInteractionPosition],
+  );
 
   return (
     <div

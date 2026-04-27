@@ -9,13 +9,8 @@ import { deepCopy, toPageRelativePosition } from "../utils/utils";
 export function reducerHandleAddTextbox(
   state: CanvasState,
   action: ActionOf<"ADD_TEXTBOX">,
+  pageClickedInfo: DOMRect,
 ) {
-  // Getting the position info of this page
-  const pageClicked = document.querySelector(
-    `.svg-canvas[data-page-index="${action.payload.pageIndex}"]`,
-  ) as Element;
-  const pageClickedInfo = pageClicked.getBoundingClientRect();
-
   // Copying the overall state array into another (temporary) array
   const updatedState = state.states.slice();
   const currentPage =

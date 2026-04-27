@@ -42,6 +42,7 @@ export type CanvasState = {
   // Text state
   isTextMode: boolean;
   isDraggingTextbox: boolean;
+  textboxInteractionPosition: Textbox["position"] | null;
 
   // Canvas viewport
   position: {
@@ -150,6 +151,12 @@ export type CanvasAction =
           y: number;
         };
       };
+    } | {
+      type: "DRAG_TEXTBOX_POINTER_UP";
+      payload: {
+        pageIndex: number;
+        textboxIndex: number;
+      }
     };
 
 export type ActionOf<TType extends CanvasAction["type"]> = Extract<

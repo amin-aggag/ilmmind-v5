@@ -10,12 +10,13 @@ export const useTextboxDrag = ({
   pageIndex,
   textboxIndex,
 }: UseTextboxDragArgs) => {
-  const { dispatch } = useCanvasContext();
+  const canvasContext = useCanvasContext();
+  const { dispatch } = canvasContext;
   const [isDragging, setIsDragging] = React.useState(false);
 
   const endDrag = React.useCallback(() => {
     setIsDragging(false);
-  }, [dispatch]);
+  }, []);
 
   const handlePointerDown = React.useCallback(
     (e: React.PointerEvent<HTMLDivElement>) => {
@@ -51,11 +52,19 @@ export const useTextboxDrag = ({
         e.currentTarget.releasePointerCapture(e.pointerId);
       }
 
+      dispatch({
+        type: "DRAG_TEXTBOX_POINTER_UP",
+        payload: {
+          pageIndex,
+          textboxIndex,
+        },
+      });
+
       if (isDragging) {
         endDrag();
       }
     },
-    [endDrag, isDragging],
+    [endDrag, isDragging, dispatch, pageIndex, textboxIndex],
   );
 
   const handlePointerCancel = React.useCallback(
@@ -63,7 +72,7 @@ export const useTextboxDrag = ({
       if (e.currentTarget.hasPointerCapture(e.pointerId)) {
         e.currentTarget.releasePointerCapture(e.pointerId);
       }
-
+      
       if (isDragging) {
         endDrag();
       }

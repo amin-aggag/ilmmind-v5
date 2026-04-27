@@ -8,12 +8,14 @@ import {
 import {
   reducerHandleSetTouchStart,
   reducerHandleSetMovingCanvas,
+  reducerHandlePanCanvas,
 } from "./reducer/viewport";
 import { reducerHandleRedo, reducerHandleUndo } from "./reducer/history";
 import { reducerHandleAddPage } from "./reducer/pages";
 import { reducerHandleAddTextbox } from "./reducer/textboxes/reducerHandleAddTextbox";
 import { reducerHandleUpdateTextbox } from "./reducer/textboxes/reducerHandleUpdateTextbox";
-import { reducerHandlerDragTextboxPointerMove } from "./reducer/textboxes/reducerHandlerDragTextboxMouseMove";
+import { reducerHandleDragTextboxPointerMove } from "./reducer/textboxes/reducerHandlerDragTextboxMouseMove";
+import { reducerHandleDragTextboxPointerUp } from "./reducer/textboxes/reducerHandleDragTextboxPointerUp";
 
 const initialState: CanvasState = {
   points: [],
@@ -27,6 +29,7 @@ const initialState: CanvasState = {
   touchStart: null,
   isTextMode: false,
   isDraggingTextbox: false,
+  textboxInteractionPosition: null,
   activePageIndex: 0,
 };
 
@@ -54,10 +57,7 @@ function canvasReducer(state: CanvasState, action: CanvasAction): CanvasState {
       };
 
     case "PAN_CANVAS":
-      return {
-        ...state,
-        position: action.payload,
-      };
+      return reducerHandlePanCanvas(state, action);
 
     case "SET_MOVING_CANVAS":
       return reducerHandleSetMovingCanvas(state, action);
@@ -81,14 +81,50 @@ function canvasReducer(state: CanvasState, action: CanvasAction): CanvasState {
     case "ADD_PAGE":
       return reducerHandleAddPage(state);
 
-    case "ADD_TEXTBOX":
-      return reducerHandleAddTextbox(state, action);
+    case "ADD_TEXTBOX": {
+      // Getting the position info of this page
+      const pageClicked = document.querySelector(
+        `.svg-canvas[data-page-index="${action.payload.pageIndex}"]`,
+      ) as Element;
+      const pageClickedInfo = pageClicked.getBoundingClientRect();
+
+      return reducerHandleAddTextbox(state, action, pageClickedInfo);
+    }
 
     case "UPDATE_TEXTBOX":
       return reducerHandleUpdateTextbox(state, action);
 
-    case "DRAG_TEXTBOX_POINTER_MOVE":
-      return reducerHandlerDragTextboxPointerMove(state, action);
+    case "DRAG_TEXTBOX_POINTER_MOVE": {
+      // --- Getting the position info of this page ---
+      const pageClicked = document.querySelector(
+        `.svg-canvas[data-page-index="${action.payload.pageIndex}"]`,
+      ) as Element;
+      const pageClickedInfo = pageClicked.getBoundingClientRect();
+
+      // --- Getting the position info of the textbox ---
+      const textboxBeingDragged = document.querySelector(
+        `.textbox-wrapper[data-textbox-index="${action.payload.textboxIndex}"]`,
+      ) as Element;
+      const textboxBeingDraggedInfo =
+        textboxBeingDragged.getBoundingClientRect();
+
+      // --- Getting top position of svg-canvases-wrapper ---
+      const svgCanvasesWrapper = document.getElementById(
+        "svg-canvases-wrapper",
+      ) as Element;
+      const svgCanvasesWrapperInfo = svgCanvasesWrapper.getBoundingClientRect();
+
+      return reducerHandleDragTextboxPointerMove(
+        state,
+        action,
+        pageClickedInfo,
+        textboxBeingDraggedInfo,
+        svgCanvasesWrapperInfo,
+      );
+    }
+
+    case "DRAG_TEXTBOX_POINTER_UP":
+      return reducerHandleDragTextboxPointerUp(state, action);
 
     default:
       return state;
