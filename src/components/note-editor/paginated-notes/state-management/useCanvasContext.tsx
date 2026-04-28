@@ -1,11 +1,11 @@
-import { createContext, useContext } from 'react';
-import { useCanvasReducer } from './useCanvasReducer';
+import { createContext, useContext } from "react";
+import { useCanvasReducer } from "./useCanvasReducer";
 import { usePointerHandlers } from "./handlers/usePointerHandler";
 import { useTouchHandlers } from "./handlers/useTouchHandlers";
-import { CanvasContextValue } from './CanvasContextTypes';
+import { CanvasContextValue } from "./CanvasContextTypes";
 
 export const CanvasContext = createContext<CanvasContextValue | undefined>(
-  undefined
+  undefined,
 );
 
 export function useCanvasStateVars(): CanvasContextValue {
@@ -27,7 +27,7 @@ export function useCanvasContext(): CanvasContextValue {
   const context = useContext(CanvasContext);
   if (!context) {
     throw new Error(
-      'useCanvasContext must be used within CanvasContext.Provider'
+      "useCanvasContext must be used within CanvasContext.Provider",
     );
   }
   return context;

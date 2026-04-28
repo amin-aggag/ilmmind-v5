@@ -10,6 +10,7 @@ export const useSidebarDrag = () => {
   const handlePointerDown = React.useCallback(
     (e: React.PointerEvent<HTMLDivElement>) => {
       e.preventDefault();
+
       setIsResizing(true);
       e.currentTarget.setPointerCapture(e.pointerId);
     },
@@ -18,6 +19,8 @@ export const useSidebarDrag = () => {
 
   const handlePointerMove = React.useCallback(
     (e: React.PointerEvent<HTMLDivElement>) => {
+      e.preventDefault();
+
       if (
         e.clientX >= MIN_SIDEBAR_WIDTH_PX &&
         e.clientX <= MAX_SIDEBAR_WIDTH_PX
@@ -30,6 +33,8 @@ export const useSidebarDrag = () => {
 
   const handlePointerUp = React.useCallback(
     (e: React.PointerEvent<HTMLDivElement>) => {
+      e.preventDefault();
+
       e.currentTarget.releasePointerCapture(e.pointerId);
       setIsResizing(false);
     },
@@ -38,6 +43,8 @@ export const useSidebarDrag = () => {
 
   const handlePointerCancel = React.useCallback(
     (e: React.PointerEvent<HTMLDivElement>) => {
+      e.preventDefault();
+
       if (e.currentTarget.hasPointerCapture(e.pointerId)) {
         e.currentTarget.releasePointerCapture(e.pointerId);
       }

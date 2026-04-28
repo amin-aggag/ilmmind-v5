@@ -72,7 +72,7 @@ export const useTextboxDrag = ({
       if (e.currentTarget.hasPointerCapture(e.pointerId)) {
         e.currentTarget.releasePointerCapture(e.pointerId);
       }
-      
+
       if (isDragging) {
         endDrag();
       }

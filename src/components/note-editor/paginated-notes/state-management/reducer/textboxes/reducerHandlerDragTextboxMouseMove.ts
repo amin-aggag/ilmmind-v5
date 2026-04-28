@@ -22,11 +22,12 @@ export function reducerHandleDragTextboxPointerMove(
   let leftPosition = 0;
 
   if (state.textboxInteractionPosition) {
-      topPosition = state.textboxInteractionPosition.top + action.payload.delta.y;
-      leftPosition = state.textboxInteractionPosition.left  + action.payload.delta.x;
+    topPosition = state.textboxInteractionPosition.top + action.payload.delta.y;
+    leftPosition =
+      state.textboxInteractionPosition.left + action.payload.delta.x;
   } else {
     topPosition = currentTextboxState.position.top + action.payload.delta.y;
-    leftPosition = currentTextboxState.position.left  + action.payload.delta.x;
+    leftPosition = currentTextboxState.position.left + action.payload.delta.x;
   }
 
   if (
@@ -48,8 +49,8 @@ export function reducerHandleDragTextboxPointerMove(
   return {
     ...state,
     textboxInteractionPosition: {
-        top: topPosition,
-        left: leftPosition
-    }
+      top: topPosition,
+      left: leftPosition,
+    },
   };
 }

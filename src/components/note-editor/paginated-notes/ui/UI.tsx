@@ -1,5 +1,5 @@
-import { useRef } from 'react';
-import { useCanvasContext } from '../state-management/useCanvasContext';
+import { useRef } from "react";
+import { useCanvasContext } from "../state-management/useCanvasContext";
 import {
   FilePlusIcon,
   ListPlusIcon,
@@ -8,22 +8,22 @@ import {
   TextIcon,
   UndoIcon,
 } from "lucide-react";
-import './UI.css'
+import "./UI.css";
 
 import { EditorUIButton } from "./EditorButton";
 import { Separator } from "./Separator";
-import DropdownMenuDemo from './dropdown-menu/dropdownMenu';
-import { Textbox } from '../state-management/CanvasContextTypes';
+import DropdownMenuDemo from "./dropdown-menu/dropdownMenu";
+import { Textbox } from "../state-management/CanvasContextTypes";
 
 const colorArray = [
-  'black',
-  'orange',
-  'mediumseagreen',
-  'tomato',
-  'violet',
-  'dodgerblue',
-  'slateblue',
-  'lightgray',
+  "black",
+  "orange",
+  "mediumseagreen",
+  "tomato",
+  "violet",
+  "dodgerblue",
+  "slateblue",
+  "lightgray",
 ] as const;
 
 const penSizeArray = [1, 2, 4, 6, 8, 10, 20, 30] as const;
@@ -37,16 +37,16 @@ export default function UI() {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleUndo = () => {
-    dispatch({ type: 'UNDO' });
+    dispatch({ type: "UNDO" });
   };
 
   const handleRedo = () => {
-    dispatch({ type: 'REDO' });
+    dispatch({ type: "REDO" });
   };
 
   const handlePenSizeChange = (newSize: number) => {
     dispatch({
-      type: 'SET_PEN_SIZE',
+      type: "SET_PEN_SIZE",
       payload: newSize,
     });
   };
@@ -69,7 +69,8 @@ export default function UI() {
 
   const isUndoDisabled = states.length === 1 || historyIndex <= 0;
   const isRedoDisabled =
-    (states.length === 1 && historyIndex <= 0) || historyIndex === states.length - 1;
+    (states.length === 1 && historyIndex <= 0) ||
+    historyIndex === states.length - 1;
 
   return (
     <div className="paginated-notes-toolbar">
@@ -140,7 +141,7 @@ export default function UI() {
 
       <Separator />
 
-      <DropdownMenuDemo/>
+      <DropdownMenuDemo />
     </div>
   );
 }

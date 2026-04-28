@@ -1,42 +1,43 @@
 .textbox-wrapper {
-    --textbox-drag-handlebar-width: 15px;
-    --textbox-border-width: 2px;
+  --textbox-drag-handlebar-width: 15px;
+  --textbox-border-width: 2px;
 
-    position: absolute;
-    z-index: 2;
-    height: min-content;
-    width: max-content;
-    min-width: 200px;
-    max-width: 400px;
+  position: absolute;
+  z-index: 2;
+  height: min-content;
+  width: max-content;
+  min-width: 200px;
+  max-width: 400px;
 
-    border-width: var(--textbox-border-width);
-    border-color: var(--border);
-    border-style: solid;
-    border-radius: 10px;
+  border-width: var(--textbox-border-width);
+  border-color: var(--border);
+  border-style: solid;
+  border-radius: 10px;
 
-    overflow-x: visible;
-    display: flex;
+  overflow-x: visible;
+  display: flex;
 }
 
 .textbox-content {
-    width: 100%;
+  width: 100%;
 }
 
 .textbox-drag-handlebar {
-    background-color: var(--border);
-    margin-right: -20px;
-    margin-top: 13px;
-    border-top-right-radius: 5px;
-    border-bottom-right-radius: 5px;
-    height: min-content;
-    width: var(--textbox-drag-handlebar-width);
-    padding: 2px;
-    user-select: none;
-    -webkit-user-drag: none;
-    touch-action: none;
-    user-select: none;
+  background-color: var(--border);
+  margin-right: -20px;
+  margin-top: 13px;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+  height: min-content;
+  width: var(--textbox-drag-handlebar-width);
+  padding: 2px;
+  user-select: none;
+  -webkit-user-drag: none;
+  touch-action: none;
+  user-select: none;
 
-    &.is-dragging, &:hover {
-        cursor: move;
-    }
+  &.is-dragging,
+  &:hover {
+    cursor: move;
+  }
 }

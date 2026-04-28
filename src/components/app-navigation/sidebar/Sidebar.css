@@ -1,28 +1,28 @@
 .sidebar {
-    height: 100%;
-    background-color: var(--background);
-    overflow-x: visible;
-    display: flex;
+  height: 100%;
+  background-color: var(--background);
+  overflow-x: visible;
+  display: flex;
 }
 
 .sidebar-content {
-    width: 100%;
+  width: 100%;
 }
 
 .sidebar-width-dragger {
-    height: 100%;
-    width: 6px;
-    background-color: rgba(0,0,0, 0);
-    margin-inline: -6px;
-    transition: background-color 80ms ease-in;
-    cursor: col-resize;
-    z-index: 1;
+  height: 100%;
+  width: 6px;
+  background-color: rgba(0, 0, 0, 0);
+  margin-inline: -6px;
+  transition: background-color 80ms ease-in;
+  cursor: col-resize;
+  z-index: 1;
 
-    &:hover {
-        background-color: rgba(0,0,0, 0.2);
-    }
-    
-    &.is-dragging {
-        background-color: rgba(0,0,0, 0.2);
-    }
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.2);
+  }
+
+  &.is-dragging {
+    background-color: rgba(0, 0, 0, 0.2);
+  }
 }

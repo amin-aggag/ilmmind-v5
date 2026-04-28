@@ -1,4 +1,10 @@
-import { ActionOf, CanvasState, Notebook, Page, SvgPathData } from "../CanvasContextTypes";
+import {
+  ActionOf,
+  CanvasState,
+  Notebook,
+  Page,
+  SvgPathData,
+} from "../CanvasContextTypes";
 import { deepCopy } from "./utils/utils";
 
 export function reducerHandlePointerDown(
@@ -45,9 +51,7 @@ export function reducerHandlerPointerUp(
     textBoxes: [...currentPage.textBoxes],
   };
   // Updating the notebook with the updated page data
-  const updatedNotebook: Notebook = deepCopy(
-    updatedState[state.historyIndex],
-  );
+  const updatedNotebook: Notebook = deepCopy(updatedState[state.historyIndex]);
   updatedNotebook[action.payload.activePageIndex] = updatedPage;
 
   return {

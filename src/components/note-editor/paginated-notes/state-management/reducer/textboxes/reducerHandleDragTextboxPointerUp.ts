@@ -1,4 +1,9 @@
-import { ActionOf, CanvasState, Notebook, Textbox } from "../../CanvasContextTypes";
+import {
+  ActionOf,
+  CanvasState,
+  Notebook,
+  Textbox,
+} from "../../CanvasContextTypes";
 import { deepCopy } from "../utils/utils";
 
 export function reducerHandleDragTextboxPointerUp(
@@ -14,7 +19,8 @@ export function reducerHandleDragTextboxPointerUp(
     updatedPage.textBoxes[action.payload.textboxIndex];
 
   // Updating the current page with the updated textbox data
-  const textboxPositionAfterDrag = state.textboxInteractionPosition as Textbox["position"];
+  const textboxPositionAfterDrag =
+    state.textboxInteractionPosition as Textbox["position"];
   updatedPage.textBoxes[action.payload.textboxIndex] = {
     ...currentTextboxState,
     position: {

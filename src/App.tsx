@@ -3,7 +3,6 @@ import "./App.css";
 import Sidebar from "./components/app-navigation/sidebar/Sidebar";
 
 export default function App() {
-  
   return (
     <div className="app">
       <Sidebar />
