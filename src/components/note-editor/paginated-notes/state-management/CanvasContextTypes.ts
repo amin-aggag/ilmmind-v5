@@ -1,4 +1,5 @@
 import { PartialBlock } from "@blocknote/core";
+import React from "react";
 
 export type SvgPathData = {
   path: string;
@@ -58,10 +59,20 @@ export type CanvasState = {
 
   // Interaction state
   isMovingCanvas: boolean;
+  /** Remove this touchStart, I'm using the already existing pointer event
+   handlers to handle the zooming in and out and panning, which allows it naturally to
+   support all pointer devices (touch, trackpad) @deprecated */
   touchStart: {
     x: number;
     y: number;
   } | null;
+  isPinching: boolean;
+  scalingValues: {
+    startDistance: number;
+    startScale: number;
+  };
+  zoomPointerEvents: Map<number, React.PointerEvent>;
+  zoomPointersHaveUpdated: boolean;
 };
 
 export type CanvasAction =
@@ -85,6 +96,24 @@ export type CanvasAction =
         pathData: string;
         activePageIndex: number;
       };
+    }
+  | {
+      type: "ZOOM_POINTER_DOWN";
+      payload: {
+        e: React.PointerEvent;
+      };
+    }
+  | {
+      type: "ZOOM_POINTER_MOVE";
+      payload: {
+        e: React.PointerEvent;
+      };
+    }
+  | {
+      type: "ZOOM_POINTER_UP";
+    }
+  | {
+      type: "ZOOM_POINTER_CANCEL";
     }
   | {
       type: "SET_PEN_COLOR";

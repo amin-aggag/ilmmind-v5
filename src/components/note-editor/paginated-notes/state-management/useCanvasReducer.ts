@@ -1,9 +1,9 @@
-import { useReducer } from "react";
+import React from "react";
 import { CanvasState, CanvasAction } from "./CanvasContextTypes";
 import {
-  reducerHandlePointerDown,
-  reducerHandlePointerMove,
-  reducerHandlerPointerUp,
+  reducerHandleDrawingPointerDown,
+  reducerHandleDrawingPointerMove,
+  reducerHandleDrawingPointerUp,
 } from "./reducer/pointer";
 import {
   reducerHandleSetTouchStart,
@@ -16,6 +16,12 @@ import { reducerHandleAddTextbox } from "./reducer/textboxes/reducerHandleAddTex
 import { reducerHandleUpdateTextbox } from "./reducer/textboxes/reducerHandleUpdateTextbox";
 import { reducerHandleDragTextboxPointerMove } from "./reducer/textboxes/reducerHandlerDragTextboxMouseMove";
 import { reducerHandleDragTextboxPointerUp } from "./reducer/textboxes/reducerHandleDragTextboxPointerUp";
+import {
+  reducerHandleZoomPointerCancel,
+  reducerHandleZoomPointerDown,
+  reducerHandleZoomPointerMove,
+  reducerHandleZoomPointerUp,
+} from "./reducer/zoom-pointer";
 
 const initialState: CanvasState = {
   points: [],
@@ -30,19 +36,26 @@ const initialState: CanvasState = {
   isTextMode: false,
   isDraggingTextbox: false,
   textboxInteractionPosition: null,
+  isPinching: false,
+  scalingValues: {
+    startDistance: 0,
+    startScale: 1,
+  },
+  zoomPointerEvents: new Map<number, React.PointerEvent>(),
+  zoomPointersHaveUpdated: false,
   activePageIndex: 0,
 };
 
 function canvasReducer(state: CanvasState, action: CanvasAction): CanvasState {
   switch (action.type) {
     case "POINTER_DOWN":
-      return reducerHandlePointerDown(state, action);
+      return reducerHandleDrawingPointerDown(state, action);
 
     case "POINTER_MOVE":
-      return reducerHandlePointerMove(state, action);
+      return reducerHandleDrawingPointerMove(state, action);
 
     case "POINTER_UP":
-      return reducerHandlerPointerUp(state, action);
+      return reducerHandleDrawingPointerUp(state, action);
 
     case "SET_PEN_COLOR":
       return {
@@ -126,11 +139,23 @@ function canvasReducer(state: CanvasState, action: CanvasAction): CanvasState {
     case "DRAG_TEXTBOX_POINTER_UP":
       return reducerHandleDragTextboxPointerUp(state, action);
 
+    case "ZOOM_POINTER_DOWN":
+      return reducerHandleZoomPointerDown(state, action);
+
+    case "ZOOM_POINTER_MOVE":
+      return reducerHandleZoomPointerMove(state, action);
+
+    case "ZOOM_POINTER_UP":
+      return reducerHandleZoomPointerUp(state);
+
+    case "ZOOM_POINTER_CANCEL":
+      return reducerHandleZoomPointerCancel(state);
+
     default:
       return state;
   }
 }
 
 export function useCanvasReducer() {
-  return useReducer(canvasReducer, initialState);
+  return React.useReducer(canvasReducer, initialState);
 }

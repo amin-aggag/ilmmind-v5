@@ -7,10 +7,10 @@ import {
 } from "../CanvasContextTypes";
 import { deepCopy } from "./utils/utils";
 
-export function reducerHandlePointerDown(
+export function reducerHandleDrawingPointerDown(
   state: CanvasState,
   action: ActionOf<"POINTER_DOWN">,
-) {
+): CanvasState {
   return {
     ...state,
     points: action.payload.points,
@@ -19,7 +19,7 @@ export function reducerHandlePointerDown(
   };
 }
 
-export function reducerHandlePointerMove(
+export function reducerHandleDrawingPointerMove(
   state: CanvasState,
   action: ActionOf<"POINTER_MOVE">,
 ) {
@@ -30,7 +30,7 @@ export function reducerHandlePointerMove(
   };
 }
 
-export function reducerHandlerPointerUp(
+export function reducerHandleDrawingPointerUp(
   state: CanvasState,
   action: ActionOf<"POINTER_UP">,
 ) {

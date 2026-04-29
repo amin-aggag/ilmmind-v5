@@ -10,6 +10,7 @@
 //         </>
 //     )
 // }
+import { Page } from "./Page";
 import "./PaginatedNoteEditor.css";
 
 // pages/SVGCanvas.tsx
@@ -18,15 +19,50 @@ import {
   useCanvasStateVars,
 } from "./state-management/useCanvasContext";
 import UI from "./ui/UI";
-import { MouseEventHandler, useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 
 // type PageNotesEditorProps = Omit<NoteEditorProps, "layout">;
 
 export default function PaginatedNotesEditor() {
   const canvasStateVars = useCanvasStateVars();
   const { states, position, historyIndex } = canvasStateVars.state;
+  const { startScale } = canvasStateVars.state.scalingValues;
   const dispatch = canvasStateVars.dispatch;
   const DrawingCanvasRef = useRef<HTMLDivElement>(null);
+
+  const handlePointerDown = (e: React.PointerEvent) => {
+    e.preventDefault();
+    dispatch({
+      type: "ZOOM_POINTER_DOWN",
+      payload: {
+        e,
+      },
+    });
+  };
+
+  const handlePointerMove = (e: React.PointerEvent) => {
+    e.preventDefault();
+    dispatch({
+      type: "ZOOM_POINTER_MOVE",
+      payload: {
+        e,
+      },
+    });
+  };
+
+  const handlePointerUp = (e: React.PointerEvent) => {
+    e.preventDefault();
+    dispatch({
+      type: "ZOOM_POINTER_UP",
+    });
+  };
+
+  const handlePointerCancel = (e: React.PointerEvent) => {
+    e.preventDefault();
+    dispatch({
+      type: "ZOOM_POINTER_CANCEL",
+    });
+  };
 
   useEffect(() => {
     const CanvasRefCurrent = DrawingCanvasRef.current;
@@ -78,8 +114,12 @@ export default function PaginatedNotesEditor() {
         </div>
         <div
           ref={DrawingCanvasRef}
-          style={{ height: "100%", overflow: "hidden" }}
+          style={{ height: "100%", overflow: "hidden", scale: `${startScale}` }}
           className="pages-window"
+          onPointerDown={handlePointerDown}
+          onPointerMove={handlePointerMove}
+          onPointerUp={handlePointerUp}
+          onPointerCancel={handlePointerCancel}
         >
           <div
             style={{
@@ -91,175 +131,11 @@ export default function PaginatedNotesEditor() {
             id="svg-canvases-wrapper"
           >
             {states[historyIndex].map((_, pageIndex) => (
-              <SVGCanvas pageIndex={pageIndex} key={pageIndex} />
+              <Page pageIndex={pageIndex} key={pageIndex} />
             ))}
           </div>
         </div>
       </div>
     </CanvasContext.Provider>
-  );
-}
-
-// components/canvas/DrawingCanvas.tsx
-import { useCanvasContext } from "./state-management/useCanvasContext";
-import getStroke from "perfect-freehand";
-import { TextboxComponent } from "./textbox/Textbox";
-
-const getSvgPathFromStroke = (stroke: number[][]): string => {
-  if (!stroke.length) return "";
-
-  const d = stroke.reduce<(string | number)[]>(
-    (acc, [x0, y0], i, arr) => {
-      const [x1, y1] = arr[(i + 1) % arr.length];
-      acc.push(x0, y0, (x0 + x1) / 2, (y0 + y1) / 2);
-      return acc;
-    },
-    ["M", ...stroke[0], "Q"],
-  );
-
-  d.push("Z");
-  return d.join(" ");
-};
-
-export const A4_PAGE_72PPI_W = 595;
-export const A4_PAGE_72PPI_H = 842;
-
-function SVGCanvas({ pageIndex }: { pageIndex: number }) {
-  const { state, handlers, dispatch } = useCanvasContext();
-  const { pointer, touch } = handlers;
-  const {
-    isDrawing,
-    pen,
-    isMovingCanvas,
-    points,
-    historyIndex,
-    isTextMode,
-    isDraggingTextbox,
-  } = state;
-
-  // console.log("SVGCanvas: state: ", state);
-
-  const pageData = state.states[historyIndex][pageIndex];
-
-  const options = {
-    size: pen.size,
-    smoothing: 0.01,
-    thinning: 0.5,
-    streamline: 0.5,
-    easing: (t: number) => t,
-    start: {
-      taper: 0,
-      cap: true,
-    },
-    end: {
-      taper: 0,
-      cap: true,
-    },
-  };
-
-  const stroke = getStroke(points, options);
-  const pathData = getSvgPathFromStroke(stroke);
-
-  const handlePointerDown = (e: React.PointerEvent<SVGSVGElement>) => {
-    pointer.handlePointerDown(e.nativeEvent, pageIndex);
-  };
-
-  const handlePointerMove = (e: React.PointerEvent<SVGSVGElement>) => {
-    pointer.handlePointerMove(e.nativeEvent, pageIndex);
-  };
-
-  const handlePointerUp = (e: React.PointerEvent<SVGSVGElement>) => {
-    pointer.handlePointerUp(e.nativeEvent, pathData, pageIndex);
-  };
-
-  const handleTouchStart = (e: React.TouchEvent<SVGSVGElement>) => {
-    touch.handleTouchStart(e.nativeEvent);
-  };
-
-  const handleTouchMove = (e: React.TouchEvent<SVGSVGElement>) => {
-    touch.handleTouchMove(e.nativeEvent);
-  };
-
-  const handleTouchEnd = (e: React.TouchEvent<SVGSVGElement>) => {
-    touch.handleTouchEnd(e.nativeEvent);
-  };
-
-  const handleAddTextBox: MouseEventHandler<SVGSVGElement> = (e) => {
-    dispatch({
-      type: "ADD_TEXTBOX",
-      payload: {
-        pageIndex,
-        position: {
-          top: e.clientY,
-          left: e.clientX,
-        },
-        size: {
-          height: 200,
-          width: 200,
-        },
-      },
-    });
-  };
-
-  return (
-    <div>
-      <svg
-        onPointerDown={
-          isMovingCanvas || isTextMode || isDraggingTextbox
-            ? undefined
-            : handlePointerDown
-        }
-        onPointerMove={
-          isMovingCanvas || isTextMode || isDraggingTextbox
-            ? undefined
-            : handlePointerMove
-        }
-        onPointerUp={
-          isMovingCanvas || isTextMode || isDraggingTextbox
-            ? undefined
-            : handlePointerUp
-        }
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
-        onClick={isTextMode ? handleAddTextBox : () => {}}
-        style={{
-          touchAction: "none",
-          position: "relative",
-          top: "0",
-          left: "0",
-          height: `${A4_PAGE_72PPI_H}px`,
-          width: `${A4_PAGE_72PPI_W}`,
-          zIndex: 1,
-          backgroundColor: "#ffffff",
-          fill: pen.color,
-        }}
-        className="svg-canvas"
-        data-page-index={`${pageIndex}`}
-        // key={index}
-      >
-        {pageData.svgData.map((pd, index) => (
-          <path
-            key={index}
-            d={pd.path}
-            fill={pd.color}
-            style={{ zIndex: 100 }}
-          />
-        ))}
-
-        {pageIndex === state.activePageIndex && isDrawing && (
-          <path d={pathData} style={{ zIndex: 100 }} />
-        )}
-      </svg>
-      {pageData.textBoxes.map((textbox, textboxIndex) => (
-        <TextboxComponent
-          pageIndex={pageIndex}
-          textboxIndex={textboxIndex}
-          textboxData={textbox}
-          key={textboxIndex}
-        />
-      ))}
-      <p className="page-number">{pageIndex + 1}</p>
-    </div>
   );
 }

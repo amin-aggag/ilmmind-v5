@@ -1,0 +1,12 @@
+.textbox-wrapper {
+  position: absolute;
+}
+
+.svg-canvas {
+  box-shadow: 0 0 10px 0.5px rgba(0, 0, 0, 0.05);
+}
+
+.page-number {
+  margin: 0;
+  padding: 0;
+}

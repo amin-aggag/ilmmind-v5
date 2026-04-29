@@ -1,11 +1,11 @@
 import { ActionOf, CanvasState } from "../CanvasContextTypes";
 import React from "react";
 
+type POINTER_EVENTS = "POINTER_DOWN" | "POINTER_MOVE" | "POINTER_UP";
+
 export function usePointerHandlers(
   state: CanvasState,
-  dispatch: React.Dispatch<
-    ActionOf<"POINTER_DOWN" | "POINTER_MOVE" | "POINTER_UP">
-  >,
+  dispatch: React.Dispatch<ActionOf<POINTER_EVENTS>>,
 ) {
   const handlePointerDown = (e: PointerEvent, activePageIndex: number) => {
     const target = e.target as SVGSVGElement;
@@ -18,8 +18,6 @@ export function usePointerHandlers(
         e.pressure,
       ],
     ];
-
-    // console.log("handlePointerDown: e.buttons = ", e.buttons);
 
     dispatch({
       type: "POINTER_DOWN",
@@ -66,8 +64,6 @@ export function usePointerHandlers(
         type: "POINTER_UP",
         payload: { pathData, activePageIndex },
       });
-
-      // console.log("handlePointerUp: e.buttons = ", e.buttons);
     }
   };
 

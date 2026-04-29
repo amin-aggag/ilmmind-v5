@@ -1,14 +1,17 @@
 import React from "react";
 import { useCanvasContext } from "../state-management/useCanvasContext";
+import { BlockNoteEditor } from "@blocknote/core";
 
 type UseTextboxDragArgs = {
   pageIndex: number;
   textboxIndex: number;
+  editor: BlockNoteEditor;
 };
 
 export const useTextboxDrag = ({
   pageIndex,
   textboxIndex,
+  editor,
 }: UseTextboxDragArgs) => {
   const canvasContext = useCanvasContext();
   const { dispatch } = canvasContext;
@@ -73,12 +76,31 @@ export const useTextboxDrag = ({
         e.currentTarget.releasePointerCapture(e.pointerId);
       }
 
+      dispatch({
+        type: "DRAG_TEXTBOX_POINTER_UP",
+        payload: {
+          pageIndex,
+          textboxIndex,
+        },
+      });
+
       if (isDragging) {
         endDrag();
       }
     },
-    [endDrag, isDragging],
+    [endDrag, isDragging, dispatch, pageIndex, textboxIndex],
   );
+
+  const handleEditorOnChange = React.useCallback(() => {
+    dispatch({
+      type: "UPDATE_TEXTBOX",
+      payload: {
+        pageIndex,
+        textboxIndex,
+        newTextBoxData: editor.document,
+      },
+    });
+  }, [dispatch, editor.document, pageIndex, textboxIndex]);
 
   React.useEffect(() => {
     const root = document.getElementById("root");
@@ -93,5 +115,6 @@ export const useTextboxDrag = ({
     handlePointerMove,
     handlePointerUp,
     handlePointerCancel,
+    handleEditorOnChange,
   };
 };

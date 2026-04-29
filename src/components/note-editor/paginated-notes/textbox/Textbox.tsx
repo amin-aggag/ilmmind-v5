@@ -2,13 +2,21 @@ import { BlockNoteView } from "@blocknote/mantine";
 import { useCreateBlockNote } from "@blocknote/react";
 import "@blocknote/mantine/style.css";
 import "@blocknote/core/fonts/inter.css";
-import { Textbox } from "../state-management/CanvasContextTypes";
+import { CanvasState, Textbox } from "../state-management/CanvasContextTypes";
 import "./textbox.css";
 import { useCanvasContext } from "../state-management/useCanvasContext";
-import { A4_PAGE_72PPI_H } from "../PageNotesEditor";
+import { A4_PAGE_72PPI_H } from "../Page";
 import { DragHandleDots2Icon } from "@radix-ui/react-icons";
 import React from "react";
 import { useTextboxDrag } from "./useTextboxDrag";
+
+const findUserHasUndoneOrRedone = (canvasState: CanvasState) => {
+  const { states, historyIndex } = canvasState;
+
+  const userHasUndoneOrRedone = states.length - 1 - historyIndex;
+
+  return userHasUndoneOrRedone;
+};
 
 export const TextboxComponent = ({
   pageIndex,
@@ -20,45 +28,35 @@ export const TextboxComponent = ({
   textboxData: Textbox;
 }) => {
   const canvasStateVars = useCanvasContext();
-  const { historyIndex, states } = canvasStateVars.state;
   const textboxInteractionPosition = canvasStateVars.state
     .textboxInteractionPosition as Textbox["position"];
-  const { dispatch } = canvasStateVars;
+
+  const userHasUndoneOrRedone = findUserHasUndoneOrRedone(
+    canvasStateVars.state,
+  );
+
+  const editor = useCreateBlockNote({ initialContent: textboxData.textData }, [
+    userHasUndoneOrRedone,
+  ]);
+
   const {
     isDragging,
     handlePointerDown,
     handlePointerMove,
     handlePointerUp,
     handlePointerCancel,
-  } = useTextboxDrag({ pageIndex, textboxIndex });
-
-  const editor = useCreateBlockNote({ initialContent: textboxData.textData }, [
-    // This calculation only changes when undoing and redoing (i.e. the users moves
-    // through the history array) but not when typing, which prevents the typing experience
-    // from feeling jumpy and the focus losing after every 1 or 2 characters typed.
-    states.length - 1 - historyIndex,
-  ]);
-
-  const handleOnChange = React.useCallback(() => {
-    dispatch({
-      type: "UPDATE_TEXTBOX",
-      payload: {
-        pageIndex,
-        textboxIndex,
-        newTextBoxData: editor.document,
-      },
-    });
-  }, [dispatch, editor.document, pageIndex, textboxIndex]);
+    handleEditorOnChange,
+  } = useTextboxDrag({ pageIndex, textboxIndex, editor });
 
   const textboxWrapperDynamicStyle = React.useMemo(
     () => ({
       top: `${
-        (isDragging
+        (isDragging && textboxInteractionPosition
           ? textboxInteractionPosition.top
           : textboxData.position.top) +
         pageIndex * (A4_PAGE_72PPI_H + 35)
       }px`,
-      left: `${isDragging ? textboxInteractionPosition.left : textboxData.position.left}px`,
+      left: `${isDragging && textboxInteractionPosition ? textboxInteractionPosition.left : textboxData.position.left}px`,
     }),
     [textboxData.position, pageIndex, isDragging, textboxInteractionPosition],
   );
@@ -72,7 +70,7 @@ export const TextboxComponent = ({
       <BlockNoteView
         editor={editor}
         theme={"light"}
-        onChange={handleOnChange}
+        onChange={handleEditorOnChange}
         className="textbox-content"
       />
       <div
