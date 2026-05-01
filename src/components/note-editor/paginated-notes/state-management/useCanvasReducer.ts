@@ -151,6 +151,9 @@ function canvasReducer(state: CanvasState, action: CanvasAction): CanvasState {
   }
 }
 
-export function useCanvasReducer() {
+export function useCanvasReducer(): [
+  CanvasState,
+  React.ActionDispatch<[action: CanvasAction]>,
+] {
   return React.useReducer(canvasReducer, initialState);
 }

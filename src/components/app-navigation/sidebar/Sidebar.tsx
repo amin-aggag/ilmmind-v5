@@ -2,7 +2,7 @@ import React from "react";
 import "./Sidebar.css";
 import { useSidebarDrag } from "./useSidebarDrag";
 
-export default function Sidebar() {
+export default function Sidebar(): React.ReactNode {
   const sidebarDraggerRef = React.useRef<HTMLDivElement>(null);
 
   const {

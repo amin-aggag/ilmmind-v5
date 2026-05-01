@@ -1,11 +1,11 @@
-import type { NoteEditorProps } from "../NoteEditor"
+// import type { NoteEditorProps } from "../NoteEditor"
 
-type CanvasNotesEditorProps = Omit<NoteEditorProps, "layout">;
+// type CanvasNotesEditorProps = Omit<NoteEditorProps, "layout">;
 
-export default function CanvasNotesEditor({ ...props }: CanvasNotesEditorProps) {
-    return (
-        <div>
-            CanvasNotesEditor
-        </div>
-    )
-}
+// export default function CanvasNotesEditor({ ...props }: CanvasNotesEditorProps) {
+//     return (
+//         <div>
+//             CanvasNotesEditor
+//         </div>
+//     )
+// }

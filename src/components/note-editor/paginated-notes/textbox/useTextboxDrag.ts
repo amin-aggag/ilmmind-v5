@@ -2,17 +2,26 @@ import React from "react";
 import { useCanvasContext } from "../state-management/useCanvasContext";
 import { BlockNoteEditor } from "@blocknote/core";
 
-type UseTextboxDragArgs = {
+type useTextboxDragArgs = {
   pageIndex: number;
   textboxIndex: number;
   editor: BlockNoteEditor;
+};
+
+type useTextboxDragReturn = {
+  isDragging: boolean;
+  handlePointerDown: (e: React.PointerEvent<HTMLDivElement>) => void;
+  handlePointerMove: (e: React.PointerEvent<HTMLDivElement>) => void;
+  handlePointerUp: (e: React.PointerEvent<HTMLDivElement>) => void;
+  handlePointerCancel: (e: React.PointerEvent<HTMLDivElement>) => void;
+  handleEditorOnChange: () => void;
 };
 
 export const useTextboxDrag = ({
   pageIndex,
   textboxIndex,
   editor,
-}: UseTextboxDragArgs) => {
+}: useTextboxDragArgs): useTextboxDragReturn => {
   const canvasContext = useCanvasContext();
   const { dispatch } = canvasContext;
   const [isDragging, setIsDragging] = React.useState(false);

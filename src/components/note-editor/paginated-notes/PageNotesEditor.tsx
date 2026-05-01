@@ -23,14 +23,14 @@ import React, { useEffect, useLayoutEffect, useRef } from "react";
 
 // type PageNotesEditorProps = Omit<NoteEditorProps, "layout">;
 
-export default function PaginatedNotesEditor() {
+export default function PaginatedNotesEditor(): React.ReactNode {
   const canvasStateVars = useCanvasStateVars();
   const { states, position, historyIndex } = canvasStateVars.state;
   const { startScale } = canvasStateVars.state.scalingValues;
   const dispatch = canvasStateVars.dispatch;
   const DrawingCanvasRef = useRef<HTMLDivElement>(null);
 
-  const handlePointerDown = (e: React.PointerEvent) => {
+  const handlePointerDown = (e: React.PointerEvent): void => {
     dispatch({
       type: "ZOOM_POINTER_DOWN",
       payload: {
@@ -39,7 +39,7 @@ export default function PaginatedNotesEditor() {
     });
   };
 
-  const handlePointerMove = (e: React.PointerEvent) => {
+  const handlePointerMove = (e: React.PointerEvent): void => {
     e.preventDefault();
     dispatch({
       type: "ZOOM_POINTER_MOVE",
@@ -49,14 +49,14 @@ export default function PaginatedNotesEditor() {
     });
   };
 
-  const handlePointerUp = (e: React.PointerEvent) => {
+  const handlePointerUp = (e: React.PointerEvent): void => {
     e.preventDefault();
     dispatch({
       type: "ZOOM_POINTER_UP",
     });
   };
 
-  const handlePointerCancel = (e: React.PointerEvent) => {
+  const handlePointerCancel = (e: React.PointerEvent): void => {
     e.preventDefault();
     dispatch({
       type: "ZOOM_POINTER_CANCEL",
@@ -85,7 +85,7 @@ export default function PaginatedNotesEditor() {
 
     if (!CanvasRefCurrent) return;
 
-    const handleWheelWrapper = (e: WheelEvent) => {
+    const handleWheelWrapper = (e: WheelEvent): void => {
       e.preventDefault();
       e.stopPropagation();
 
@@ -108,7 +108,7 @@ export default function PaginatedNotesEditor() {
 
     CanvasRefCurrent.addEventListener("wheel", handleWheelWrapper);
 
-    return () =>
+    return (): void =>
       CanvasRefCurrent.removeEventListener("wheel", handleWheelWrapper);
   });
 

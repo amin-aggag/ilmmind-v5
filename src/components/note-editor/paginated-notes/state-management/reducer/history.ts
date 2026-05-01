@@ -1,6 +1,6 @@
 import { CanvasState } from "../CanvasContextTypes";
 
-export function reducerHandleUndo(state: CanvasState) {
+export function reducerHandleUndo(state: CanvasState): CanvasState {
   if (state.historyIndex > 0 && state.historyIndex <= state.states.length - 1) {
     return {
       ...state,
@@ -10,7 +10,7 @@ export function reducerHandleUndo(state: CanvasState) {
   return state;
 }
 
-export function reducerHandleRedo(state: CanvasState) {
+export function reducerHandleRedo(state: CanvasState): CanvasState {
   if (state.historyIndex > -1 && state.historyIndex < state.states.length - 1) {
     return {
       ...state,

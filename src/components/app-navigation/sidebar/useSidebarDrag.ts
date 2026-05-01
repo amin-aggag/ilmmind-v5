@@ -3,7 +3,16 @@ import React from "react";
 const MIN_SIDEBAR_WIDTH_PX = 180;
 const MAX_SIDEBAR_WIDTH_PX = 400;
 
-export const useSidebarDrag = () => {
+type useSidebarDragReturn = {
+  isResizing: boolean;
+  width: number;
+  handlePointerDown: (e: React.PointerEvent<HTMLDivElement>) => void;
+  handlePointerMove: (e: React.PointerEvent<HTMLDivElement>) => void;
+  handlePointerUp: (e: React.PointerEvent<HTMLDivElement>) => void;
+  handlePointerCancel: (e: React.PointerEvent<HTMLDivElement>) => void;
+};
+
+export const useSidebarDrag = (): useSidebarDragReturn => {
   const [isResizing, setIsResizing] = React.useState<boolean>(false);
   const [width, setWidth] = React.useState<number>(200);
 

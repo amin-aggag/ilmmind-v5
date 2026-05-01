@@ -6,7 +6,7 @@ export function deepCopy<T>(obj: T): T {
     return new Date(obj.getTime()) as T;
   }
   if (Array.isArray(obj)) {
-    return obj.map((item) => deepCopy(item)) as T;
+    return obj.map((item) => deepCopy(item) as unknown) as T;
   }
   const copy = {} as T;
   const record = obj as Record<string, unknown>;
@@ -22,7 +22,10 @@ export const toPageRelativePosition = (
     left: number;
   },
   pageRect: DOMRect,
-) => ({
+): {
+  top: number;
+  left: number;
+} => ({
   ...position,
   top: position.top - pageRect.top,
   left: position.left - pageRect.left,

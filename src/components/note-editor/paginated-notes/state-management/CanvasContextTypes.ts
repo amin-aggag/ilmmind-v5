@@ -128,13 +128,6 @@ export type CanvasAction =
       payload: boolean;
     }
   | {
-      type: "SET_TOUCH_START";
-      payload: {
-        x: number;
-        y: number;
-      } | null;
-    }
-  | {
       type: "UNDO";
     }
   | {

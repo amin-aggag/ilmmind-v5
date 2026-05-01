@@ -1,7 +1,7 @@
 import { useCanvasContext } from "./state-management/useCanvasContext";
 import getStroke from "perfect-freehand";
 import { TextboxComponent } from "./textbox/Textbox";
-import { MouseEventHandler } from "react";
+import React, { MouseEventHandler } from "react";
 import "./Page.css";
 
 const getSvgPathFromStroke = (stroke: number[][]): string => {
@@ -13,7 +13,7 @@ const getSvgPathFromStroke = (stroke: number[][]): string => {
       acc.push(x0, y0, (x0 + x1) / 2, (y0 + y1) / 2);
       return acc;
     },
-    ["M", ...stroke[0], "Q"],
+    ["M", ...stroke[0], "Q"] as (string | number)[],
   );
 
   d.push("Z");
@@ -23,7 +23,7 @@ const getSvgPathFromStroke = (stroke: number[][]): string => {
 export const A4_PAGE_72PPI_W = 595;
 export const A4_PAGE_72PPI_H = 842;
 
-export function Page({ pageIndex }: { pageIndex: number }) {
+export function Page({ pageIndex }: { pageIndex: number }): React.ReactNode {
   const { state, handlers, dispatch } = useCanvasContext();
   const { pointer } = handlers;
   const {
@@ -44,7 +44,7 @@ export function Page({ pageIndex }: { pageIndex: number }) {
     smoothing: 0.01,
     thinning: 0.5,
     streamline: 0.5,
-    easing: (t: number) => t,
+    easing: (t: number): number => t,
     start: {
       taper: 0,
       cap: true,
@@ -58,11 +58,11 @@ export function Page({ pageIndex }: { pageIndex: number }) {
   const stroke = getStroke(points, options);
   const pathData = getSvgPathFromStroke(stroke);
 
-  const handlePointerDown = (e: React.PointerEvent<SVGSVGElement>) => {
+  const handlePointerDown = (e: React.PointerEvent<SVGSVGElement>): void => {
     pointer.handlePointerDown(e.nativeEvent, pageIndex);
   };
 
-  const handlePointerMove = (e: React.PointerEvent<SVGSVGElement>) => {
+  const handlePointerMove = (e: React.PointerEvent<SVGSVGElement>): void => {
     pointer.handlePointerMove(e.nativeEvent, pageIndex);
     // Pointer capture on the SVG retargets moves here; the parent
     // `pages-window` listener never sees them, so zoom must be updated too.
@@ -74,7 +74,7 @@ export function Page({ pageIndex }: { pageIndex: number }) {
     }
   };
 
-  const handlePointerUp = (e: React.PointerEvent<SVGSVGElement>) => {
+  const handlePointerUp = (e: React.PointerEvent<SVGSVGElement>): void => {
     pointer.handlePointerUp(e.nativeEvent, pathData, pageIndex);
   };
 
@@ -113,7 +113,7 @@ export function Page({ pageIndex }: { pageIndex: number }) {
             ? undefined
             : handlePointerUp
         }
-        onClick={isTextMode ? handleAddTextBox : () => {}}
+        onClick={isTextMode ? handleAddTextBox : (): void => {}}
         style={{
           touchAction: "none",
           position: "relative",

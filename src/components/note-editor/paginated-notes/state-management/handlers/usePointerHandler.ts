@@ -3,11 +3,24 @@ import React from "react";
 
 type POINTER_EVENTS = "POINTER_DOWN" | "POINTER_MOVE" | "POINTER_UP";
 
+type usePointerHandlersReturn = {
+  handlePointerDown: (e: PointerEvent, activePageIndex: number) => void;
+  handlePointerMove: (e: PointerEvent, activePageIndex: number) => void;
+  handlePointerUp: (
+    e: PointerEvent,
+    pathData: string,
+    activePageIndex: number,
+  ) => void;
+};
+
 export function usePointerHandlers(
   state: CanvasState,
   dispatch: React.Dispatch<ActionOf<POINTER_EVENTS>>,
-) {
-  const handlePointerDown = (e: PointerEvent, activePageIndex: number) => {
+): usePointerHandlersReturn {
+  const handlePointerDown = (
+    e: PointerEvent,
+    activePageIndex: number,
+  ): void => {
     const target = e.target as SVGSVGElement;
     target.setPointerCapture(e.pointerId);
 
@@ -25,7 +38,10 @@ export function usePointerHandlers(
     });
   };
 
-  const handlePointerMove = (e: PointerEvent, activePageIndex: number) => {
+  const handlePointerMove = (
+    e: PointerEvent,
+    activePageIndex: number,
+  ): void => {
     if (
       e.pointerType === "pen" ||
       e.pointerType === "mouse" ||
@@ -54,7 +70,7 @@ export function usePointerHandlers(
     e: PointerEvent,
     pathData: string,
     activePageIndex: number,
-  ) => {
+  ): void => {
     if (
       e.pointerType === "pen" ||
       e.pointerType === "mouse" ||
