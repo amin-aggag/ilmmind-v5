@@ -66,6 +66,9 @@ export function reducerHandleZoomPointerMove(
     return { ...state };
   }
 
+  const oldMidX = (pointerAEvent.clientX + pointerBEvent.clientX) / 2;
+  const oldMidY = (pointerAEvent.clientY + pointerBEvent.clientY) / 2;
+
   const nextMap = new Map(state.zoomPointerEvents);
   if (e.pointerId === pointerAEvent.pointerId) {
     nextMap.set(1, e);
@@ -77,6 +80,14 @@ export function reducerHandleZoomPointerMove(
 
   const p1 = nextMap.get(1) as React.PointerEvent;
   const p2 = nextMap.get(2) as React.PointerEvent;
+  const newMidX = (p1.clientX + p2.clientX) / 2;
+  const newMidY = (p1.clientY + p2.clientY) / 2;
+
+  const positionAfterMidPan = {
+    left: state.position.left + (newMidX - oldMidX),
+    top: state.position.top + (newMidY - oldMidY),
+  };
+
   const currentDistance = distance(
     { x: p1.clientX, y: p1.clientY },
     { x: p2.clientX, y: p2.clientY },
@@ -84,7 +95,7 @@ export function reducerHandleZoomPointerMove(
 
   const { startDistance, startScale: S0 } = state.scalingValues;
   if (startDistance === 0) {
-    return { ...state, zoomPointerEvents: nextMap };
+    return { ...state, zoomPointerEvents: nextMap, position: positionAfterMidPan };
   }
 
   const scaleRatio = currentDistance / startDistance;
@@ -94,14 +105,14 @@ export function reducerHandleZoomPointerMove(
   const viewport = getNotesViewportRect();
   const position = viewport
     ? panForZoomAroundFocal(
-        state.position,
+        positionAfterMidPan,
         S0,
         S1,
-        (p1.clientX + p2.clientX) / 2,
-        (p1.clientY + p2.clientY) / 2,
+        newMidX,
+        newMidY,
         viewport,
       )
-    : state.position;
+    : positionAfterMidPan;
 
   return {
     ...state,

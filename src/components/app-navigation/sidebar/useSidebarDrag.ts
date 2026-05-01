@@ -1,5 +1,6 @@
 import React from "react";
 
+const DEFAULT_SIDEBAR_WIDTH_PX = 200;
 const MIN_SIDEBAR_WIDTH_PX = 180;
 const MAX_SIDEBAR_WIDTH_PX = 400;
 
@@ -14,7 +15,7 @@ type useSidebarDragReturn = {
 
 export const useSidebarDrag = (): useSidebarDragReturn => {
   const [isResizing, setIsResizing] = React.useState<boolean>(false);
-  const [width, setWidth] = React.useState<number>(200);
+  const [width, setWidth] = React.useState<number>(DEFAULT_SIDEBAR_WIDTH_PX);
 
   const handlePointerDown = React.useCallback(
     (e: React.PointerEvent<HTMLDivElement>) => {
