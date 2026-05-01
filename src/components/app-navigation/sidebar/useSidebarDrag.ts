@@ -29,6 +29,7 @@ export const useSidebarDrag = (): useSidebarDragReturn => {
   const handlePointerMove = React.useCallback(
     (e: React.PointerEvent<HTMLDivElement>) => {
       e.preventDefault();
+      if (!isResizing) return;
 
       if (
         e.clientX >= MIN_SIDEBAR_WIDTH_PX &&
@@ -37,7 +38,7 @@ export const useSidebarDrag = (): useSidebarDragReturn => {
         setWidth(e.clientX);
       }
     },
-    [],
+    [isResizing],
   );
 
   const handlePointerUp = React.useCallback(

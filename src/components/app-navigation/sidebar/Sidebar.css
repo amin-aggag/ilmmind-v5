@@ -17,6 +17,11 @@
   transition: background-color 80ms ease-in;
   cursor: col-resize;
   z-index: 1;
+  /* Touch-action prevents Chrome's touch/pointer gestures from kicking in
+  when adjusting the sidebar. Though ilmmind is a Tauri app, I thought it
+  would still be a good measure to add this in to make sure the sidebar can
+  always be adjusted using touch. */
+  touch-action: none;
 
   &:hover {
     background-color: rgba(0, 0, 0, 0.2);
