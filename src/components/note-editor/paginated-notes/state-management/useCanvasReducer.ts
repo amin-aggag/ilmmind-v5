@@ -6,7 +6,6 @@ import {
   reducerHandleDrawingPointerUp,
 } from "./reducer/pointer";
 import {
-  reducerHandleSetTouchStart,
   reducerHandleSetMovingCanvas,
   reducerHandlePanCanvas,
 } from "./reducer/viewport";
@@ -32,7 +31,6 @@ const initialState: CanvasState = {
   position: { left: 0, top: 0 },
   pen: { color: "black", size: 10 },
   isMovingCanvas: false,
-  touchStart: null,
   isTextMode: false,
   isDraggingTextbox: false,
   textboxInteractionPosition: null,
@@ -74,9 +72,6 @@ function canvasReducer(state: CanvasState, action: CanvasAction): CanvasState {
 
     case "SET_MOVING_CANVAS":
       return reducerHandleSetMovingCanvas(state, action);
-
-    case "SET_TOUCH_START":
-      return reducerHandleSetTouchStart(state, action);
 
     case "UNDO":
       return reducerHandleUndo(state);

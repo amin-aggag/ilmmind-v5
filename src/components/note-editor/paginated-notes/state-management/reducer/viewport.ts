@@ -19,13 +19,3 @@ export function reducerHandleSetMovingCanvas(
     isMovingCanvas: action.payload,
   };
 }
-
-export function reducerHandleSetTouchStart(
-  state: CanvasState,
-  action: ActionOf<"SET_TOUCH_START">,
-): CanvasState {
-  return {
-    ...state,
-    touchStart: action.payload,
-  };
-}

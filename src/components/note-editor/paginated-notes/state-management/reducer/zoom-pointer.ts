@@ -1,5 +1,5 @@
 import { ActionOf, CanvasState } from "../CanvasContextTypes";
-import { getNotesViewportRect } from "./zoomDomUtils";
+import { getNotesViewportRect } from "./utils/utils";
 
 const MAX_SCALE = 4;
 const MIN_SCALE = 0.1;

@@ -59,13 +59,6 @@ export type CanvasState = {
 
   // Interaction state
   isMovingCanvas: boolean;
-  /** Remove this touchStart, I'm using the already existing pointer event
-   handlers to handle the zooming in and out and panning, which allows it naturally to
-   support all pointer devices (touch, trackpad) @deprecated */
-  touchStart: {
-    x: number;
-    y: number;
-  } | null;
   isPinching: boolean;
   scalingValues: {
     startDistance: number;

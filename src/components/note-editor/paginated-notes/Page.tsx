@@ -2,7 +2,7 @@ import { useCanvasContext } from "./state-management/useCanvasContext";
 import getStroke from "perfect-freehand";
 import { TextboxComponent } from "./textbox/Textbox";
 import { MouseEventHandler } from "react";
-import './page.css';
+import "./Page.css";
 
 const getSvgPathFromStroke = (stroke: number[][]): string => {
   if (!stroke.length) return "";

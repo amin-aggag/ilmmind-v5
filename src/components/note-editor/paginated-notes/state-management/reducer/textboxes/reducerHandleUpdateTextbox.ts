@@ -6,7 +6,7 @@ export function reducerHandleUpdateTextbox(
   action: ActionOf<"UPDATE_TEXTBOX">,
 ) {
   // Copying the overall state array into another (temporary) array
-  const updatedState = state.states.slice();
+  const updatedState = state.states.slice(0, state.historyIndex + 1);
 
   // Getting the current page and textbox states. Deep copy is needed here so that
   // changes to the textbox in future history frames do not impact the previous
@@ -30,7 +30,7 @@ export function reducerHandleUpdateTextbox(
 
   return {
     ...state,
-    states: [...state.states, updatedNotebook],
+    states: [...updatedState, updatedNotebook],
     historyIndex: state.historyIndex + 1,
   };
 }
