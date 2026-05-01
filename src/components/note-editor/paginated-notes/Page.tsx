@@ -37,8 +37,6 @@ export function Page({ pageIndex }: { pageIndex: number }) {
     isPinching,
   } = state;
 
-  // console.log("SVGCanvas: state: ", state);
-
   const pageData = state.states[historyIndex][pageIndex];
 
   const options = {
@@ -80,18 +78,6 @@ export function Page({ pageIndex }: { pageIndex: number }) {
     pointer.handlePointerUp(e.nativeEvent, pathData, pageIndex);
   };
 
-  // const handleTouchStart = (e: React.TouchEvent<SVGSVGElement>) => {
-  //   touch.handleTouchStart(e.nativeEvent);
-  // };
-
-  // const handleTouchMove = (e: React.TouchEvent<SVGSVGElement>) => {
-  //   touch.handleTouchMove(e.nativeEvent);
-  // };
-
-  // const handleTouchEnd = (e: React.TouchEvent<SVGSVGElement>) => {
-  //   touch.handleTouchEnd(e.nativeEvent);
-  // };
-
   const handleAddTextBox: MouseEventHandler<SVGSVGElement> = (e) => {
     dispatch({
       type: "ADD_TEXTBOX",
@@ -113,23 +99,20 @@ export function Page({ pageIndex }: { pageIndex: number }) {
     <div>
       <svg
         onPointerDown={
-          isMovingCanvas || isTextMode || isDraggingTextbox
+          isMovingCanvas || isTextMode || isDraggingTextbox || isPinching
             ? undefined
             : handlePointerDown
         }
         onPointerMove={
-          isMovingCanvas || isTextMode || isDraggingTextbox
+          isMovingCanvas || isTextMode || isDraggingTextbox || isPinching
             ? undefined
             : handlePointerMove
         }
         onPointerUp={
-          isMovingCanvas || isTextMode || isDraggingTextbox
+          isMovingCanvas || isTextMode || isDraggingTextbox || isPinching
             ? undefined
             : handlePointerUp
         }
-        // onTouchStart={handleTouchStart}
-        // onTouchMove={handleTouchMove}
-        // onTouchEnd={handleTouchEnd}
         onClick={isTextMode ? handleAddTextBox : () => {}}
         style={{
           touchAction: "none",
@@ -144,7 +127,6 @@ export function Page({ pageIndex }: { pageIndex: number }) {
         }}
         className="svg-canvas"
         data-page-index={`${pageIndex}`}
-        // key={index}
       >
         {pageData.svgData.map((pd, index) => (
           <path

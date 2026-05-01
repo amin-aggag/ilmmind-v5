@@ -10,7 +10,7 @@
 //         </>
 //     )
 // }
-import { Page } from "./Page";
+import { A4_PAGE_72PPI_W, Page } from "./Page";
 import "./PaginatedNoteEditor.css";
 
 // pages/SVGCanvas.tsx
@@ -19,7 +19,7 @@ import {
   useCanvasStateVars,
 } from "./state-management/useCanvasContext";
 import UI from "./ui/UI";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useLayoutEffect, useRef } from "react";
 
 // type PageNotesEditorProps = Omit<NoteEditorProps, "layout">;
 
@@ -31,7 +31,6 @@ export default function PaginatedNotesEditor() {
   const DrawingCanvasRef = useRef<HTMLDivElement>(null);
 
   const handlePointerDown = (e: React.PointerEvent) => {
-    e.preventDefault();
     dispatch({
       type: "ZOOM_POINTER_DOWN",
       payload: {
@@ -63,6 +62,23 @@ export default function PaginatedNotesEditor() {
       type: "ZOOM_POINTER_CANCEL",
     });
   };
+
+  useLayoutEffect(() => {
+    const pageWindow = document.getElementById("pages-window") as HTMLElement;
+    const pageWindowInfo = pageWindow.getBoundingClientRect();
+
+    const canvasPageWidthDiff = pageWindowInfo.width - A4_PAGE_72PPI_W;
+    const newPositionLeft = canvasPageWidthDiff / 2;
+    console.log(newPositionLeft);
+
+    dispatch({
+      type: "PAN_CANVAS",
+      payload: {
+        left: newPositionLeft,
+        top: 0,
+      },
+    });
+  }, [dispatch]);
 
   useEffect(() => {
     const CanvasRefCurrent = DrawingCanvasRef.current;
@@ -116,6 +132,7 @@ export default function PaginatedNotesEditor() {
           ref={DrawingCanvasRef}
           style={{ height: "100%", overflow: "hidden", touchAction: "none" }}
           className="pages-window"
+          id="pages-window"
           onPointerDown={handlePointerDown}
           onPointerMove={handlePointerMove}
           onPointerUp={handlePointerUp}

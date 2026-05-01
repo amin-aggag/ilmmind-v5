@@ -1,4 +1,5 @@
 import { ActionOf, CanvasState } from "../CanvasContextTypes";
+import { getNotesViewportRect } from "./zoomDomUtils";
 
 const MAX_SCALE = 4;
 const MIN_SCALE = 0.1;
@@ -85,14 +86,26 @@ export function reducerHandleZoomPointerMove(
     { x: p2.clientX, y: p2.clientY },
   );
 
-  const { startDistance, startScale } = state.scalingValues;
+  const { startDistance, startScale: S0 } = state.scalingValues;
   if (startDistance === 0) {
     return { ...state, zoomPointerEvents: nextMap };
   }
 
   const scaleRatio = currentDistance / startDistance;
-  const nextScale = startScale * scaleRatio;
-  const scale = clamp(nextScale, MIN_SCALE, MAX_SCALE);
+  const nextScale = S0 * scaleRatio;
+  const S1 = clamp(nextScale, MIN_SCALE, MAX_SCALE);
+
+  const viewport = getNotesViewportRect();
+  const position = viewport
+    ? panForZoomAroundFocal(
+        state.position,
+        S0,
+        S1,
+        (p1.clientX + p2.clientX) / 2,
+        (p1.clientY + p2.clientY) / 2,
+        viewport,
+      )
+    : state.position;
 
   return {
     ...state,
@@ -100,8 +113,9 @@ export function reducerHandleZoomPointerMove(
     isPinching: true,
     scalingValues: {
       startDistance: currentDistance,
-      startScale: scale,
+      startScale: S1,
     },
+    position,
   };
 }
 
@@ -120,6 +134,25 @@ export function reducerHandleZoomPointerCancel(
     ...state,
     zoomPointerEvents: new Map(),
     isPinching: false,
+  };
+}
+
+/** Keeps the pinch midpoint fixed in `pages-window` while scale changes (translate + scale, origin 0 0). */
+function panForZoomAroundFocal(
+  position: CanvasState["position"],
+  scaleBefore: number,
+  scaleAfter: number,
+  focalClientX: number,
+  focalClientY: number,
+  viewport: DOMRect,
+): CanvasState["position"] {
+  if (scaleBefore <= 0) return position;
+  const pfx = focalClientX - viewport.left;
+  const pfy = focalClientY - viewport.top;
+  const ratio = scaleAfter / scaleBefore;
+  return {
+    left: pfx - (pfx - position.left) * ratio,
+    top: pfy - (pfy - position.top) * ratio,
   };
 }
 

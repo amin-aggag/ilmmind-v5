@@ -1,6 +1,6 @@
 .pages-window {
   display: flex;
-  justify-content: center;
+  justify-content:left;
 }
 
 #svg-canvases-wrapper {
