@@ -1,7 +1,6 @@
 import { createContext, useContext } from "react";
 import { useCanvasReducer } from "./useCanvasReducer";
 import { usePointerHandlers } from "./handlers/usePointerHandler";
-import { useTouchHandlers } from "./handlers/useTouchHandlers";
 import { CanvasContextValue } from "./CanvasContextTypes";
 
 export const CanvasContext = createContext<CanvasContextValue | undefined>(
@@ -11,14 +10,12 @@ export const CanvasContext = createContext<CanvasContextValue | undefined>(
 export function useCanvasStateVars(): CanvasContextValue {
   const [state, dispatch] = useCanvasReducer();
   const pointerHandlers = usePointerHandlers(state, dispatch);
-  const touchHandlers = useTouchHandlers(state, dispatch);
 
   return {
     state,
     dispatch,
     handlers: {
       pointer: pointerHandlers,
-      touch: touchHandlers,
     },
   };
 }

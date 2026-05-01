@@ -193,10 +193,5 @@ export type CanvasContextValue = {
         activePageIndex: number,
       ) => void;
     };
-    touch: {
-      handleTouchStart: (e: TouchEvent) => void;
-      handleTouchMove: (e: TouchEvent) => void;
-      handleTouchEnd: (e: TouchEvent) => void;
-    };
   };
 };
