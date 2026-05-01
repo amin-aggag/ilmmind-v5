@@ -15,13 +15,10 @@ export default function Sidebar(): React.ReactNode {
   } = useSidebarDrag();
 
   return (
-    <div
-      className={`sidebar ${isResizing ? "is-dragging" : ""}`}
-      style={{ width: `${width}px` }}
-    >
+    <div className={`sidebar`} style={{ width: `${width}px` }}>
       <div className="sidebar-content">test</div>
       <div
-        className="sidebar-width-dragger"
+        className={`sidebar-width-dragger ${isResizing ? "is-dragging" : ""}`}
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
