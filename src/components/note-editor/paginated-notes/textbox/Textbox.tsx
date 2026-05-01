@@ -10,7 +10,7 @@ import { DragHandleDots2Icon } from "@radix-ui/react-icons";
 import React from "react";
 import { useTextboxDrag } from "./useTextboxDrag";
 
-const findUserHasUndoneOrRedone = (canvasState: CanvasState) => {
+const findUserHasUndoneOrRedone = (canvasState: CanvasState): number => {
   const { states, historyIndex } = canvasState;
 
   const userHasUndoneOrRedone = states.length - 1 - historyIndex;
@@ -26,7 +26,7 @@ export const TextboxComponent = ({
   pageIndex: number;
   textboxIndex: number;
   textboxData: Textbox;
-}) => {
+}): React.ReactNode => {
   const canvasStateVars = useCanvasContext();
   const textboxInteractionPosition =
     canvasStateVars.state.textboxInteractionPosition;

@@ -22,7 +22,7 @@ export function reducerHandleDrawingPointerDown(
 export function reducerHandleDrawingPointerMove(
   state: CanvasState,
   action: ActionOf<"POINTER_MOVE">,
-) {
+): CanvasState {
   return {
     ...state,
     points: action.payload.points,
@@ -33,7 +33,7 @@ export function reducerHandleDrawingPointerMove(
 export function reducerHandleDrawingPointerUp(
   state: CanvasState,
   action: ActionOf<"POINTER_UP">,
-) {
+): CanvasState {
   // The new stroke that was just drawn
   const newPathData: SvgPathData = {
     path: action.payload.pathData,

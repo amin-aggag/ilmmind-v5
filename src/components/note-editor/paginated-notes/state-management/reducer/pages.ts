@@ -1,6 +1,6 @@
 import { CanvasState } from "../CanvasContextTypes";
 
-export function reducerHandleAddPage(state: CanvasState) {
+export function reducerHandleAddPage(state: CanvasState): CanvasState {
   const updatedState = state.states.slice(0, state.historyIndex + 1);
   const updated_notebook = updatedState[state.historyIndex].slice();
   updated_notebook.push({

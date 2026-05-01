@@ -10,7 +10,7 @@ export function reducerHandleAddTextbox(
   state: CanvasState,
   action: ActionOf<"ADD_TEXTBOX">,
   pageClickedInfo: DOMRect,
-) {
+): CanvasState {
   // Copying the overall state array into another (temporary) array
   const updatedState = state.states.slice(0, state.historyIndex + 1);
   const currentPage =

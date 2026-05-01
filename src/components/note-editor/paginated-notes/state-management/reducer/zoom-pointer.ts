@@ -59,12 +59,8 @@ export function reducerHandleZoomPointerMove(
   }
 
   const e = action.payload.e;
-  const pointerAEvent = state.zoomPointerEvents.get(1) as
-    | React.PointerEvent
-    | undefined;
-  const pointerBEvent = state.zoomPointerEvents.get(2) as
-    | React.PointerEvent
-    | undefined;
+  const pointerAEvent = state.zoomPointerEvents.get(1);
+  const pointerBEvent = state.zoomPointerEvents.get(2);
 
   if (!pointerAEvent || !pointerBEvent) {
     return { ...state };
@@ -165,14 +161,14 @@ function distance(
     x: number;
     y: number;
   },
-) {
+): number {
   const dx = touchB.x - touchA.x;
   const dy = touchB.y - touchA.y;
 
   return Math.sqrt(dx * dx + dy * dy);
 }
 
-function clamp(nextScale: number, minScale: number, maxScale: number) {
+function clamp(nextScale: number, minScale: number, maxScale: number): number {
   if (nextScale <= minScale) return minScale;
 
   if (nextScale >= maxScale) return maxScale;

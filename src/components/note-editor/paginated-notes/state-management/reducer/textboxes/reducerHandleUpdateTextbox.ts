@@ -4,7 +4,7 @@ import { deepCopy } from "../utils/utils";
 export function reducerHandleUpdateTextbox(
   state: CanvasState,
   action: ActionOf<"UPDATE_TEXTBOX">,
-) {
+): CanvasState {
   // Copying the overall state array into another (temporary) array
   const updatedState = state.states.slice(0, state.historyIndex + 1);
 
