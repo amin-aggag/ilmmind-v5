@@ -34,6 +34,7 @@ export function Page({ pageIndex }: { pageIndex: number }) {
     historyIndex,
     isTextMode,
     isDraggingTextbox,
+    isPinching,
   } = state;
 
   // console.log("SVGCanvas: state: ", state);
@@ -65,6 +66,14 @@ export function Page({ pageIndex }: { pageIndex: number }) {
 
   const handlePointerMove = (e: React.PointerEvent<SVGSVGElement>) => {
     pointer.handlePointerMove(e.nativeEvent, pageIndex);
+    // Pointer capture on the SVG retargets moves here; the parent
+    // `pages-window` listener never sees them, so zoom must be updated too.
+    if (isPinching) {
+      dispatch({
+        type: "ZOOM_POINTER_MOVE",
+        payload: { e },
+      });
+    }
   };
 
   const handlePointerUp = (e: React.PointerEvent<SVGSVGElement>) => {

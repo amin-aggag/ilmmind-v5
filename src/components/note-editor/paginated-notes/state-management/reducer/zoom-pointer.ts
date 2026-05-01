@@ -10,42 +10,37 @@ export function reducerHandleZoomPointerDown(
   const numActivePointers = state.zoomPointerEvents.size;
 
   if (numActivePointers < 2) {
+    const zoomPointerEvents = new Map(state.zoomPointerEvents).set(
+      numActivePointers + 1,
+      action.payload.e,
+    );
+
+    // Second finger: map now has two contacts — set pinch baseline so
+    // startDistance is never 0 on the first ZOOM_POINTER_MOVE.
+    if (numActivePointers === 1) {
+      const pointerAEvent = zoomPointerEvents.get(1) as React.PointerEvent;
+      const pointerBEvent = zoomPointerEvents.get(2) as React.PointerEvent;
+      const startDistance = distance(
+        { x: pointerAEvent.clientX, y: pointerAEvent.clientY },
+        { x: pointerBEvent.clientX, y: pointerBEvent.clientY },
+      );
+
+      return {
+        ...state,
+        zoomPointerEvents,
+        isPinching: true,
+        scalingValues: {
+          startDistance,
+          startScale: state.scalingValues.startScale,
+        },
+        zoomPointersHaveUpdated: true,
+      };
+    }
+
     return {
       ...state,
-      zoomPointerEvents: new Map(state.zoomPointerEvents).set(
-        numActivePointers + 1,
-        action.payload.e,
-      ),
-      // isPinching is set to true when the second pointer event is being
-      // added, i.e. when the first one has already been added and
-      // numActivePointers is equal to 1
-      isPinching: numActivePointers === 1 ? true : false,
-    };
-  }
-
-  if (numActivePointers === 2 || state.isPinching === true) {
-    const activeZoomPointerEvents = state.zoomPointerEvents;
-    const pointerAEvent = activeZoomPointerEvents.get(1) as React.PointerEvent;
-    const pointerBEvent = activeZoomPointerEvents.get(2) as React.PointerEvent;
-
-    const pointerA = {
-      x: pointerAEvent?.clientX,
-      y: pointerAEvent?.clientY,
-    };
-
-    const pointerB = {
-      x: pointerBEvent?.clientX,
-      y: pointerBEvent?.clientY,
-    };
-
-    return {
-      ...state,
-      isPinching: true,
-      scalingValues: {
-        startDistance: distance(pointerA, pointerB),
-        startScale: 1,
-      },
-      zoomPointersHaveUpdated: true,
+      zoomPointerEvents,
+      isPinching: false,
     };
   }
 
@@ -58,71 +53,55 @@ export function reducerHandleZoomPointerMove(
   state: CanvasState,
   action: ActionOf<"ZOOM_POINTER_MOVE">,
 ): CanvasState {
-  if (!state.isPinching)
-    return {
-      ...state,
-    };
-
-  const activeZoomPointerEvents = state.zoomPointerEvents;
-  const pointerAEvent = activeZoomPointerEvents.get(1) as React.PointerEvent;
-  let pointerBEvent = activeZoomPointerEvents.get(2) as React.PointerEvent;
-
-  if (action.payload.e.pointerId === pointerAEvent.pointerId) {
-    return {
-      ...state,
-      zoomPointerEvents: new Map(state.zoomPointerEvents).set(
-        1,
-        action.payload.e,
-      ),
-    };
+  if (!state.isPinching) {
+    return { ...state };
   }
 
-  // If the incoming pointer event is the updated information of
-  // the second pointer, the below code can run as the updated
-  // information of both pointers is now present.
-  if (action.payload.e.pointerId === pointerBEvent.pointerId) {
-    pointerBEvent = action.payload.e;
+  const e = action.payload.e;
+  const pointerAEvent = state.zoomPointerEvents.get(1) as
+    | React.PointerEvent
+    | undefined;
+  const pointerBEvent = state.zoomPointerEvents.get(2) as
+    | React.PointerEvent
+    | undefined;
 
-    const startScale = state.scalingValues.startScale;
-    const startDistance = state.scalingValues.startDistance;
-
-    let currentDistance = startDistance;
-    if (state.isPinching) {
-      currentDistance = distance(
-        {
-          x: pointerAEvent.clientX,
-          y: pointerAEvent.clientY,
-        },
-        {
-          x: pointerBEvent.clientX,
-          y: pointerBEvent.clientY,
-        },
-      );
-    }
-
-    if (startDistance === 0)
-      return {
-        ...state,
-      }; // avoids dividing by 0
-
-    const scaleRatio = currentDistance / startDistance;
-
-    const nextScale = startScale * scaleRatio;
-
-    const scale = clamp(nextScale, MIN_SCALE, MAX_SCALE);
-
-    return {
-      ...state,
-      isPinching: true,
-      scalingValues: {
-        startDistance: currentDistance,
-        startScale: scale,
-      },
-    };
+  if (!pointerAEvent || !pointerBEvent) {
+    return { ...state };
   }
+
+  const nextMap = new Map(state.zoomPointerEvents);
+  if (e.pointerId === pointerAEvent.pointerId) {
+    nextMap.set(1, e);
+  } else if (e.pointerId === pointerBEvent.pointerId) {
+    nextMap.set(2, e);
+  } else {
+    return { ...state };
+  }
+
+  const p1 = nextMap.get(1) as React.PointerEvent;
+  const p2 = nextMap.get(2) as React.PointerEvent;
+  const currentDistance = distance(
+    { x: p1.clientX, y: p1.clientY },
+    { x: p2.clientX, y: p2.clientY },
+  );
+
+  const { startDistance, startScale } = state.scalingValues;
+  if (startDistance === 0) {
+    return { ...state, zoomPointerEvents: nextMap };
+  }
+
+  const scaleRatio = currentDistance / startDistance;
+  const nextScale = startScale * scaleRatio;
+  const scale = clamp(nextScale, MIN_SCALE, MAX_SCALE);
 
   return {
     ...state,
+    zoomPointerEvents: nextMap,
+    isPinching: true,
+    scalingValues: {
+      startDistance: currentDistance,
+      startScale: scale,
+    },
   };
 }
 

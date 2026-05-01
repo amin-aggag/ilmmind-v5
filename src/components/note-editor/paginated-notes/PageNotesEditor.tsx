@@ -114,7 +114,7 @@ export default function PaginatedNotesEditor() {
         </div>
         <div
           ref={DrawingCanvasRef}
-          style={{ height: "100%", overflow: "hidden", scale: `${startScale}` }}
+          style={{ height: "100%", overflow: "hidden", touchAction: "none" }}
           className="pages-window"
           onPointerDown={handlePointerDown}
           onPointerMove={handlePointerMove}
@@ -124,7 +124,8 @@ export default function PaginatedNotesEditor() {
           <div
             style={{
               position: "relative",
-              transform: `translate(${position.left}px, ${position.top}px)`,
+              transform: `translate(${position.left}px, ${position.top}px) scale(${startScale})`,
+              transformOrigin: "0 0",
               height: "min-content",
               width: "min-content",
             }}
