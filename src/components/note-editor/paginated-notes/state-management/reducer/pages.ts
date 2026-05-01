@@ -1,7 +1,8 @@
 import { CanvasState } from "../CanvasContextTypes";
 
 export function reducerHandleAddPage(state: CanvasState) {
-  const updated_notebook = state.states[state.historyIndex].slice();
+  const updatedState = state.states.slice(0, state.historyIndex + 1);
+  const updated_notebook = updatedState[state.historyIndex].slice();
   updated_notebook.push({
     svgData: [],
     textBoxes: [],
@@ -9,7 +10,7 @@ export function reducerHandleAddPage(state: CanvasState) {
 
   return {
     ...state,
-    states: [...state.states, updated_notebook],
+    states: [...updatedState, updated_notebook],
     historyIndex: state.historyIndex + 1,
   };
 }

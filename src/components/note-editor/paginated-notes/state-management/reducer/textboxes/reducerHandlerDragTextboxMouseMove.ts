@@ -9,7 +9,7 @@ export function reducerHandleDragTextboxPointerMove(
   svgCanvasesWrapperInfo: DOMRect,
 ) {
   // Copying the overall state array into another (temporary) array
-  const updatedState = state.states.slice();
+  const updatedState = state.states.slice(0, state.historyIndex + 1);
   const updatedPage = deepCopy(
     updatedState[state.historyIndex][action.payload.pageIndex],
   );

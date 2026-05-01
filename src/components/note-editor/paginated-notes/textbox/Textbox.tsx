@@ -28,8 +28,8 @@ export const TextboxComponent = ({
   textboxData: Textbox;
 }) => {
   const canvasStateVars = useCanvasContext();
-  const textboxInteractionPosition = canvasStateVars.state
-    .textboxInteractionPosition as Textbox["position"];
+  const textboxInteractionPosition =
+    canvasStateVars.state.textboxInteractionPosition;
 
   const userHasUndoneOrRedone = findUserHasUndoneOrRedone(
     canvasStateVars.state,

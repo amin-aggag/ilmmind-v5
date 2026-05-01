@@ -12,7 +12,7 @@ export function reducerHandleAddTextbox(
   pageClickedInfo: DOMRect,
 ) {
   // Copying the overall state array into another (temporary) array
-  const updatedState = state.states.slice();
+  const updatedState = state.states.slice(0, state.historyIndex + 1);
   const currentPage =
     updatedState[state.historyIndex][action.payload.pageIndex];
 
@@ -38,7 +38,7 @@ export function reducerHandleAddTextbox(
 
   return {
     ...state,
-    states: [...state.states, updatedNotebook],
+    states: [...updatedState, updatedNotebook],
     historyIndex: state.historyIndex + 1,
     isTextMode: false,
   };
