@@ -69,7 +69,6 @@ export default function PaginatedNotesEditor(): React.ReactNode {
 
     const canvasPageWidthDiff = pageWindowInfo.width - A4_PAGE_72PPI_W;
     const newPositionLeft = canvasPageWidthDiff / 2;
-    console.log(newPositionLeft);
 
     dispatch({
       type: "PAN_CANVAS",

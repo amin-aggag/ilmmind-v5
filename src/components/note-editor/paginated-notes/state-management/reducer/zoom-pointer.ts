@@ -54,17 +54,13 @@ export function reducerHandleZoomPointerMove(
   state: CanvasState,
   action: ActionOf<"ZOOM_POINTER_MOVE">,
 ): CanvasState {
-  if (!state.isPinching) {
-    return { ...state };
-  }
+  if (!state.isPinching) return { ...state };
 
   const e = action.payload.e;
   const pointerAEvent = state.zoomPointerEvents.get(1);
   const pointerBEvent = state.zoomPointerEvents.get(2);
 
-  if (!pointerAEvent || !pointerBEvent) {
-    return { ...state };
-  }
+  if (!pointerAEvent || !pointerBEvent) return { ...state };
 
   const oldMidX = (pointerAEvent.clientX + pointerBEvent.clientX) / 2;
   const oldMidY = (pointerAEvent.clientY + pointerBEvent.clientY) / 2;
@@ -95,7 +91,11 @@ export function reducerHandleZoomPointerMove(
 
   const { startDistance, startScale: S0 } = state.scalingValues;
   if (startDistance === 0) {
-    return { ...state, zoomPointerEvents: nextMap, position: positionAfterMidPan };
+    return {
+      ...state,
+      zoomPointerEvents: nextMap,
+      position: positionAfterMidPan,
+    };
   }
 
   const scaleRatio = currentDistance / startDistance;

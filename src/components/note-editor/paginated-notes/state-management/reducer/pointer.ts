@@ -11,6 +11,9 @@ export function reducerHandleDrawingPointerDown(
   state: CanvasState,
   action: ActionOf<"POINTER_DOWN">,
 ): CanvasState {
+  // Trying to fix the 'drawing while zooming in/out' problem
+  // if (state.zoomPointerEvents.size >= 1) return { ...state };
+
   return {
     ...state,
     points: action.payload.points,
