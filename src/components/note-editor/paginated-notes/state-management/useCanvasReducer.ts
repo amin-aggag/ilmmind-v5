@@ -4,7 +4,7 @@ import {
   reducerHandleDrawingPointerDown,
   reducerHandleDrawingPointerMove,
   reducerHandleDrawingPointerUp,
-} from "./reducer/pointer";
+} from "./reducer/drawing-pointer";
 import {
   reducerHandleSetMovingCanvas,
   reducerHandlePanCanvas,
@@ -15,12 +15,10 @@ import { reducerHandleAddTextbox } from "./reducer/textboxes/reducerHandleAddTex
 import { reducerHandleUpdateTextbox } from "./reducer/textboxes/reducerHandleUpdateTextbox";
 import { reducerHandleDragTextboxPointerMove } from "./reducer/textboxes/reducerHandlerDragTextboxMouseMove";
 import { reducerHandleDragTextboxPointerUp } from "./reducer/textboxes/reducerHandleDragTextboxPointerUp";
-import {
-  reducerHandleZoomPointerCancel,
-  reducerHandleZoomPointerDown,
-  reducerHandleZoomPointerMove,
-  reducerHandleZoomPointerUp,
-} from "./reducer/zoom-pointer";
+import { reducerHandleZoomPointerDown } from "./reducer/zoom-pointer/reducerHandleZoomPointerDown";
+import { reducerHandleZoomPointerMove } from "./reducer/zoom-pointer/reducerHandleZoomPointerMove";
+import { reducerHandleZoomPointerUp } from "./reducer/zoom-pointer/reducerHandleZoomPointerUp";
+import { reducerHandleZoomPointerCancel } from "./reducer/zoom-pointer/reducerHandleZoomPointerCancel";
 
 const initialState: CanvasState = {
   points: [],
