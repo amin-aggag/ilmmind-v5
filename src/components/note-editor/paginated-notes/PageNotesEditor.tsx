@@ -12,12 +12,14 @@
 // }
 import { A4_PAGE_72PPI_W, Page } from "./Page";
 import "./PaginatedNoteEditor.css";
+import { zoomPointerContactFromEvent } from "./state-management/reducer/utils/utils";
 
 // pages/SVGCanvas.tsx
 import {
   CanvasContext,
   useCanvasStateVars,
 } from "./state-management/useCanvasContext";
+import type { ZoomPointerContact } from "./state-management/CanvasContextTypes";
 import UI from "./ui/UI";
 import React, { useEffect, useLayoutEffect, useRef } from "react";
 
@@ -28,14 +30,20 @@ export default function PaginatedNotesEditor(): React.ReactNode {
   const { states, position, historyIndex } = canvasStateVars.state;
   const { startScale } = canvasStateVars.state.scalingValues;
   const dispatch = canvasStateVars.dispatch;
+
+  const zoomContact = (e: React.PointerEvent): ZoomPointerContact =>
+    zoomPointerContactFromEvent(
+      e.nativeEvent,
+      position.left,
+      position.top,
+      startScale,
+    );
   const DrawingCanvasRef = useRef<HTMLDivElement>(null);
 
   const handlePointerDown = (e: React.PointerEvent): void => {
     dispatch({
       type: "ZOOM_POINTER_DOWN",
-      payload: {
-        e,
-      },
+      payload: { contact: zoomContact(e) },
     });
   };
 
@@ -43,9 +51,7 @@ export default function PaginatedNotesEditor(): React.ReactNode {
     e.preventDefault();
     dispatch({
       type: "ZOOM_POINTER_MOVE",
-      payload: {
-        e,
-      },
+      payload: { contact: zoomContact(e) },
     });
   };
 
@@ -147,6 +153,18 @@ export default function PaginatedNotesEditor(): React.ReactNode {
             }}
             id="svg-canvases-wrapper"
           >
+            <svg
+              id="canvas-wrapper-coord-svg"
+              aria-hidden
+              style={{
+                position: "absolute",
+                left: 0,
+                top: 0,
+                width: "100%",
+                height: "100%",
+                pointerEvents: "none",
+              }}
+            />
             {states[historyIndex].map((_, pageIndex) => (
               <Page pageIndex={pageIndex} key={pageIndex} />
             ))}

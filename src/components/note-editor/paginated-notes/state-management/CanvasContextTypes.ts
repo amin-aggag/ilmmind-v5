@@ -29,6 +29,13 @@ export type Notebook = Page[];
 
 export type Point = [number, number, number]; // [x, y, pressure]
 
+/** Pinch sample in #pages-window space (same units as position.left/top). */
+export type ZoomPointerContact = {
+  pointerId: number;
+  x: number;
+  y: number;
+};
+
 export type CanvasState = {
   // Drawing state
   points: Point[];
@@ -64,7 +71,7 @@ export type CanvasState = {
     startDistance: number;
     startScale: number;
   };
-  zoomPointerEvents: Map<number, React.PointerEvent>;
+  zoomPointerEvents: Map<number, ZoomPointerContact>;
   zoomPointersHaveUpdated: boolean;
 };
 
@@ -93,13 +100,13 @@ export type CanvasAction =
   | {
       type: "ZOOM_POINTER_DOWN";
       payload: {
-        e: React.PointerEvent;
+        contact: ZoomPointerContact;
       };
     }
   | {
       type: "ZOOM_POINTER_MOVE";
       payload: {
-        e: React.PointerEvent;
+        contact: ZoomPointerContact;
       };
     }
   | {

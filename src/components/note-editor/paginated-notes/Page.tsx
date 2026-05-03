@@ -1,4 +1,5 @@
 import { useCanvasContext } from "./state-management/useCanvasContext";
+import { zoomPointerContactFromEvent } from "./state-management/reducer/utils/utils";
 import getStroke from "perfect-freehand";
 import { TextboxComponent } from "./textbox/Textbox";
 import React, { MouseEventHandler } from "react";
@@ -35,6 +36,8 @@ export function Page({ pageIndex }: { pageIndex: number }): React.ReactNode {
     isTextMode,
     isDraggingTextbox,
     isPinching,
+    position,
+    scalingValues,
   } = state;
 
   const pageData = state.states[historyIndex][pageIndex];
@@ -69,7 +72,14 @@ export function Page({ pageIndex }: { pageIndex: number }): React.ReactNode {
     if (isPinching) {
       dispatch({
         type: "ZOOM_POINTER_MOVE",
-        payload: { e },
+        payload: {
+          contact: zoomPointerContactFromEvent(
+            e.nativeEvent,
+            position.left,
+            position.top,
+            scalingValues.startScale,
+          ),
+        },
       });
     }
   };

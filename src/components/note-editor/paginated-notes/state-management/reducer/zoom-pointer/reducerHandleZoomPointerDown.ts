@@ -10,17 +10,17 @@ export function reducerHandleZoomPointerDown(
   if (numActivePointers < 2) {
     const zoomPointerEvents = new Map(state.zoomPointerEvents).set(
       numActivePointers + 1,
-      action.payload.e,
+      action.payload.contact,
     );
 
     // Second finger: map now has two contacts — set pinch baseline so
     // startDistance is never 0 on the first ZOOM_POINTER_MOVE.
     if (numActivePointers === 1) {
-      const pointerAEvent = zoomPointerEvents.get(1) as React.PointerEvent;
-      const pointerBEvent = zoomPointerEvents.get(2) as React.PointerEvent;
+      const pointerA = zoomPointerEvents.get(1)!;
+      const pointerB = zoomPointerEvents.get(2)!;
       const startDistance = distance(
-        { x: pointerAEvent.clientX, y: pointerAEvent.clientY },
-        { x: pointerBEvent.clientX, y: pointerBEvent.clientY },
+        { x: pointerA.x, y: pointerA.y },
+        { x: pointerB.x, y: pointerB.y },
       );
 
       return {

@@ -37,7 +37,7 @@ const initialState: CanvasState = {
     startDistance: 0,
     startScale: 1,
   },
-  zoomPointerEvents: new Map<number, React.PointerEvent>(),
+  zoomPointerEvents: new Map(),
   zoomPointersHaveUpdated: false,
   activePageIndex: 0,
 };

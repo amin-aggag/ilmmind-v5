@@ -1,7 +1,18 @@
 import { ActionOf, CanvasState } from "../CanvasContextTypes";
+import { clientToSvgUserPoint } from "../reducer/utils/utils";
 import React from "react";
 
 type POINTER_EVENTS = "POINTER_DOWN" | "POINTER_MOVE" | "POINTER_UP";
+
+function svgCoordsFromPointerEvent(e: PointerEvent): [number, number] | null {
+  const svg = (e.target as Element | null)?.closest(
+    ".svg-canvas",
+  ) as SVGSVGElement | null;
+  if (!svg) return null;
+  const p = clientToSvgUserPoint(svg, e.clientX, e.clientY);
+  if (!p) return null;
+  return [p.x, p.y];
+}
 
 type usePointerHandlersReturn = {
   handlePointerDown: (e: PointerEvent, activePageIndex: number) => void;
@@ -21,16 +32,16 @@ export function usePointerHandlers(
     e: PointerEvent,
     activePageIndex: number,
   ): void => {
-    const target = e.target as SVGSVGElement;
-    target.setPointerCapture(e.pointerId);
+    const svg = (e.target as Element | null)?.closest(
+      ".svg-canvas",
+    ) as SVGSVGElement | null;
+    if (!svg) return;
+    svg.setPointerCapture(e.pointerId);
 
-    const points: [number, number, number][] = [
-      [
-        e.pageX - (e.target as SVGSVGElement).getBoundingClientRect().left,
-        e.pageY - (e.target as SVGSVGElement).getBoundingClientRect().top,
-        e.pressure,
-      ],
-    ];
+    const xy = svgCoordsFromPointerEvent(e);
+    if (!xy) return;
+
+    const points: [number, number, number][] = [[xy[0], xy[1], e.pressure]];
 
     dispatch({
       type: "POINTER_DOWN",
@@ -50,13 +61,12 @@ export function usePointerHandlers(
       // console.log("handlePointerMove: e.buttons = ", e.buttons);
       if (e.buttons !== 1) return;
 
+      const xy = svgCoordsFromPointerEvent(e);
+      if (!xy) return;
+
       const newPoints: [number, number, number][] = [
         ...state.points,
-        [
-          e.pageX - (e.target as SVGSVGElement).getBoundingClientRect().left,
-          e.pageY - (e.target as SVGSVGElement).getBoundingClientRect().top,
-          e.pressure,
-        ],
+        [xy[0], xy[1], e.pressure],
       ];
 
       dispatch({
