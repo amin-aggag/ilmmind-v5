@@ -12,15 +12,26 @@ export function reducerHandleZoomPointerMove(
   state: CanvasState,
   action: ActionOf<"ZOOM_POINTER_MOVE">,
 ): CanvasState {
-  if (!state.isPinching) return { ...state };
-
   const contact = action.payload.contact;
+  if (contact.pointerType !== "touch") {
+    return { ...state };
+  }
+
+  if (state.gestureTarget === "pending" && state.zoomPointerEvents.size === 1) {
+    const [[key, stored]] = [...state.zoomPointerEvents.entries()];
+    if (stored.pointerId !== contact.pointerId) return { ...state };
+    const nextMap = new Map(state.zoomPointerEvents);
+    nextMap.set(key, contact);
+    return { ...state, zoomPointerEvents: nextMap };
+  }
+
+  if (state.gestureTarget !== "zoom") return { ...state };
+
   const pointerA = state.zoomPointerEvents.get(1);
   const pointerB = state.zoomPointerEvents.get(2);
 
   if (!pointerA || !pointerB) return { ...state };
 
-  // The pinch midpoint before the new events. Two-finger pan is the movement of this midpoint to the new midpoint.
   const oldMidX = (pointerA.x + pointerB.x) / 2;
   const oldMidY = (pointerA.y + pointerB.y) / 2;
 
@@ -38,7 +49,6 @@ export function reducerHandleZoomPointerMove(
   const newMidX = (p1.x + p2.x) / 2;
   const newMidY = (p1.y + p2.y) / 2;
 
-  // Translation from moving the pinch midpoint; zoom adjustment is applied on top of this below.
   const positionAfterMidPan = {
     left: state.position.left + (newMidX - oldMidX),
     top: state.position.top + (newMidY - oldMidY),
@@ -47,7 +57,6 @@ export function reducerHandleZoomPointerMove(
   const currentDistance = distance({ x: p1.x, y: p1.y }, { x: p2.x, y: p2.y });
 
   const { startDistance, startScale: S0 } = state.scalingValues;
-  // Avoids dividing by 0
   if (startDistance === 0) {
     return {
       ...state,
@@ -60,7 +69,6 @@ export function reducerHandleZoomPointerMove(
   const nextScale = S0 * scaleRatio;
   const S1 = clamp(nextScale, MIN_SCALE, MAX_SCALE);
 
-  // Keep the pinch midpoint aligned with the fingers when scale changes.
   const position = translateToKeepViewportPointFixed(
     positionAfterMidPan,
     S0,
@@ -72,13 +80,11 @@ export function reducerHandleZoomPointerMove(
   return {
     ...state,
     zoomPointerEvents: nextMap,
-    isPinching: true,
+    gestureTarget: "zoom",
     scalingValues: {
       startDistance: currentDistance,
       startScale: S1,
     },
-    // Rebaseline finger span and scale each move so the next ratio is incremental (D₂/D₁)
-    // while the composed scale still matches span vs the original pinch-down distance.
     position,
   };
 }

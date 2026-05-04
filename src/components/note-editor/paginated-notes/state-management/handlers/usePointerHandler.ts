@@ -32,6 +32,12 @@ export function usePointerHandlers(
     e: PointerEvent,
     activePageIndex: number,
   ): void => {
+    if (state.gestureTarget === "pending" || state.gestureTarget === "zoom") {
+      return;
+    }
+    if (state.isDrawing) {
+      return;
+    }
     const svg = (e.target as Element | null)?.closest(
       ".svg-canvas",
     ) as SVGSVGElement | null;
@@ -58,8 +64,11 @@ export function usePointerHandlers(
       e.pointerType === "mouse" ||
       e.pointerType === "touch"
     ) {
-      // console.log("handlePointerMove: e.buttons = ", e.buttons);
-      if (e.buttons !== 1) return;
+      const touchStrokeAfterResolve =
+        e.pointerType === "touch" &&
+        state.gestureTarget === "draw" &&
+        state.isDrawing;
+      if (!touchStrokeAfterResolve && e.buttons !== 1) return;
 
       const xy = svgCoordsFromPointerEvent(e);
       if (!xy) return;

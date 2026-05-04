@@ -58,7 +58,14 @@ export function clientToNotesViewportFocal(
 }
 
 export function zoomPointerContactFromEvent(
-  e: Pick<PointerEvent, "clientX" | "clientY" | "pointerId" | "timeStamp">,
+  e: Pick<
+    PointerEvent,
+    | "clientX"
+    | "clientY"
+    | "pointerId"
+    | "timeStamp"
+    | "pointerType"
+  >,
   translateL: number,
   translateT: number,
   scale: number,
@@ -70,19 +77,38 @@ export function zoomPointerContactFromEvent(
     translateT,
     scale,
   );
+  const base = {
+    pointerId: e.pointerId,
+    timeStamp: e.timeStamp,
+    pointerType: e.pointerType as ZoomPointerContact["pointerType"],
+    clientX: e.clientX,
+    clientY: e.clientY,
+  };
   if (mapped) {
-    return { pointerId: e.pointerId, x: mapped.x, y: mapped.y, timeStamp: e.timeStamp };
+    return { ...base, x: mapped.x, y: mapped.y };
   }
   const viewport = getNotesViewportRect();
   if (viewport) {
     return {
-      pointerId: e.pointerId,
+      ...base,
       x: e.clientX - viewport.left,
       y: e.clientY - viewport.top,
-      timeStamp: e.timeStamp
     };
   }
-  return { pointerId: e.pointerId, x: e.clientX, y: e.clientY, timeStamp: e.timeStamp };
+  return { ...base, x: e.clientX, y: e.clientY };
+}
+
+/** Remove one pointer and compact keys to 1..n (pinch slot order). */
+export function removeZoomPointerById(
+  map: Map<number, ZoomPointerContact>,
+  pointerId: number,
+): Map<number, ZoomPointerContact> {
+  const values = [...map.values()].filter((c) => c.pointerId !== pointerId);
+  const next = new Map<number, ZoomPointerContact>();
+  values.forEach((c, i) => {
+    next.set(i + 1, c);
+  });
+  return next;
 }
 
 export function distance(

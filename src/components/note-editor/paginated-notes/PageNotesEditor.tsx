@@ -22,12 +22,19 @@ import {
 import type { ZoomPointerContact } from "./state-management/CanvasContextTypes";
 import UI from "./ui/UI";
 import React, { useEffect, useLayoutEffect, useRef } from "react";
+import { flushSync } from "react-dom";
 
 // type PageNotesEditorProps = Omit<NoteEditorProps, "layout">;
 
 export default function PaginatedNotesEditor(): React.ReactNode {
   const canvasStateVars = useCanvasStateVars();
   const { states, position, historyIndex } = canvasStateVars.state;
+  const {
+    gestureTarget,
+    zoomPointerEvents,
+    activeDrawPointerId,
+    activePageIndex,
+  } = canvasStateVars.state;
   const { startScale } = canvasStateVars.state.scalingValues;
   const dispatch = canvasStateVars.dispatch;
 
@@ -40,14 +47,19 @@ export default function PaginatedNotesEditor(): React.ReactNode {
     );
   const DrawingCanvasRef = useRef<HTMLDivElement>(null);
 
-  const handlePointerDown = (e: React.PointerEvent): void => {
-    dispatch({
-      type: "ZOOM_POINTER_DOWN",
-      payload: { contact: zoomContact(e) },
+  /** Touch pinch / pending-gesture pipeline (capture runs before page SVG handlers). */
+  const handlePointerDownCapture = (e: React.PointerEvent): void => {
+    if (e.pointerType !== "touch") return;
+    flushSync(() => {
+      dispatch({
+        type: "ZOOM_POINTER_DOWN",
+        payload: { contact: zoomContact(e) },
+      });
     });
   };
 
-  const handlePointerMove = (e: React.PointerEvent): void => {
+  const handlePointerMoveCapture = (e: React.PointerEvent): void => {
+    if (e.pointerType !== "touch") return;
     e.preventDefault();
     dispatch({
       type: "ZOOM_POINTER_MOVE",
@@ -55,19 +67,49 @@ export default function PaginatedNotesEditor(): React.ReactNode {
     });
   };
 
-  const handlePointerUp = (e: React.PointerEvent): void => {
+  const handlePointerUpCapture = (e: React.PointerEvent): void => {
+    if (e.pointerType !== "touch") return;
     e.preventDefault();
     dispatch({
       type: "ZOOM_POINTER_UP",
+      payload: { pointerId: e.pointerId },
     });
   };
 
-  const handlePointerCancel = (e: React.PointerEvent): void => {
+  const handlePointerCancelCapture = (e: React.PointerEvent): void => {
+    if (e.pointerType !== "touch") return;
     e.preventDefault();
     dispatch({
       type: "ZOOM_POINTER_CANCEL",
+      payload: { pointerId: e.pointerId },
     });
   };
+
+  useEffect(() => {
+    if (gestureTarget !== "pending" || zoomPointerEvents.size !== 1) {
+      return;
+    }
+    const id = window.setTimeout(() => {
+      dispatch({ type: "RESOLVE_PENDING_GESTURE" });
+    }, 20);
+    return (): void => {
+      window.clearTimeout(id);
+    };
+  }, [gestureTarget, zoomPointerEvents.size, dispatch]);
+
+  useLayoutEffect(() => {
+    if (gestureTarget !== "draw" || activeDrawPointerId === null) return;
+    const el = document.querySelector(
+      `.svg-canvas[data-page-index="${activePageIndex}"]`,
+    );
+    if (!(el instanceof SVGSVGElement)) return;
+    const svg = el;
+    try {
+      svg.setPointerCapture(activeDrawPointerId);
+    } catch {
+      /* capture may fail if pointer was lost */
+    }
+  }, [gestureTarget, activeDrawPointerId, activePageIndex]);
 
   useLayoutEffect(() => {
     const pageWindow = document.getElementById("pages-window") as HTMLElement;
@@ -138,10 +180,10 @@ export default function PaginatedNotesEditor(): React.ReactNode {
           style={{ height: "100%", overflow: "hidden", touchAction: "none" }}
           className="pages-window"
           id="pages-window"
-          onPointerDown={handlePointerDown}
-          onPointerMove={handlePointerMove}
-          onPointerUp={handlePointerUp}
-          onPointerCancel={handlePointerCancel}
+          onPointerDownCapture={handlePointerDownCapture}
+          onPointerMoveCapture={handlePointerMoveCapture}
+          onPointerUpCapture={handlePointerUpCapture}
+          onPointerCancelCapture={handlePointerCancelCapture}
         >
           <div
             style={{

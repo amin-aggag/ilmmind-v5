@@ -28,14 +28,13 @@ export function Page({ pageIndex }: { pageIndex: number }): React.ReactNode {
   const { state, handlers, dispatch } = useCanvasContext();
   const { pointer } = handlers;
   const {
-    isDrawing,
     pen,
     isMovingCanvas,
     points,
     historyIndex,
     isTextMode,
     isDraggingTextbox,
-    isPinching,
+    gestureTarget,
     position,
     scalingValues,
   } = state;
@@ -69,7 +68,7 @@ export function Page({ pageIndex }: { pageIndex: number }): React.ReactNode {
     pointer.handlePointerMove(e.nativeEvent, pageIndex);
     // Pointer capture on the SVG retargets moves here; the parent
     // `pages-window` listener never sees them, so zoom must be updated too.
-    if (isPinching) {
+    if (gestureTarget === "zoom") {
       dispatch({
         type: "ZOOM_POINTER_MOVE",
         payload: {
@@ -105,26 +104,22 @@ export function Page({ pageIndex }: { pageIndex: number }): React.ReactNode {
     });
   };
 
+  const blockSvgInk =
+    gestureTarget === "pending" ||
+    gestureTarget === "zoom" ||
+    isMovingCanvas ||
+    isTextMode ||
+    isDraggingTextbox;
+
   return (
     <div>
       <svg
-        onPointerDown={
-          isMovingCanvas || isTextMode || isDraggingTextbox || isPinching
-            ? undefined
-            : handlePointerDown
-        }
-        onPointerMove={
-          isMovingCanvas || isTextMode || isDraggingTextbox || isPinching
-            ? undefined
-            : handlePointerMove
-        }
-        onPointerUp={
-          isMovingCanvas || isTextMode || isDraggingTextbox || isPinching
-            ? undefined
-            : handlePointerUp
-        }
+        onPointerDown={blockSvgInk ? undefined : handlePointerDown}
+        onPointerMove={blockSvgInk ? undefined : handlePointerMove}
+        onPointerUp={blockSvgInk ? undefined : handlePointerUp}
         onClick={isTextMode ? handleAddTextBox : (): void => {}}
         style={{
+          pointerEvents: blockSvgInk ? "none" : "auto",
           touchAction: "none",
           position: "relative",
           top: "0",
@@ -147,7 +142,7 @@ export function Page({ pageIndex }: { pageIndex: number }): React.ReactNode {
           />
         ))}
 
-        {pageIndex === state.activePageIndex && isDrawing && (
+        {pageIndex === state.activePageIndex && (
           <path d={pathData} style={{ zIndex: 100 }} />
         )}
       </svg>

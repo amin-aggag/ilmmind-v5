@@ -29,12 +29,18 @@ export type Notebook = Page[];
 
 export type Point = [number, number, number]; // [x, y, pressure]
 
+/** Where touch input is routed before ink vs pinch is decided. */
+export type GestureTarget = "idle" | "pending" | "zoom" | "draw";
+
 /** Pinch sample in #pages-window space (same units as position.left/top). */
 export type ZoomPointerContact = {
   pointerId: number;
   x: number;
   y: number;
   timeStamp: number;
+  pointerType: "mouse" | "pen" | "touch";
+  clientX: number;
+  clientY: number;
 };
 
 export type CanvasState = {
@@ -67,7 +73,9 @@ export type CanvasState = {
 
   // Interaction state
   isMovingCanvas: boolean;
-  isPinching: boolean;
+  gestureTarget: GestureTarget;
+  /** Set when a stroke was opened via gesture resolve so we can capture the active pointer. */
+  activeDrawPointerId: number | null;
   scalingValues: {
     startDistance: number;
     startScale: number;
@@ -112,9 +120,14 @@ export type CanvasAction =
     }
   | {
       type: "ZOOM_POINTER_UP";
+      payload: { pointerId: number };
     }
   | {
       type: "ZOOM_POINTER_CANCEL";
+      payload: { pointerId: number };
+    }
+  | {
+      type: "RESOLVE_PENDING_GESTURE";
     }
   | {
       type: "SET_PEN_COLOR";

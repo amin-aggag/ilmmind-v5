@@ -19,6 +19,7 @@ import { reducerHandleZoomPointerDown } from "./reducer/zoom-pointer/reducerHand
 import { reducerHandleZoomPointerMove } from "./reducer/zoom-pointer/reducerHandleZoomPointerMove";
 import { reducerHandleZoomPointerUp } from "./reducer/zoom-pointer/reducerHandleZoomPointerUp";
 import { reducerHandleZoomPointerCancel } from "./reducer/zoom-pointer/reducerHandleZoomPointerCancel";
+import { reducerHandleResolvePendingGesture } from "./reducer/zoom-pointer/reducerHandleResolvePendingGesture";
 
 const initialState: CanvasState = {
   points: [],
@@ -32,7 +33,8 @@ const initialState: CanvasState = {
   isTextMode: false,
   isDraggingTextbox: false,
   textboxInteractionPosition: null,
-  isPinching: false,
+  gestureTarget: "idle",
+  activeDrawPointerId: null,
   scalingValues: {
     startDistance: 0,
     startScale: 1,
@@ -139,10 +141,13 @@ function canvasReducer(state: CanvasState, action: CanvasAction): CanvasState {
       return reducerHandleZoomPointerMove(state, action);
 
     case "ZOOM_POINTER_UP":
-      return reducerHandleZoomPointerUp(state);
+      return reducerHandleZoomPointerUp(state, action.payload.pointerId);
 
     case "ZOOM_POINTER_CANCEL":
-      return reducerHandleZoomPointerCancel(state);
+      return reducerHandleZoomPointerCancel(state, action.payload.pointerId);
+
+    case "RESOLVE_PENDING_GESTURE":
+      return reducerHandleResolvePendingGesture(state);
 
     default:
       return state;
