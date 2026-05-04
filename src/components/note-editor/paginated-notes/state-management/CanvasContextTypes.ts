@@ -34,6 +34,7 @@ export type ZoomPointerContact = {
   pointerId: number;
   x: number;
   y: number;
+  timeStamp: number;
 };
 
 export type CanvasState = {

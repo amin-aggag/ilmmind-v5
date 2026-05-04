@@ -12,7 +12,7 @@ export function reducerHandleDrawingPointerDown(
   action: ActionOf<"POINTER_DOWN">,
 ): CanvasState {
   // Trying to fix the 'drawing while zooming in/out' problem
-  // if (state.zoomPointerEvents.size >= 1) return { ...state };
+  if (state.zoomPointerEvents.size >= 1) return { ...state };
 
   return {
     ...state,
@@ -26,10 +26,23 @@ export function reducerHandleDrawingPointerMove(
   state: CanvasState,
   action: ActionOf<"POINTER_MOVE">,
 ): CanvasState {
+  const zoomPointerA = state.zoomPointerEvents.get(0);
+  const zoomPointerB = state.zoomPointerEvents.get(1);
+  let isPinching = true;
+
+  if (
+    zoomPointerA &&
+    zoomPointerA.timeStamp - Date.now() >= 200 &&
+    zoomPointerB === undefined
+  ) {
+    isPinching = false;
+  }
+
   return {
     ...state,
     points: action.payload.points,
     activePageIndex: action.payload.activePageIndex,
+    isPinching,
   };
 }
 

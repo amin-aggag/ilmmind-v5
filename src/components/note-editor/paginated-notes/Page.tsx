@@ -1,5 +1,5 @@
 import { useCanvasContext } from "./state-management/useCanvasContext";
-import { zoomPointerContactFromEvent } from "./state-management/reducer/utils/utils";
+import { zoomPointerContactFromEvent } from "./state-management/reducer/utils/zoom-utils";
 import getStroke from "perfect-freehand";
 import { TextboxComponent } from "./textbox/Textbox";
 import React, { MouseEventHandler } from "react";

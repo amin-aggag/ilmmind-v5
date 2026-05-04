@@ -1,5 +1,5 @@
 import { ActionOf, CanvasState } from "../../CanvasContextTypes";
-import { distance } from "../utils/utils";
+import { distance } from "../utils/zoom-utils";
 
 export function reducerHandleZoomPointerDown(
   state: CanvasState,
@@ -7,6 +7,7 @@ export function reducerHandleZoomPointerDown(
 ): CanvasState {
   const numActivePointers = state.zoomPointerEvents.size;
 
+  // Track at most two pointers for pinch; extra touches are ignored (see final return).
   if (numActivePointers < 2) {
     const zoomPointerEvents = new Map(state.zoomPointerEvents).set(
       numActivePointers + 1,
@@ -38,10 +39,11 @@ export function reducerHandleZoomPointerDown(
     return {
       ...state,
       zoomPointerEvents,
-      isPinching: false,
+      isPinching: true,
     };
   }
 
+  // numActivePointers >= 2: third+ finger — leave the state unchanged.
   return {
     ...state,
   };

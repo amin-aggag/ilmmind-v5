@@ -12,7 +12,7 @@
 // }
 import { A4_PAGE_72PPI_W, Page } from "./Page";
 import "./PaginatedNoteEditor.css";
-import { zoomPointerContactFromEvent } from "./state-management/reducer/utils/utils";
+import { zoomPointerContactFromEvent } from "./state-management/reducer/utils/zoom-utils";
 
 // pages/SVGCanvas.tsx
 import {

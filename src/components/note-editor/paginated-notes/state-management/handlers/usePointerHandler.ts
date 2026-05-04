@@ -1,5 +1,5 @@
 import { ActionOf, CanvasState } from "../CanvasContextTypes";
-import { clientToSvgUserPoint } from "../reducer/utils/utils";
+import { clientToSvgUserPoint } from "../reducer/utils/zoom-utils";
 import React from "react";
 
 type POINTER_EVENTS = "POINTER_DOWN" | "POINTER_MOVE" | "POINTER_UP";
