@@ -91,6 +91,7 @@ export function Page({ pageIndex }: { pageIndex: number }): React.ReactNode {
     dispatch({
       type: "ADD_TEXTBOX",
       payload: {
+        svg: e.currentTarget,
         pageIndex,
         position: {
           top: e.clientY,
@@ -104,22 +105,30 @@ export function Page({ pageIndex }: { pageIndex: number }): React.ReactNode {
     });
   };
 
-  const blockSvgInk =
+  const blockInkHandlers =
     gestureTarget === "pending" ||
     gestureTarget === "zoom" ||
     isMovingCanvas ||
     isTextMode ||
     isDraggingTextbox;
 
+  // The boolean svgPointerEvents exists to allow adding a textbox whilst not ruining
+  // the feature of blocking drawing while zooming in/out.
+  const svgPointerEvents = isTextMode
+    ? "auto"
+    : blockInkHandlers
+      ? "none"
+      : "auto";
+
   return (
     <div>
       <svg
-        onPointerDown={blockSvgInk ? undefined : handlePointerDown}
-        onPointerMove={blockSvgInk ? undefined : handlePointerMove}
-        onPointerUp={blockSvgInk ? undefined : handlePointerUp}
+        onPointerDown={blockInkHandlers ? undefined : handlePointerDown}
+        onPointerMove={blockInkHandlers ? undefined : handlePointerMove}
+        onPointerUp={blockInkHandlers ? undefined : handlePointerUp}
         onClick={isTextMode ? handleAddTextBox : (): void => {}}
         style={{
-          pointerEvents: blockSvgInk ? "none" : "auto",
+          pointerEvents: svgPointerEvents,
           touchAction: "none",
           position: "relative",
           top: "0",

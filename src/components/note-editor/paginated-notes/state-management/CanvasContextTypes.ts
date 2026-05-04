@@ -166,6 +166,7 @@ export type CanvasAction =
   | {
       type: "ADD_TEXTBOX";
       payload: {
+        svg: SVGSVGElement;
         pageIndex: number;
       } & Omit<Textbox, "textData">;
     }

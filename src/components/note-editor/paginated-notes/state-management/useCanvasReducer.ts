@@ -89,15 +89,8 @@ function canvasReducer(state: CanvasState, action: CanvasAction): CanvasState {
     case "ADD_PAGE":
       return reducerHandleAddPage(state);
 
-    case "ADD_TEXTBOX": {
-      // Getting the position info of this page
-      const pageClicked = document.querySelector(
-        `.svg-canvas[data-page-index="${action.payload.pageIndex}"]`,
-      ) as Element;
-      const pageClickedInfo = pageClicked.getBoundingClientRect();
-
-      return reducerHandleAddTextbox(state, action, pageClickedInfo);
-    }
+    case "ADD_TEXTBOX":
+      return reducerHandleAddTextbox(state, action);
 
     case "UPDATE_TEXTBOX":
       return reducerHandleUpdateTextbox(state, action);

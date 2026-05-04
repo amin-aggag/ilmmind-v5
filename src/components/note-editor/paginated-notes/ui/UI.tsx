@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import React, { useRef } from "react";
 import { useCanvasContext } from "../state-management/useCanvasContext";
 import {
   FilePlusIcon,
@@ -26,32 +26,32 @@ const colorArray = [
   "lightgray",
 ] as const;
 
-const penSizeArray = [1, 2, 4, 6, 8, 10, 20, 30] as const;
+// const penSizeArray= [1, 2, 4, 6, 8, 10, 20, 30] as const;
 
-export default function UI() {
+export default function UI(): React.ReactNode {
   const { state, dispatch } = useCanvasContext();
 
   const { states, historyIndex, pen, isTextMode } = state;
   const { color, size } = pen;
 
-  const inputRef = useRef<HTMLInputElement>(null);
+  // const inputRef = useRef<HTMLInputElement>(null);
 
-  const handleUndo = () => {
+  const handleUndo = (): void => {
     dispatch({ type: "UNDO" });
   };
 
-  const handleRedo = () => {
+  const handleRedo = (): void => {
     dispatch({ type: "REDO" });
   };
 
-  const handlePenSizeChange = (newSize: number) => {
-    dispatch({
-      type: "SET_PEN_SIZE",
-      payload: newSize,
-    });
-  };
+  // const handlePenSizeChange = (newSize: number): void => {
+  //   dispatch({
+  //     type: "SET_PEN_SIZE",
+  //     payload: newSize,
+  //   });
+  // };
 
-  const handleSetTextMode = (isTextMode: boolean) => {
+  const handleSetTextMode = (isTextMode: boolean): void => {
     dispatch({
       type: "SET_TEXT_MODE",
       payload: {
@@ -60,7 +60,7 @@ export default function UI() {
     });
   };
 
-  const handleSetColour = (colour: string) => {
+  const handleSetColour = (colour: string): void => {
     dispatch({
       type: "SET_PEN_COLOR",
       payload: colour,
@@ -100,7 +100,7 @@ export default function UI() {
         <PenIcon />
       </EditorUIButton>
       <EditorUIButton
-        onClick={(e: PointerEvent) => {
+        onClick={() => {
           handleSetTextMode(!isTextMode);
         }}
         selected={isTextMode}

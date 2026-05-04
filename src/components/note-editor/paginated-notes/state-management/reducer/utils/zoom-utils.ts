@@ -38,6 +38,19 @@ export function clientToCanvasWrapperLocalPoint(
   return clientToSvgUserPoint(svg, clientX, clientY);
 }
 
+/** Wrapper-content delta between two screen points (same space as drawing / textbox `left`/`top`). */
+export function screenDeltaToCanvasWrapperLocalDelta(
+  prevClientX: number,
+  prevClientY: number,
+  nextClientX: number,
+  nextClientY: number,
+): { x: number; y: number } | null {
+  const prev = clientToCanvasWrapperLocalPoint(prevClientX, prevClientY);
+  const next = clientToCanvasWrapperLocalPoint(nextClientX, nextClientY);
+  if (!prev || !next) return null;
+  return { x: next.x - prev.x, y: next.y - prev.y };
+}
+
 /**
  * Focal in #pages-window space (same as `position.left/top`), for
  * `translate(L,T) scale(S)` on the wrapper with origin 0 0.

@@ -10,6 +10,15 @@ export function reducerHandleResolvePendingGesture(
   const contact = state.zoomPointerEvents.get(1);
   if (!contact) return state;
 
+  if (state.isTextMode) {
+    return {
+      ...state,
+      gestureTarget: "idle",
+      zoomPointerEvents: new Map(),
+      zoomPointersHaveUpdated: false,
+    };
+  }
+
   const seed = inkSeedFromZoomContact(contact);
   if (!seed) {
     return {

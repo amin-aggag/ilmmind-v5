@@ -1,5 +1,6 @@
 import React from "react";
 import { useCanvasContext } from "../state-management/useCanvasContext";
+import { screenDeltaToCanvasWrapperLocalDelta } from "../state-management/reducer/utils/zoom-utils";
 import { BlockNoteEditor } from "@blocknote/core";
 
 type useTextboxDragArgs = {
@@ -25,6 +26,7 @@ export const useTextboxDrag = ({
   const canvasContext = useCanvasContext();
   const { dispatch } = canvasContext;
   const [isDragging, setIsDragging] = React.useState(false);
+  const lastDragClientRef = React.useRef<{ x: number; y: number } | null>(null);
 
   const endDrag = React.useCallback(() => {
     setIsDragging(false);
@@ -34,6 +36,7 @@ export const useTextboxDrag = ({
     (e: React.PointerEvent<HTMLDivElement>) => {
       e.preventDefault();
       e.currentTarget.setPointerCapture(e.pointerId);
+      lastDragClientRef.current = { x: e.clientX, y: e.clientY };
       setIsDragging(true);
     },
     [],
@@ -43,15 +46,25 @@ export const useTextboxDrag = ({
     (e: React.PointerEvent<HTMLDivElement>) => {
       if (!isDragging) return;
 
+      const prev = lastDragClientRef.current;
+      if (!prev) return;
+
+      const delta = screenDeltaToCanvasWrapperLocalDelta(
+        prev.x,
+        prev.y,
+        e.clientX,
+        e.clientY,
+      );
+      if (!delta) return;
+
+      lastDragClientRef.current = { x: e.clientX, y: e.clientY };
+
       dispatch({
         type: "DRAG_TEXTBOX_POINTER_MOVE",
         payload: {
           pageIndex,
           textboxIndex,
-          delta: {
-            x: e.movementX,
-            y: e.movementY,
-          },
+          delta,
         },
       });
     },
@@ -63,6 +76,8 @@ export const useTextboxDrag = ({
       if (e.currentTarget.hasPointerCapture(e.pointerId)) {
         e.currentTarget.releasePointerCapture(e.pointerId);
       }
+
+      lastDragClientRef.current = null;
 
       dispatch({
         type: "DRAG_TEXTBOX_POINTER_UP",
@@ -84,6 +99,8 @@ export const useTextboxDrag = ({
       if (e.currentTarget.hasPointerCapture(e.pointerId)) {
         e.currentTarget.releasePointerCapture(e.pointerId);
       }
+
+      lastDragClientRef.current = null;
 
       dispatch({
         type: "DRAG_TEXTBOX_POINTER_UP",
