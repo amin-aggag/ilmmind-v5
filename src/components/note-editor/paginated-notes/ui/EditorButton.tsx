@@ -1,4 +1,4 @@
-import { MouseEventHandler, ReactNode } from "react";
+import React, { MouseEventHandler, ReactNode } from "react";
 import "./EditorButton.css";
 
 interface EditorUIButtonProps {
@@ -13,10 +13,10 @@ export const EditorUIButton = ({
   onClick,
   selected,
   isDisabled = false,
-}: EditorUIButtonProps) => {
-  const selectedClass = selected && "selected";
-  const isDisabledClass = isDisabled && "opacity-50";
-  const isNotDisabledClass = !isDisabled && "cursor-pointer";
+}: EditorUIButtonProps): React.ReactNode => {
+  const selectedClass = selected === true && "selected";
+  const isDisabledClass = isDisabled === true && "opacity-50";
+  const isNotDisabledClass = !isDisabled === true && "cursor-pointer";
 
   const buttonClassName = `editor-button ${selectedClass} ${isDisabledClass} ${isNotDisabledClass}`;
 

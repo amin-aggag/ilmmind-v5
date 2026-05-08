@@ -172,9 +172,7 @@ export default function PaginatedNotesEditor(): React.ReactNode {
           height: "100%",
         }}
       >
-        <div>
-          <UI />
-        </div>
+        <UI />
         <div
           ref={DrawingCanvasRef}
           style={{ height: "100%", overflow: "hidden", touchAction: "none" }}

@@ -3,7 +3,8 @@
 }
 
 .svg-canvas {
-  box-shadow: 0 0 10px 0.5px rgba(0, 0, 0, 0.05);
+  z-index: var(--svg-canvas-z-index);
+  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.05);
 }
 
 .page-number {

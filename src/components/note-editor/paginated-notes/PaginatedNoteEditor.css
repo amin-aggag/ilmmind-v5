@@ -6,6 +6,7 @@
 #svg-canvases-wrapper {
   display: grid;
   grid-template-columns: auto;
+  z-index: var(--svg-canvas-z-index);
 }
 
 /* For use when viewing two pages next to each other.*/

@@ -1,19 +1,16 @@
-import React, { useRef } from "react";
+import React from "react";
 import { useCanvasContext } from "../state-management/useCanvasContext";
 import {
   FilePlusIcon,
   ListPlusIcon,
   PenIcon,
   RedoIcon,
-  TextIcon,
   UndoIcon,
 } from "lucide-react";
 import "./UI.css";
 
 import { EditorUIButton } from "./EditorButton";
 import { Separator } from "./Separator";
-import DropdownMenuDemo from "./dropdown-menu/dropdownMenu";
-import { Textbox } from "../state-management/CanvasContextTypes";
 
 const colorArray = [
   "black",
@@ -33,6 +30,11 @@ export default function UI(): React.ReactNode {
 
   const { states, historyIndex, pen, isTextMode } = state;
   const { color, size } = pen;
+
+  const [penColourPickerOpen, setPenColourPickerOpen] =
+    React.useState<boolean>(false);
+  const [penSizePickerOpen, setPenSizePickerOpen] =
+    React.useState<boolean>(false);
 
   // const inputRef = useRef<HTMLInputElement>(null);
 
@@ -74,23 +76,16 @@ export default function UI(): React.ReactNode {
 
   return (
     <div className="paginated-notes-toolbar">
-      <EditorUIButton
-        onClick={handleUndo}
-        selected={true}
-        isDisabled={isUndoDisabled}
-      >
+      <EditorUIButton onClick={handleUndo} isDisabled={isUndoDisabled}>
         <UndoIcon />
       </EditorUIButton>
-      <EditorUIButton
-        onClick={handleRedo}
-        selected={true}
-        isDisabled={isRedoDisabled}
-      >
+      <EditorUIButton onClick={handleRedo} isDisabled={isRedoDisabled}>
         <RedoIcon />
       </EditorUIButton>
+
       <Separator />
 
-      {/* Pen and text mode toggles */}
+      {/* Pen colour toolbar */}
       <EditorUIButton
         onClick={() => {
           handleSetTextMode(false);
@@ -99,6 +94,71 @@ export default function UI(): React.ReactNode {
       >
         <PenIcon />
       </EditorUIButton>
+
+      <EditorUIButton
+        onClick={() => {
+          setPenSizePickerOpen(false);
+          setPenColourPickerOpen((prev) => !prev);
+        }}
+        selected={penColourPickerOpen}
+      >
+        <div
+          className={`colour-icon`}
+          style={{ backgroundColor: state.pen.color }}
+        ></div>
+      </EditorUIButton>
+      <div
+        className={`pen-colour-picker ${penColourPickerOpen ? "visible" : "hidden"}`}
+      >
+        {colorArray.map((penColor, index) => (
+          <EditorUIButton
+            onClick={() => {
+              handleSetTextMode(false);
+              handleSetColour(penColor);
+            }}
+            selected={penColor === color}
+            key={index}
+          >
+            <div
+              className={`colour-icon`}
+              style={{ backgroundColor: penColor }}
+            ></div>
+          </EditorUIButton>
+        ))}
+      </div>
+
+      {/* Pen size settings */}
+      <EditorUIButton
+        onClick={() => {
+          setPenColourPickerOpen(false);
+          setPenSizePickerOpen((prev) => !prev);
+        }}
+        selected={penSizePickerOpen}
+      >
+        <div className={`pen-size`}>{size}</div>
+      </EditorUIButton>
+      <div
+        className={`pen-size-picker ${penSizePickerOpen ? "visible" : "hidden"}`}
+      >
+        <input
+          type="range"
+          min="0"
+          max="100"
+          value={size}
+          step="10"
+          onChange={(e) =>
+            dispatch({
+              type: "SET_PEN_SIZE",
+              payload: Number(e.target.value),
+            })
+          }
+        />
+      </div>
+
+      <Separator />
+
+      {/* Text mode */}
+
       <EditorUIButton
         onClick={() => {
           handleSetTextMode(!isTextMode);
@@ -107,24 +167,7 @@ export default function UI(): React.ReactNode {
       >
         <ListPlusIcon />
       </EditorUIButton>
-      <Separator />
 
-      {/* Pen Colour */}
-      {colorArray.map((penColor, index) => (
-        <EditorUIButton
-          onClick={() => {
-            handleSetTextMode(false);
-            handleSetColour(penColor);
-          }}
-          selected={penColor === color}
-          key={index}
-        >
-          <div
-            className={`colour-icon`}
-            style={{ backgroundColor: penColor }}
-          ></div>
-        </EditorUIButton>
-      ))}
       <Separator />
 
       {/* New Page */}
@@ -134,14 +177,11 @@ export default function UI(): React.ReactNode {
             type: "ADD_PAGE",
           });
         }}
-        selected={true}
       >
         <FilePlusIcon className="add-page" size={"25px"} />
       </EditorUIButton>
 
       <Separator />
-
-      <DropdownMenuDemo />
     </div>
   );
 }

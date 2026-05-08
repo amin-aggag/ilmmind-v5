@@ -4,7 +4,15 @@ body {
   width: 100%;
 }
 
+button {
+  all: unset;
+}
+
 .app {
+  --svg-canvas-z-index: 0;
+  --page-ui-toolbar-z-index: 1;
+  --sidebar-z-index: 1;
+
   --square-button-size: 40px;
 
   width: 100%;
@@ -16,6 +24,7 @@ body {
   &.mobile {
     --square-button-size: 50px;
   }
+
 
 }
 

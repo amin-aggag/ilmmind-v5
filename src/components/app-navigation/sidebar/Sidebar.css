@@ -3,6 +3,9 @@
   background-color: var(--background);
   overflow-x: visible;
   display: flex;
+  box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.05);
+  position: relative;
+  z-index: var(--sidebar-z-index);
 }
 
 .sidebar-content {

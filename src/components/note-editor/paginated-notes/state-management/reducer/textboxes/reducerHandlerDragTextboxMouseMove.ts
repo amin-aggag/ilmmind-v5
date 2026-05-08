@@ -31,17 +31,21 @@ export function reducerHandleDragTextboxPointerMove(
   }
 
   if (
-    topPosition <= svgCanvasesWrapperInfo.top - pageClickedInfo.top ||
-    textboxBeingDraggedInfo.bottom <=
-      svgCanvasesWrapperInfo.bottom - pageClickedInfo.bottom
+    topPosition <=
+    svgCanvasesWrapperInfo.top - pageClickedInfo.top
+    // ||
+    // textboxBeingDraggedInfo.bottom <=
+    //   svgCanvasesWrapperInfo.bottom - pageClickedInfo.bottom
   ) {
     topPosition -= action.payload.delta.y;
   }
 
   if (
-    leftPosition <= svgCanvasesWrapperInfo.left - pageClickedInfo.left ||
-    textboxBeingDraggedInfo.right <
-      svgCanvasesWrapperInfo.right - pageClickedInfo.right
+    leftPosition <=
+    svgCanvasesWrapperInfo.left - pageClickedInfo.left
+    // ||
+    // textboxBeingDraggedInfo.right <
+    //   svgCanvasesWrapperInfo.right - pageClickedInfo.right
   ) {
     leftPosition -= action.payload.delta.x;
   }

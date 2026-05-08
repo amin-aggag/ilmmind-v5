@@ -1,7 +1,7 @@
 .separator {
-  height: 50px;
+  height: 30px;
   width: 2px;
-  margin-inline: 10px;
+  margin-inline: 7px;
   background-color: var(--input);
   margin-block: auto;
 }

@@ -134,7 +134,7 @@ export function Page({ pageIndex }: { pageIndex: number }): React.ReactNode {
           top: "0",
           left: "0",
           height: `${A4_PAGE_72PPI_H}px`,
-          width: `${A4_PAGE_72PPI_W}`,
+          width: `${A4_PAGE_72PPI_W}px`,
           zIndex: 1,
           backgroundColor: "#ffffff",
           fill: pen.color,

@@ -12,8 +12,6 @@
 
   /* Border is only applied to keep the button sizes exactly the same. */
   border-width: var(--border-size);
-  border-color: white;
-  border-style: solid;
 
   > * {
     display: flex;
@@ -23,7 +21,11 @@
 
   &.selected {
     /* box-shadow: 0 0 2px 0.5px rgba(0, 0, 0, 0.2); */
-    border-color: var(--input);
+    /* border-color: var(--input); */
+    /* outline-color: var(--input);
+    outline-width: 2px;
+    outline-style: solid; */
+    background: rgba(0,0,0, 0.05)
   }
 
   &.opacity-50 {
