@@ -1,6 +1,7 @@
 import React from "react";
 import { useImageContext } from "../../useImageContext";
 import { ImageWidthSide } from "./ImageWidthDragger";
+import { useCanvasContext } from "../../../state-management/useCanvasContext";
 
 type useImageAdjustWidthReturn = {
   isWidthResizing: boolean;
@@ -15,6 +16,9 @@ export const useImageAdjustWidth = (
 ): useImageAdjustWidthReturn => {
   const [isWidthResizing, setIsWidthResizing] = React.useState<boolean>(false);
   const { setWidth, setLeft } = useImageContext();
+
+  const { state: CanvasState } = useCanvasContext();
+  const zoomLevel: number = CanvasState.scalingValues.startScale;
 
   const handleWidthPointerDown = React.useCallback(
     (e: React.PointerEvent<HTMLDivElement>) => {
@@ -36,13 +40,13 @@ export const useImageAdjustWidth = (
       //   const positionInSVGCoords = clientToSvgUserPoint(e.currentTarget, e.clientX, e.clientY);
 
       if (side === "left") {
-        setLeft((prev) => prev + e.movementX);
-        setWidth((prev) => prev - e.movementX);
+        setLeft((prev) => prev + e.movementX / zoomLevel);
+        setWidth((prev) => prev - e.movementX / zoomLevel);
       } else {
-        setWidth((prev) => prev + e.movementX);
+        setWidth((prev) => prev + e.movementX / zoomLevel);
       }
     },
-    [isWidthResizing, setWidth, setLeft, side],
+    [isWidthResizing, setWidth, setLeft, side, zoomLevel],
   );
 
   const handleWidthPointerUp = React.useCallback(

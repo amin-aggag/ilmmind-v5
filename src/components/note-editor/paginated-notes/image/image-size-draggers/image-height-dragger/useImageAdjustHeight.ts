@@ -1,6 +1,7 @@
 import React from "react";
 import { useImageContext } from "../../useImageContext";
 import { ImageHeightSide } from "./ImageHeightDragger";
+import { useCanvasContext } from "../../../state-management/useCanvasContext";
 
 type useImageAdjustHeightReturn = {
   isHeightResizing: boolean;
@@ -16,6 +17,9 @@ export const useImageAdjustHeight = (
   const [isHeightResizing, setIsHeightResizing] =
     React.useState<boolean>(false);
   const { setHeight, setTop } = useImageContext();
+
+  const { state: CanvasState } = useCanvasContext();
+  const zoomLevel: number = CanvasState.scalingValues.startScale;
 
   const handleHeightPointerDown = React.useCallback(
     (e: React.PointerEvent<HTMLDivElement>) => {
@@ -35,13 +39,13 @@ export const useImageAdjustHeight = (
       if (!isHeightResizing) return;
 
       if (side === "top") {
-        setTop((prev) => prev + e.movementY);
-        setHeight((prev) => prev - e.movementY);
+        setTop((prev) => prev + e.movementY / zoomLevel);
+        setHeight((prev) => prev - e.movementY / zoomLevel);
       } else {
-        setHeight((prev) => prev + e.movementY);
+        setHeight((prev) => prev + e.movementY / zoomLevel);
       }
     },
-    [isHeightResizing, setHeight, setTop, side],
+    [isHeightResizing, setHeight, setTop, side, zoomLevel],
   );
 
   const handleHeightPointerUp = React.useCallback(
