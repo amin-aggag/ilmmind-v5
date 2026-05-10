@@ -7,6 +7,10 @@ export type ImageContextValue = {
   setHeight: React.Dispatch<React.SetStateAction<number>>;
   width: number;
   setWidth: React.Dispatch<React.SetStateAction<number>>;
+  top: number;
+  setTop: React.Dispatch<React.SetStateAction<number>>;
+  left: number;
+  setLeft: React.Dispatch<React.SetStateAction<number>>;
 };
 
 const DEFAULT_IMAGE_WIDTH_PX = 1280 / 3;
@@ -21,12 +25,18 @@ export const ImageContext = React.createContext<ImageContextValue | undefined>(
 export function useImageStateVars(): ImageContextValue {
   const [width, setWidth] = React.useState<number>(DEFAULT_IMAGE_WIDTH_PX);
   const [height, setHeight] = React.useState<number>(DEFAULT_IMAGE_HEIGHT_PX);
+  const [top, setTop] = React.useState<number>(25);
+  const [left, setLeft] = React.useState<number>(25);
 
   return {
     width,
     setWidth,
     height,
     setHeight,
+    top,
+    setTop,
+    left,
+    setLeft,
   };
 }
 

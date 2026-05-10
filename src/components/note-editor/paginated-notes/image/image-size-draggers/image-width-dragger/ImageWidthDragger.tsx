@@ -2,7 +2,9 @@ import React from "react";
 import { useImageAdjustWidth } from "./useImageAdjustWidth";
 import './imageWidthDragger.css'
 
-export function ImageWidthDragger(): React.ReactNode {
+type side = "top" | "bottom";
+
+export function ImageWidthDragger(side: side): React.ReactNode {
   const {
     isWidthResizing,
     handleWidthPointerDown,

@@ -1,6 +1,8 @@
 .image-width-dragger {
+  --background-color: rgb(58, 173, 255);
+
   height: 100%;
-  width: 2px;
+  width: 25px;
   background-color: rgba(0, 0, 0, 0);
   transition: background-color 80ms ease-in;
   cursor: col-resize;
@@ -10,9 +12,20 @@
       would still be a good measure to add this in to make sure the sidebar can
       always be adjusted using touch. */
   touch-action: none;
-  background-color: rgb(58, 173, 255);
+  background: linear-gradient(to right, transparent 42.5%, var(--background-color) 0 57.5%, transparent 57.5%);
+  margin-inline: -12.5px;
+  background-repeat: no-repeat;
+  border-radius: 10px;
+
+  /* Large width transparent for increasing the hitbox for easier adjustment
+      when using touch*/
+  /* border-left-width: 5px;
+  border-right-width: 5px;
+  border-color: transparent;
+  border-style: solid; */
 
   &.is-dragging {
-    background-color: rgba(0, 0, 0, 0.4);
+    --background-color: rgb(58, 130, 255);
+    background-color: rgba(0, 0, 0, 0.1);
   }
 }

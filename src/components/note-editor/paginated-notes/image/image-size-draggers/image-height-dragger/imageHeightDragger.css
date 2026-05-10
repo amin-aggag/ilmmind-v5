@@ -11,6 +11,13 @@
         always be adjusted using touch. */
   touch-action: none;
 
+   /* Large width transparent for increasing the hitbox for easier adjustment
+      when using touch*/
+      border-left-width: 5px;
+      border-right-width: 5px;
+      border-color: transparent;
+      border-style:hidden;
+
   &.is-dragging {
     background-color: rgba(0, 0, 0, 0.4);
   }

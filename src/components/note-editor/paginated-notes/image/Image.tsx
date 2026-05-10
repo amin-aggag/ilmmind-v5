@@ -14,7 +14,7 @@ export function Image(): React.ReactNode {
         {/* Row 1 */}
         <>
           <div className="top-left adj-circle" />
-          <ImageHeightDragger />
+          <ImageHeightDragger side={""} />
           <div className="top-right adj-circle" />
         </>
         {/* Row 2 */}
