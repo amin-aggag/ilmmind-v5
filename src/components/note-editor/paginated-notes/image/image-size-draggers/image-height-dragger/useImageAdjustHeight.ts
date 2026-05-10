@@ -1,5 +1,6 @@
 import React from "react";
 import { useImageContext } from "../../useImageContext";
+import { ImageHeightSide } from "./ImageHeightDragger";
 
 type useImageAdjustHeightReturn = {
   isHeightResizing: boolean;
@@ -9,10 +10,12 @@ type useImageAdjustHeightReturn = {
   handleHeightPointerCancel: (e: React.PointerEvent<HTMLDivElement>) => void;
 };
 
-export const useImageAdjustHeight = (): useImageAdjustHeightReturn => {
+export const useImageAdjustHeight = (
+  side: ImageHeightSide,
+): useImageAdjustHeightReturn => {
   const [isHeightResizing, setIsHeightResizing] =
     React.useState<boolean>(false);
-  const { setHeight } = useImageContext();
+  const { setHeight, setTop } = useImageContext();
 
   const handleHeightPointerDown = React.useCallback(
     (e: React.PointerEvent<HTMLDivElement>) => {
@@ -31,9 +34,14 @@ export const useImageAdjustHeight = (): useImageAdjustHeightReturn => {
       e.stopPropagation();
       if (!isHeightResizing) return;
 
-      setHeight((prev) => prev + e.movementY);
+      if (side === "top") {
+        setTop((prev) => prev + e.movementY);
+        setHeight((prev) => prev - e.movementY);
+      } else {
+        setHeight((prev) => prev + e.movementY);
+      }
     },
-    [isHeightResizing, setHeight],
+    [isHeightResizing, setHeight, setTop, side],
   );
 
   const handleHeightPointerUp = React.useCallback(

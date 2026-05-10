@@ -1,5 +1,6 @@
 import React from "react";
 import { useImageContext } from "../../useImageContext";
+import { ImageWidthSide } from "./ImageWidthDragger";
 
 type useImageAdjustWidthReturn = {
   isWidthResizing: boolean;
@@ -9,9 +10,11 @@ type useImageAdjustWidthReturn = {
   handleWidthPointerCancel: (e: React.PointerEvent<HTMLDivElement>) => void;
 };
 
-export const useImageAdjustWidth = (): useImageAdjustWidthReturn => {
+export const useImageAdjustWidth = (
+  side: ImageWidthSide,
+): useImageAdjustWidthReturn => {
   const [isWidthResizing, setIsWidthResizing] = React.useState<boolean>(false);
-  const { setWidth } = useImageContext();
+  const { setWidth, setLeft } = useImageContext();
 
   const handleWidthPointerDown = React.useCallback(
     (e: React.PointerEvent<HTMLDivElement>) => {
@@ -32,9 +35,14 @@ export const useImageAdjustWidth = (): useImageAdjustWidthReturn => {
 
       //   const positionInSVGCoords = clientToSvgUserPoint(e.currentTarget, e.clientX, e.clientY);
 
-      setWidth((prev) => prev + e.movementX);
+      if (side === "left") {
+        setLeft((prev) => prev + e.movementX);
+        setWidth((prev) => prev - e.movementX);
+      } else {
+        setWidth((prev) => prev + e.movementX);
+      }
     },
-    [isWidthResizing, setWidth],
+    [isWidthResizing, setWidth, setLeft, side],
   );
 
   const handleWidthPointerUp = React.useCallback(

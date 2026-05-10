@@ -1,7 +1,5 @@
 .image {
   position: absolute;
-  top: 25px;
-  left: 25px;
   z-index: 1;
   display: grid;
   grid-template-rows: 0px 1fr 0px;

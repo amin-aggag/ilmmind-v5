@@ -1,17 +1,21 @@
-import React from "react";
 import { useImageAdjustWidth } from "./useImageAdjustWidth";
-import './imageWidthDragger.css'
+import "./imageWidthDragger.css";
+import React from "react";
 
-type side = "top" | "bottom";
+export type ImageWidthSide = "left" | "right";
 
-export function ImageWidthDragger(side: side): React.ReactNode {
+export function ImageWidthDragger({
+  side,
+}: {
+  side: ImageWidthSide;
+}): React.ReactElement {
   const {
     isWidthResizing,
     handleWidthPointerDown,
     handleWidthPointerMove,
     handleWidthPointerUp,
     handleWidthPointerCancel,
-  } = useImageAdjustWidth();
+  } = useImageAdjustWidth(side);
 
   return (
     <div

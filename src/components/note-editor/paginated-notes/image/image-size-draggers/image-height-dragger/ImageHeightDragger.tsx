@@ -1,17 +1,21 @@
 import React from "react";
 import { useImageAdjustHeight } from "./useImageAdjustHeight";
-import './imageHeightDragger.css'
+import "./imageHeightDragger.css";
 
-type side = "left" | "right";
+export type ImageHeightSide = "top" | "bottom";
 
-export function ImageHeightDragger(side: side): React.ReactNode {
+export function ImageHeightDragger({
+  side,
+}: {
+  side: ImageHeightSide;
+}): React.ReactNode {
   const {
     isHeightResizing,
     handleHeightPointerDown,
     handleHeightPointerMove,
     handleHeightPointerUp,
     handleHeightPointerCancel,
-  } = useImageAdjustHeight();
+  } = useImageAdjustHeight(side);
 
   return (
     <div
