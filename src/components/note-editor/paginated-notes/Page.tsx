@@ -4,6 +4,7 @@ import getStroke from "perfect-freehand";
 import { TextboxComponent } from "./textbox/Textbox";
 import React, { MouseEventHandler } from "react";
 import "./Page.css";
+import { Image } from "./image/Image";
 
 const getSvgPathFromStroke = (stroke: number[][]): string => {
   if (!stroke.length) return "";
@@ -163,6 +164,7 @@ export function Page({ pageIndex }: { pageIndex: number }): React.ReactNode {
           key={textboxIndex}
         />
       ))}
+      <Image />
       <p className="page-number">{pageIndex + 1}</p>
     </div>
   );

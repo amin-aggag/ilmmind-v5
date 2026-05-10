@@ -1,0 +1,55 @@
+.image {
+  position: absolute;
+  top: 25px;
+  left: 25px;
+  z-index: 1;
+  display: grid;
+  grid-template-rows: 1fr 6px;
+  grid-template-columns: 1fr 6px;
+}
+
+.image-width-dragger {
+  height: 100%;
+  width: 6px;
+  background-color: rgba(0, 0, 0, 0);
+  margin-inline: -6px;
+  transition: background-color 80ms ease-in;
+  cursor: col-resize;
+  z-index: 1;
+  /* Touch-action prevents Chrome's touch/pointer gestures from kicking in
+    when adjusting the sidebar. Though ilmmind is a Tauri app, I thought it
+    would still be a good measure to add this in to make sure the sidebar can
+    always be adjusted using touch. */
+  touch-action: none;
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.4);
+  }
+
+  &.is-dragging {
+    background-color: rgba(0, 0, 0, 0.4);
+  }
+}
+
+.image-height-dragger {
+  height: 6px;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0);
+  margin-block: -6px;
+  transition: background-color 80ms ease-in;
+  cursor: col-resize;
+  z-index: 1;
+  /* Touch-action prevents Chrome's touch/pointer gestures from kicking in
+      when adjusting the sidebar. Though ilmmind is a Tauri app, I thought it
+      would still be a good measure to add this in to make sure the sidebar can
+      always be adjusted using touch. */
+  touch-action: none;
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.4);
+  }
+
+  &.is-dragging {
+    background-color: rgba(0, 0, 0, 0.4);
+  }
+}
