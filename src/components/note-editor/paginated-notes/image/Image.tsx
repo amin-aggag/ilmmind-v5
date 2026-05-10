@@ -4,9 +4,17 @@ import "./image.css";
 import { ImageContext, useImageStateVars } from "./useImageContext";
 import { ImageWidthDragger } from "./image-size-draggers/image-width-dragger/ImageWidthDragger";
 import { ImageHeightDragger } from "./image-size-draggers/image-height-dragger/ImageHeightDragger";
+import { useImageDrag } from "./useImageDrag";
 
 export function Image(): React.ReactNode {
   const imageContextValue = useImageStateVars();
+
+  const {
+    handleImageDragPointerDown,
+    handleImageDragPointerMove,
+    handleImageDragPointerUp,
+    handleImageDragPointerCancel,
+  } = useImageDrag(imageContextValue);
 
   return (
     <ImageContext.Provider value={imageContextValue}>
@@ -16,6 +24,10 @@ export function Image(): React.ReactNode {
           top: `${imageContextValue.top}px`,
           left: `${imageContextValue.left}px`,
         }}
+        onPointerDown={handleImageDragPointerDown}
+        onPointerMove={handleImageDragPointerMove}
+        onPointerUp={handleImageDragPointerUp}
+        onPointerCancel={handleImageDragPointerCancel}
       >
         {/* Row 1 */}
         <>

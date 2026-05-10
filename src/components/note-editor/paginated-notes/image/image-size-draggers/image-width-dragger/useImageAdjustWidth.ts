@@ -37,8 +37,6 @@ export const useImageAdjustWidth = (
       e.stopPropagation();
       if (!isWidthResizing) return;
 
-      //   const positionInSVGCoords = clientToSvgUserPoint(e.currentTarget, e.clientX, e.clientY);
-
       if (side === "left") {
         setLeft((prev) => prev + e.movementX / zoomLevel);
         setWidth((prev) => prev - e.movementX / zoomLevel);
