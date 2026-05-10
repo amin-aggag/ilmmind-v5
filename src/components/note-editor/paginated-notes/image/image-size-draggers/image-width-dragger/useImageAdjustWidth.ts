@@ -1,12 +1,8 @@
 import React from "react";
-
-const DEFAULT_IMAGE_WIDTH_PX = 10;
-// const MIN_IMAGE_WIDTH_PX = 0;
-// const MAX_IMAGE_WIDTH_PX = 500;
+import { useImageContext } from "../../useImageContext";
 
 type useImageAdjustWidthReturn = {
   isWidthResizing: boolean;
-  width: number;
   handleWidthPointerDown: (e: React.PointerEvent<HTMLDivElement>) => void;
   handleWidthPointerMove: (e: React.PointerEvent<HTMLDivElement>) => void;
   handleWidthPointerUp: (e: React.PointerEvent<HTMLDivElement>) => void;
@@ -15,7 +11,7 @@ type useImageAdjustWidthReturn = {
 
 export const useImageAdjustWidth = (): useImageAdjustWidthReturn => {
   const [isWidthResizing, setIsWidthResizing] = React.useState<boolean>(false);
-  const [width, setWidth] = React.useState<number>(DEFAULT_IMAGE_WIDTH_PX);
+  const { setWidth } = useImageContext();
 
   const handleWidthPointerDown = React.useCallback(
     (e: React.PointerEvent<HTMLDivElement>) => {
@@ -38,7 +34,7 @@ export const useImageAdjustWidth = (): useImageAdjustWidthReturn => {
 
       setWidth((prev) => prev + e.movementX);
     },
-    [isWidthResizing],
+    [isWidthResizing, setWidth],
   );
 
   const handleWidthPointerUp = React.useCallback(
@@ -75,7 +71,6 @@ export const useImageAdjustWidth = (): useImageAdjustWidthReturn => {
 
   return {
     isWidthResizing,
-    width,
     handleWidthPointerDown,
     handleWidthPointerMove,
     handleWidthPointerUp,

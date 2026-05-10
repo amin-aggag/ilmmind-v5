@@ -4,52 +4,28 @@
   left: 25px;
   z-index: 1;
   display: grid;
-  grid-template-rows: 1fr 6px;
-  grid-template-columns: 1fr 6px;
+  grid-template-rows: 2px 1fr 2px;
+  grid-template-columns: 2px 1fr 2px;
 }
 
-.image-width-dragger {
-  height: 100%;
-  width: 6px;
-  background-color: rgba(0, 0, 0, 0);
-  margin-inline: -6px;
-  transition: background-color 80ms ease-in;
-  cursor: col-resize;
-  z-index: 1;
-  /* Touch-action prevents Chrome's touch/pointer gestures from kicking in
-    when adjusting the sidebar. Though ilmmind is a Tauri app, I thought it
-    would still be a good measure to add this in to make sure the sidebar can
-    always be adjusted using touch. */
-  touch-action: none;
 
-  &:hover {
-    background-color: rgba(0, 0, 0, 0.4);
-  }
 
-  &.is-dragging {
-    background-color: rgba(0, 0, 0, 0.4);
-  }
-}
 
-.image-height-dragger {
-  height: 6px;
-  width: 100%;
-  background-color: rgba(0, 0, 0, 0);
-  margin-block: -6px;
-  transition: background-color 80ms ease-in;
-  cursor: col-resize;
-  z-index: 1;
-  /* Touch-action prevents Chrome's touch/pointer gestures from kicking in
-      when adjusting the sidebar. Though ilmmind is a Tauri app, I thought it
-      would still be a good measure to add this in to make sure the sidebar can
-      always be adjusted using touch. */
-  touch-action: none;
 
-  &:hover {
-    background-color: rgba(0, 0, 0, 0.4);
-  }
+.adj-circle {
+  border-radius: 50%;
+  height: 20px;
+  width: 20px;
+  background-color: white;
+  border-color: rgb(58, 173, 255);
+  border-width: 2px;
+  border-style: solid;
+  align-self: center;
+  margin-block: auto;
 
-  &.is-dragging {
-    background-color: rgba(0, 0, 0, 0.4);
-  }
+  /* These 3 properties make all of the circles be at the centre
+    of their respective corners.*/
+  margin-left: -10px;
+  margin-top: -10px;
+  z-index: 3;
 }

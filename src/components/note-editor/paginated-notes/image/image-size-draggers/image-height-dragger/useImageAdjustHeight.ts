@@ -1,12 +1,8 @@
 import React from "react";
-
-const DEFAULT_IMAGE_WIDTH_PX = 10;
-// const MIN_IMAGE_WIDTH_PX = 0;
-// const MAX_IMAGE_WIDTH_PX = 500;
+import { useImageContext } from "../../useImageContext";
 
 type useImageAdjustHeightReturn = {
   isHeightResizing: boolean;
-  height: number;
   handleHeightPointerDown: (e: React.PointerEvent<HTMLDivElement>) => void;
   handleHeightPointerMove: (e: React.PointerEvent<HTMLDivElement>) => void;
   handleHeightPointerUp: (e: React.PointerEvent<HTMLDivElement>) => void;
@@ -16,7 +12,7 @@ type useImageAdjustHeightReturn = {
 export const useImageAdjustHeight = (): useImageAdjustHeightReturn => {
   const [isHeightResizing, setIsHeightResizing] =
     React.useState<boolean>(false);
-  const [height, setHeight] = React.useState<number>(DEFAULT_IMAGE_WIDTH_PX);
+  const { setHeight } = useImageContext();
 
   const handleHeightPointerDown = React.useCallback(
     (e: React.PointerEvent<HTMLDivElement>) => {
@@ -37,7 +33,7 @@ export const useImageAdjustHeight = (): useImageAdjustHeightReturn => {
 
       setHeight((prev) => prev + e.movementY);
     },
-    [isHeightResizing],
+    [isHeightResizing, setHeight],
   );
 
   const handleHeightPointerUp = React.useCallback(
@@ -69,12 +65,11 @@ export const useImageAdjustHeight = (): useImageAdjustHeightReturn => {
     const root = document.getElementById("root");
     if (!root) return;
 
-    root.style.cursor = isHeightResizing ? "col-resize" : "";
+    root.style.cursor = isHeightResizing ? "row-resize" : "";
   }, [isHeightResizing]);
 
   return {
     isHeightResizing,
-    height,
     handleHeightPointerDown,
     handleHeightPointerMove,
     handleHeightPointerUp,
