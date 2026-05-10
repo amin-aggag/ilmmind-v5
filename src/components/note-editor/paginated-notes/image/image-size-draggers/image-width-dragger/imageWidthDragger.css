@@ -1,28 +1,31 @@
 .image-width-dragger {
   --background-color: rgb(58, 173, 255);
 
+  /* --- Position & size properties --- */
   height: 100%;
   width: 25px;
-  background-color: rgba(0, 0, 0, 0);
-  transition: background-color 80ms ease-in;
+  margin-inline: -12.5px;
   cursor: col-resize;
   z-index: 1;
+
   /* Touch-action prevents Chrome's touch/pointer gestures from kicking in
-      when adjusting the sidebar. Though ilmmind is a Tauri app, I thought it
-      would still be a good measure to add this in to make sure the sidebar can
-      always be adjusted using touch. */
+  when adjusting the sidebar. Though ilmmind is a Tauri app, I thought it
+  would still be a good measure to add this in to make sure the adjustment
+  bar can always be adjusted using touch. */
   touch-action: none;
-  background: linear-gradient(to right, transparent 42.5%, var(--background-color) 0 57.5%, transparent 57.5%);
-  margin-inline: -12.5px;
+
+  /* --- UI design-related properties --- */
+  /* linear gradient is used to increase the hitbox
+  of the adjustment bar whilst not affecting visible width of the bar */
+  background: linear-gradient(
+    to right,
+    transparent 42.5%,
+    var(--background-color) 0 57.5%,
+    transparent 57.5%
+  );
+  transition: background-color 80ms ease-in;
   background-repeat: no-repeat;
   border-radius: 10px;
-
-  /* Large width transparent for increasing the hitbox for easier adjustment
-      when using touch*/
-  /* border-left-width: 5px;
-  border-right-width: 5px;
-  border-color: transparent;
-  border-style: solid; */
 
   &.is-dragging {
     --background-color: rgb(58, 130, 255);
