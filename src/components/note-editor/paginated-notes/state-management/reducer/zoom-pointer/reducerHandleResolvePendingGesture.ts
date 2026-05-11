@@ -1,5 +1,5 @@
 import { CanvasState } from "../../CanvasContextTypes";
-import { inkSeedFromZoomContact } from "../../../utils/inkSeedFromZoomContact";
+import { inkSeedFromZoomContact } from "../utils/zoom-utils";
 
 export function reducerHandleResolvePendingGesture(
   state: CanvasState,

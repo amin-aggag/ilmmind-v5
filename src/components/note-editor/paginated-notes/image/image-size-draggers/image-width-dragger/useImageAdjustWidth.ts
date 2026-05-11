@@ -76,7 +76,7 @@ export const useImageAdjustWidth = (
     const root = document.getElementById("root");
     if (!root) return;
 
-    root.style.cursor = isWidthResizing ? "col-resize" : "";
+    root.style.cursor = isWidthResizing ? "ew-resize" : "";
   }, [isWidthResizing]);
 
   return {

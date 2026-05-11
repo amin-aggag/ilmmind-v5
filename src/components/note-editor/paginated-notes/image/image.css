@@ -5,25 +5,3 @@
   grid-template-rows: 0px 1fr 0px;
   grid-template-columns: 0px 1fr 0px;
 }
-
-
-
-
-
-.adj-circle {
-  border-radius: 50%;
-  height: 15px;
-  width: 15px;
-  background-color: white;
-  border-color: rgb(58, 173, 255);
-  border-width: 2px;
-  border-style: solid;
-  align-self: center;
-  margin-block: auto;
-
-  /* These 3 properties make all of the circles be at the centre
-    of their respective corners.*/
-  margin-left: -9.5px;
-  margin-top: -9.5px;
-  z-index: 3;
-}

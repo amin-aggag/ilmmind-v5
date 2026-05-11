@@ -77,7 +77,7 @@ export const useImageAdjustHeight = (
     const root = document.getElementById("root");
     if (!root) return;
 
-    root.style.cursor = isHeightResizing ? "row-resize" : "";
+    root.style.cursor = isHeightResizing ? "ns-resize" : "";
   }, [isHeightResizing]);
 
   return {

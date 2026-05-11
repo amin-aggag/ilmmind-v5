@@ -1,0 +1,35 @@
+.adj-circle {
+    border-radius: 50%;
+    height: 15px;
+    width: 15px;
+    background-color: white;
+    border-color: rgb(58, 173, 255);
+    border-width: 2px;
+    border-style: solid;
+  
+    /* These 3 properties make all of the circles be at the centre
+      of their respective corners.*/
+    margin-left: -9.5px;
+    margin-top: -9.5px;
+    z-index: 4;
+    transition: all 80ms ease-in;
+
+    &:hover {
+        &.top-left {
+            cursor: nwse-resize;
+        }
+        &.top-right {
+            cursor: nesw-resize;
+        }
+        &.bottom-left {
+            cursor: nesw-resize;
+        }
+        &.bottom-right {
+            cursor: nwse-resize;
+        }
+    }
+
+    &.is-dragging {
+        background-color: rgb(184, 225, 255);
+    }
+  }

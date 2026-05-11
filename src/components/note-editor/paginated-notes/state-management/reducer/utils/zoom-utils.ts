@@ -1,4 +1,8 @@
-import { CanvasState, ZoomPointerContact } from "../../CanvasContextTypes";
+import {
+  CanvasState,
+  ZoomPointerContact,
+  Point,
+} from "../../CanvasContextTypes";
 
 /** `getBoundingClientRect()` of `.pages-window` (parent of `#svg-canvases-wrapper`). */
 export function getNotesViewportRect(): DOMRect | undefined {
@@ -73,11 +77,7 @@ export function clientToNotesViewportFocal(
 export function zoomPointerContactFromEvent(
   e: Pick<
     PointerEvent,
-    | "clientX"
-    | "clientY"
-    | "pointerId"
-    | "timeStamp"
-    | "pointerType"
+    "clientX" | "clientY" | "pointerId" | "timeStamp" | "pointerType"
   >,
   translateL: number,
   translateT: number,
@@ -165,5 +165,25 @@ export function translateToKeepViewportPointFixed(
   return {
     left: focalViewportX - (focalViewportX - position.left) * ratio,
     top: focalViewportY - (focalViewportY - position.top) * ratio,
+  };
+}
+
+/** Map a pending zoom contact to the first ink sample for that page, if the finger is over a page SVG. */
+export function inkSeedFromZoomContact(
+  contact: ZoomPointerContact,
+  pressure = 0.5,
+): { points: Point[]; activePageIndex: number } | null {
+  const el = document.elementFromPoint(contact.clientX, contact.clientY);
+  const svg = el?.closest(".svg-canvas") as SVGSVGElement | null;
+  if (!svg) return null;
+  const pt = clientToSvgUserPoint(svg, contact.clientX, contact.clientY);
+  if (!pt) return null;
+  const raw = svg.dataset.pageIndex;
+  if (raw === undefined) return null;
+  const activePageIndex = Number.parseInt(raw, 10);
+  if (Number.isNaN(activePageIndex)) return null;
+  return {
+    points: [[pt.x, pt.y, pressure]],
+    activePageIndex,
   };
 }

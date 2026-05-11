@@ -5,6 +5,7 @@ import { ImageContext, useImageStateVars } from "./useImageContext";
 import { ImageWidthDragger } from "./image-size-draggers/image-width-dragger/ImageWidthDragger";
 import { ImageHeightDragger } from "./image-size-draggers/image-height-dragger/ImageHeightDragger";
 import { useImageDrag } from "./useImageDrag";
+import { AjdCircle } from "./image-size-draggers/adjustment-circles/AdjCircle";
 
 export function Image(): React.ReactNode {
   const imageContextValue = useImageStateVars();
@@ -31,9 +32,9 @@ export function Image(): React.ReactNode {
       >
         {/* Row 1 */}
         <>
-          <div className="top-left adj-circle" />
+          <AjdCircle corner="top-left" />
           <ImageHeightDragger side="top" />
-          <div className="top-right adj-circle" />
+          <AjdCircle corner="top-right" />
         </>
         {/* Row 2 */}
         <>
@@ -48,9 +49,9 @@ export function Image(): React.ReactNode {
         </>
         {/* Row 3 */}
         <>
-          <div className="bottom-left adj-circle" />
+          <AjdCircle corner="bottom-left" />
           <ImageHeightDragger side="bottom" />
-          <div className="bottom-right adj-circle" />
+          <AjdCircle corner="bottom-right" />
         </>
       </div>
     </ImageContext.Provider>

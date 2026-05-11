@@ -5,7 +5,7 @@
   height: 100%;
   width: 25px;
   margin-inline: -12.5px;
-  cursor: col-resize;
+  cursor: ew-resize;
   z-index: 1;
 
   /* Touch-action prevents Chrome's touch/pointer gestures from kicking in
@@ -23,12 +23,12 @@
     var(--background-color) 0 57.5%,
     transparent 57.5%
   );
-  transition: background-color 80ms ease-in;
+  transition: all 200ms ease-in;
   background-repeat: no-repeat;
   border-radius: 10px;
 
   &.is-dragging {
     --background-color: rgb(58, 130, 255);
-    background-color: rgba(0, 0, 0, 0.1);
+    /* background-color: rgba(0, 0, 0, 0.1); */
   }
 }
