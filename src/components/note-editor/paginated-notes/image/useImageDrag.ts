@@ -9,20 +9,25 @@ type useImageDragReturn = {
   handleImageDragPointerCancel: (e: React.PointerEvent<HTMLDivElement>) => void;
 };
 
-export const useImageDrag = (imageContextValue: ImageContextValue): useImageDragReturn => {
+export const useImageDrag = (
+  imageContextValue: ImageContextValue,
+  imageRef: React.RefObject<HTMLImageElement | null>,
+): useImageDragReturn => {
   const [isMoving, setIsMoving] = React.useState<boolean>(false);
 
   const { state: CanvasState } = useCanvasContext();
   const zoomLevel: number = CanvasState.scalingValues.startScale;
-  const { setTop, setLeft} = imageContextValue;
+  const { setTop, setLeft, setIsSelected, isSelected } = imageContextValue;
+  const pointerWasMoved = React.useRef<boolean>(false);
 
   const handleImageDragPointerDown = React.useCallback(
     (e: React.PointerEvent<HTMLDivElement>) => {
       e.preventDefault();
       e.stopPropagation();
 
-      setIsMoving(true);
       e.currentTarget.setPointerCapture(e.pointerId);
+      console.log("pointerDown ran");
+      setIsMoving(true);
     },
     [],
   );
@@ -32,11 +37,16 @@ export const useImageDrag = (imageContextValue: ImageContextValue): useImageDrag
       e.preventDefault();
       e.stopPropagation();
       if (!isMoving) return;
+      if (!isSelected) return;
 
-    setLeft((prev) => prev + e.movementX / zoomLevel);
-    setTop((prev) => prev + e.movementY / zoomLevel);
+      pointerWasMoved.current = true;
+
+      setLeft((prev) => prev + e.movementX / zoomLevel);
+      setTop((prev) => prev + e.movementY / zoomLevel);
+
+      console.log("pointerMove ran");
     },
-    [isMoving,setLeft, setTop, zoomLevel],
+    [setLeft, setTop, zoomLevel, isSelected, isMoving],
   );
 
   const handleImageDragPointerUp = React.useCallback(
@@ -44,10 +54,17 @@ export const useImageDrag = (imageContextValue: ImageContextValue): useImageDrag
       e.preventDefault();
       e.stopPropagation();
 
-      e.currentTarget.releasePointerCapture(e.pointerId);
-      setIsMoving(false);
+      if (e.currentTarget.hasPointerCapture(e.pointerId)) {
+        e.currentTarget.releasePointerCapture(e.pointerId);
+      }
+      setIsMoving((prev) => !prev);
+
+      if (!pointerWasMoved.current) setIsSelected((prev) => !prev);
+      pointerWasMoved.current = false;
+
+      console.log("pointerUp ran");
     },
-    [],
+    [pointerWasMoved, setIsSelected],
   );
 
   const handleImageDragPointerCancel = React.useCallback(
@@ -59,17 +76,40 @@ export const useImageDrag = (imageContextValue: ImageContextValue): useImageDrag
         e.currentTarget.releasePointerCapture(e.pointerId);
       }
 
-      setIsMoving(false);
+      setIsMoving((prev) => !prev);
+
+      if (!pointerWasMoved.current) setIsSelected((prev) => !prev);
+      pointerWasMoved.current = false;
+
+      console.log("pointerCancel ran");
     },
-    [],
+    [pointerWasMoved, setIsSelected],
   );
 
   React.useEffect(() => {
-    const root = document.getElementById("root");
-    if (!root) return;
+    if (imageRef.current === null) return;
 
-    root.style.cursor = isMoving ? "move" : "";
-  }, [isMoving]);
+    // The functionality in this useLayoutEffect attempts to make sure that the
+    // 'move' cursor property is only set when 1) the user clicks and holds on the
+    // image for 100ms or more, or 2) when the user is actually moving the image.
+    // When selecting or deselecting the image, this cursor should never come up.
+
+    // When deselecting the image:
+    if (imageRef.current.classList.contains("selected")) {
+      setTimeout(() => {
+        if (imageRef.current === null) return;
+
+        if (imageRef.current.classList.contains("selected") && isMoving) {
+          imageRef.current.style.cursor = "move";
+        } else {
+          imageRef.current.style.cursor = "";
+        }
+      }, 60);
+    } else {
+      // When selecting the image:
+      imageRef.current.style.cursor = "";
+    }
+  }, [isMoving, isSelected, imageRef]);
 
   return {
     handleImageDragPointerDown,

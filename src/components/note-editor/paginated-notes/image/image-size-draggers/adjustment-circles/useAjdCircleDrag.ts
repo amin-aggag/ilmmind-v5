@@ -1,7 +1,7 @@
 import React from "react";
-import { useCanvasContext } from "../../../../state-management/useCanvasContext";
-import { useImageContext } from "../../../useImageContext";
-import { AdjCircleCorner } from "../AdjCircle";
+import { useCanvasContext } from "../../../state-management/useCanvasContext";
+import { useImageContext } from "../../useImageContext";
+import { AdjCircleCorner } from "./AdjCircle";
 
 type useAdjCircleBottomLeftReturn = {
   isResizing: boolean;
@@ -14,8 +14,7 @@ type useAdjCircleBottomLeftReturn = {
 export const useAdjCircleDrag = (
   corner: AdjCircleCorner,
 ): useAdjCircleBottomLeftReturn => {
-  const [isResizing, setIsResizing] =
-    React.useState<boolean>(false);
+  const [isResizing, setIsResizing] = React.useState<boolean>(false);
   const { setHeight, setWidth, setTop, setLeft } = useImageContext();
 
   const { state: CanvasState } = useCanvasContext();

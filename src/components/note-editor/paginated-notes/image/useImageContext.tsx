@@ -11,6 +11,8 @@ export type ImageContextValue = {
   setTop: React.Dispatch<React.SetStateAction<number>>;
   left: number;
   setLeft: React.Dispatch<React.SetStateAction<number>>;
+  isSelected: boolean;
+  setIsSelected: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const DEFAULT_IMAGE_WIDTH_PX = 1280 / 3;
@@ -27,6 +29,7 @@ export function useImageStateVars(): ImageContextValue {
   const [height, setHeight] = React.useState<number>(DEFAULT_IMAGE_HEIGHT_PX);
   const [top, setTop] = React.useState<number>(25);
   const [left, setLeft] = React.useState<number>(25);
+  const [isSelected, setIsSelected] = React.useState<boolean>(false);
 
   return {
     width,
@@ -37,6 +40,8 @@ export function useImageStateVars(): ImageContextValue {
     setTop,
     left,
     setLeft,
+    isSelected,
+    setIsSelected,
   };
 }
 

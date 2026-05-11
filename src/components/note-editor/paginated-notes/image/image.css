@@ -2,6 +2,9 @@
   position: absolute;
   z-index: 1;
   display: grid;
-  grid-template-rows: 0px 1fr 0px;
-  grid-template-columns: 0px 1fr 0px;
+
+  &.selected {
+    grid-template-rows: 0px 1fr 0px;
+    grid-template-columns: 0px 1fr 0px;
+  }
 }
