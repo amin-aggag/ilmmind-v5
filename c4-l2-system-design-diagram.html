@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ilmmind — C4 Level 2 (Container Diagram)</title>
+<style>
+  :root {
+    --bg: #eef1f5;
+    --card: #ffffff;
+    --ink: #1f2733;
+    --muted: #6b7280;
+    --person: #08427b;
+    --container: #1168bd;
+    --store: #2a7ab8;
+    --store-top: #4a93cf;
+    --ext: #7c8694;
+    --rel: #6b7280;
+    --boundary: #8a93a0;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    padding: 32px 20px 56px;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page {
+    max-width: 1240px;
+    margin: 0 auto;
+    background: var(--card);
+    border: 1px solid #e2e6ec;
+    border-radius: 16px;
+    box-shadow: 0 12px 40px rgba(15, 25, 45, 0.08);
+    padding: 36px 40px 28px;
+  }
+
+  header { margin-bottom: 18px; }
+
+  .eyebrow {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--container);
+    margin: 0 0 8px;
+  }
+
+  h1 {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    margin: 0 0 6px;
+  }
+
+  .subtitle {
+    margin: 0;
+    color: var(--muted);
+    font-size: 15px;
+    line-height: 1.5;
+    max-width: 820px;
+  }
+
+  .diagram {
+    margin: 22px 0 6px;
+    width: 100%;
+  }
+
+  .diagram svg { width: 100%; height: auto; display: block; }
+
+  /* ---- SVG node styling ---- */
+  .boundary {
+    fill: rgba(17, 104, 189, 0.035);
+    stroke: var(--boundary);
+    stroke-width: 1.5;
+    stroke-dasharray: 7 6;
+  }
+  .b-title { fill: #44515f; font-size: 15px; font-weight: 700; }
+  .b-sub   { fill: var(--muted); font-size: 11.5px; font-style: italic; }
+
+  .person-box { fill: var(--person); }
+  .container-box { fill: var(--container); }
+  .ext-box { fill: var(--ext); }
+  .cyl { fill: var(--store); }
+  .cyl-top { fill: var(--store-top); }
+
+  .node-box, .cyl, .cyl-top { stroke: rgba(0,0,0,0.12); stroke-width: 1; }
+
+  .t-name { fill: #ffffff; font-weight: 700; font-size: 15.5px; }
+  .t-tech { fill: #e8eef6; font-style: italic; font-size: 11px; }
+  .t-desc { fill: #f1f6fc; font-size: 12px; }
+
+  .rel { fill: none; stroke: var(--rel); stroke-width: 1.6; }
+  .t-label {
+    fill: #33404f;
+    font-size: 12px;
+    font-weight: 500;
+    stroke: #ffffff;
+    stroke-width: 3.5px;
+    stroke-linejoin: round;
+    paint-order: stroke fill markers;
+  }
+
+  /* ---- Legend ---- */
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px 28px;
+    align-items: center;
+    margin-top: 20px;
+    padding-top: 18px;
+    border-top: 1px solid #e9ecf1;
+  }
+  .legend .item { display: flex; align-items: center; gap: 9px; font-size: 13px; color: #45505f; }
+  .swatch { width: 26px; height: 16px; border-radius: 4px; border: 1px solid rgba(0,0,0,0.12); }
+  .swatch.person { background: var(--person); }
+  .swatch.container { background: var(--container); }
+  .swatch.store { background: var(--store); border-radius: 4px 4px 9px 9px; }
+  .swatch.ext { background: var(--ext); }
+  .swatch.rel {
+    width: 30px; height: 0; border: none; border-radius: 0;
+    border-top: 2px solid var(--rel); position: relative;
+  }
+  .swatch.rel::after {
+    content: ""; position: absolute; right: -2px; top: -4px;
+    border-left: 7px solid var(--rel);
+    border-top: 4px solid transparent;
+    border-bottom: 4px solid transparent;
+  }
+
+  footer {
+    margin-top: 18px;
+    color: #98a2b0;
+    font-size: 12px;
+  }
+</style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <p class="eyebrow">C4 Model · Level 2 — Container Diagram</p>
+      <h1>ilmmind — System Containers</h1>
+      <p class="subtitle">
+        The major runnable units and data stores inside the ilmmind desktop application,
+        the people who use it, and the external systems it depends on. Arrows show
+        dependencies and data flow between containers.
+      </p>
+    </header>
+
+    <div class="diagram">
+      <svg viewBox="0 0 1480 960" role="img" aria-label="C4 Level 2 container diagram for ilmmind">
+        <defs>
+          <marker id="arrow" markerWidth="14" markerHeight="14" refX="10" refY="5"
+                  orient="auto-start-reverse" markerUnits="userSpaceOnUse">
+            <path d="M0,0 L10,5 L0,10 Z" fill="#6b7280" />
+          </marker>
+        </defs>
+
+        <!-- ================= RELATIONSHIPS (drawn first, under boxes) ================= -->
+
+        <!-- User -> Frontend -->
+        <line class="rel" x1="600" y1="152" x2="600" y2="258" marker-end="url(#arrow)" />
+        <text class="t-label" text-anchor="start" x="625" y="196">Creates &amp; organises notes,</text>
+        <text class="t-label" text-anchor="start" x="625" y="211">watches lectures, searches  [GUI]</text>
+
+        <!-- Frontend <-> Backend -->
+        <line class="rel" x1="600" y1="382" x2="600" y2="468"
+              marker-start="url(#arrow)" marker-end="url(#arrow)" />
+        <text class="t-label" text-anchor="start" x="625" y="416">Invokes commands /</text>
+        <text class="t-label" text-anchor="start" x="625" y="431">streams results  [Tauri IPC]</text>
+
+        <!-- Backend <-> SQLite -->
+        <line class="rel" x1="530" y1="610" x2="478" y2="732"
+              marker-start="url(#arrow)" marker-end="url(#arrow)" />
+        <text class="t-label" text-anchor="end" x="500" y="656">Reads &amp; writes</text>
+        <text class="t-label" text-anchor="end" x="500" y="671">index  [SQL]</text>
+
+        <!-- Backend <-> File Store -->
+        <line class="rel" x1="680" y1="610" x2="760" y2="732"
+              marker-start="url(#arrow)" marker-end="url(#arrow)" />
+        <text class="t-label" text-anchor="start" x="742" y="656">Reads &amp; writes</text>
+        <text class="t-label" text-anchor="start" x="742" y="671">notes  [files]</text>
+
+        <!-- Backend <-> ASR -->
+        <line class="rel" x1="460" y1="540" x2="330" y2="540"
+              marker-start="url(#arrow)" marker-end="url(#arrow)" />
+        <text class="t-label" text-anchor="middle" x="395" y="533">Sends audio,</text>
+        <text class="t-label" text-anchor="middle" x="395" y="548">transcript  [FFI]</text>
+
+        <!-- Backend <-> ML Runtime -->
+        <line class="rel" x1="740" y1="540" x2="830" y2="540"
+              marker-start="url(#arrow)" marker-end="url(#arrow)" />
+        <text class="t-label" text-anchor="middle" x="785" y="533">Embeddings,</text>
+        <text class="t-label" text-anchor="middle" x="785" y="548">OCR, parsing</text>
+
+        <!-- Backend -> Binary Artifact Host (up and over) -->
+        <polyline class="rel" points="700,470 700,430 1320,430 1320,470" marker-end="url(#arrow)" />
+        <text class="t-label" text-anchor="middle" x="1010" y="408">Downloads binaries &amp; models,</text>
+        <text class="t-label" text-anchor="middle" x="1010" y="423">verifies checksums  [HTTPS]</text>
+
+        <!-- File Store <-> Cloud Storage -->
+        <line class="rel" x1="892" y1="800" x2="1208" y2="800"
+              marker-start="url(#arrow)" marker-end="url(#arrow)" />
+        <text class="t-label" text-anchor="middle" x="1050" y="782">Syncs raw files</text>
+        <text class="t-label" text-anchor="middle" x="1050" y="797">(source of truth)</text>
+
+        <!-- ================= SYSTEM BOUNDARY ================= -->
+        <rect class="boundary" x="40" y="205" width="1120" height="710" rx="16" />
+        <text class="b-title" x="64" y="234">ilmmind</text>
+        <text class="b-sub" x="64" y="251">Software System — Tauri Desktop Application</text>
+
+        <!-- ================= PERSON ================= -->
+        <rect class="node-box person-box" x="470" y="40" width="260" height="110" rx="10" />
+        <text class="t-name" text-anchor="middle" x="600" y="78">Student of Islamic Knowledge</text>
+        <text class="t-tech" text-anchor="middle" x="600" y="96">[Person]</text>
+        <text class="t-desc" text-anchor="middle" x="600">
+          <tspan x="600" y="116">Takes handwritten notes, watches</tspan>
+          <tspan x="600" dy="15">lectures, builds a knowledge graph</tspan>
+        </text>
+
+        <!-- ================= FRONTEND ================= -->
+        <rect class="node-box container-box" x="460" y="260" width="280" height="120" rx="10" />
+        <text class="t-name" text-anchor="middle" x="600" y="294">Frontend SPA</text>
+        <text class="t-tech" text-anchor="middle" x="600" y="312">[Container: React + TypeScript · WebView]</text>
+        <text class="t-desc" text-anchor="middle" x="600">
+          <tspan x="600" y="334">Handwriting canvas (SVG),</tspan>
+          <tspan x="600" dy="15">Obsidian-style graph view,</tspan>
+          <tspan x="600" dy="15">video player &amp; annotation UI</tspan>
+        </text>
+
+        <!-- ================= RUST BACKEND ================= -->
+        <rect class="node-box container-box" x="460" y="470" width="280" height="140" rx="10" />
+        <text class="t-name" text-anchor="middle" x="600" y="506">Rust Backend (Core)</text>
+        <text class="t-tech" text-anchor="middle" x="600" y="524">[Container: Rust · Tauri + Axum]</text>
+        <text class="t-desc" text-anchor="middle" x="600">
+          <tspan x="600" y="546">Orchestrates persistence, sync,</tspan>
+          <tspan x="600" dy="15">search &amp; ML pipelines; exposes</tspan>
+          <tspan x="600" dy="15">commands to the UI</tspan>
+        </text>
+
+        <!-- ================= ASR ENGINE ================= -->
+        <rect class="node-box container-box" x="90" y="470" width="240" height="140" rx="10" />
+        <text class="t-name" text-anchor="middle" x="210" y="506">Speech-to-Text (ASR)</text>
+        <text class="t-tech" text-anchor="middle" x="210" y="524">[Container: whisper.cpp / sherpa · FFI]</text>
+        <text class="t-desc" text-anchor="middle" x="210">
+          <tspan x="210" y="546">Batch transcription of</tspan>
+          <tspan x="210" dy="15">lecture audio with Arabic</tspan>
+          <tspan x="210" dy="15">code-switching</tspan>
+        </text>
+
+        <!-- ================= LOCAL ML RUNTIME ================= -->
+        <rect class="node-box container-box" x="830" y="470" width="240" height="140" rx="10" />
+        <text class="t-name" text-anchor="middle" x="950" y="506">Local ML Runtime</text>
+        <text class="t-tech" text-anchor="middle" x="950" y="524">[Container: Rust ML inference]</text>
+        <text class="t-desc" text-anchor="middle" x="950">
+          <tspan x="950" y="546">Handwriting OCR, text</tspan>
+          <tspan x="950" dy="15">embeddings &amp; thin LLM</tspan>
+          <tspan x="950" dy="15">query-structuring for RAG</tspan>
+        </text>
+
+        <!-- ================= SQLITE CACHE (cylinder) ================= -->
+        <path class="cyl" d="M340,744 L340,856 A130,14 0 0 0 600,856 L600,744 A130,14 0 0 1 340,744 Z" />
+        <ellipse class="cyl-top" cx="470" cy="744" rx="130" ry="14" />
+        <text class="t-name" text-anchor="middle" x="470" y="782">SQLite Cache</text>
+        <text class="t-tech" text-anchor="middle" x="470" y="800">[SQLite · sqlite-vec · FTS5]</text>
+        <text class="t-desc" text-anchor="middle" x="470">
+          <tspan x="470" y="822">Rebuildable index —</tspan>
+          <tspan x="470" dy="15">vector + FTS5 (BM25) search</tspan>
+        </text>
+
+        <!-- ================= FILE STORE (cylinder) ================= -->
+        <path class="cyl" d="M630,744 L630,856 A130,14 0 0 0 890,856 L890,744 A130,14 0 0 1 630,744 Z" />
+        <ellipse class="cyl-top" cx="760" cy="744" rx="130" ry="14" />
+        <text class="t-name" text-anchor="middle" x="760" y="782">File Store</text>
+        <text class="t-tech" text-anchor="middle" x="760" y="800">[Local filesystem]</text>
+        <text class="t-desc" text-anchor="middle" x="760">
+          <tspan x="760" y="822">Raw JSON &amp; SVG files —</tspan>
+          <tspan x="760" dy="15">the source of truth</tspan>
+        </text>
+
+        <!-- ================= EXTERNAL: BINARY ARTIFACT HOST ================= -->
+        <rect class="node-box ext-box" x="1210" y="470" width="220" height="140" rx="10" />
+        <text class="t-name" text-anchor="middle" x="1320" y="506">Binary Artifact Host</text>
+        <text class="t-tech" text-anchor="middle" x="1320" y="524">[External System]</text>
+        <text class="t-desc" text-anchor="middle" x="1320">
+          <tspan x="1320" y="546">Hosts precompiled binaries</tspan>
+          <tspan x="1320" dy="15">&amp; models as release</tspan>
+          <tspan x="1320" dy="15">artifacts (with checksums)</tspan>
+        </text>
+
+        <!-- ================= EXTERNAL: CLOUD STORAGE ================= -->
+        <rect class="node-box ext-box" x="1210" y="730" width="220" height="140" rx="10" />
+        <text class="t-name" text-anchor="middle" x="1320" y="770">Cloud Storage</text>
+        <text class="t-tech" text-anchor="middle" x="1320" y="788">[External System]</text>
+        <text class="t-desc" text-anchor="middle" x="1320">
+          <tspan x="1320" y="810">User's cloud drive; syncs</tspan>
+          <tspan x="1320" dy="15">raw files across devices</tspan>
+        </text>
+      </svg>
+    </div>
+
+    <div class="legend">
+      <div class="item"><span class="swatch person"></span> Person / actor</div>
+      <div class="item"><span class="swatch container"></span> Container (application)</div>
+      <div class="item"><span class="swatch store"></span> Container (data store)</div>
+      <div class="item"><span class="swatch ext"></span> External system</div>
+      <div class="item"><span class="swatch rel"></span> Dependency / data flow</div>
+    </div>
+
+    <footer>
+      C4 Model — Level 2 (Container Diagram) · ilmmind. Boxes are runnable units or data stores;
+      the dashed boundary marks the system you own.
+    </footer>
+  </div>
+</body>
+</html>
