@@ -6,6 +6,8 @@ ilmmind combines the handwritten and text note capabilities of apps like GoodNot
 
 This project is a continuation and 'complete' version of an earlier project I started, which is linked here: [https://github.com/amin-aggag/drawing-notepad/](https://github.com/amin-aggag/drawing-notepad).
 
+The following project images are from a previous version of ilmmind, but are actively being worked on in this codebase.
+
 Note editor:
 
 ![ilmmind preview - Note editor](/assets/ilmmind-preview-image-v2.png)
